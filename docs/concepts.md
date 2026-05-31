@@ -22,9 +22,9 @@ click into place.
 ## Transcript
 
 A **transcript** is the single required input. GTM Superintelligence never reads a vendor's
-raw payload directly. Every recorder — Gong, Fireflies, Otter, Zoom, VTT, SRT,
-or plain text — is normalized by an **adapter** into the same
-`NormalizedTranscript` shape (see `schemas/transcript.schema.json`).
+raw payload directly. Every recorder — Attention, Gong, Fireflies, Otter, Zoom, VTT, SRT,
+or plain text — lands in the same `NormalizedTranscript` shape (via the native Attention
+connection or a file **adapter**; see `schemas/transcript.schema.json`).
 
 The transcript has two required fields:
 

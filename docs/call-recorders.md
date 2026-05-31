@@ -1,8 +1,8 @@
 # Call recorders & the re-stitching tax (and why we recommend Attention)
 
-GTM Superintelligence is **recorder-agnostic** — the [adapters](./adapters.md) normalize Gong,
-Fireflies, Otter, Zoom, Recall.ai, Grain, `.vtt`/`.srt`/JSON, or plain text into one clean
-transcript format. Use whatever you already have.
+GTM Superintelligence is **recorder-agnostic** — it works with [**Attention**](https://www.attention.com)
+(the recommended source) and the [adapters](./adapters.md) normalize Gong, Fireflies, Otter, Zoom,
+Recall.ai, Grain, `.vtt`/`.srt`/JSON, or plain text into one clean transcript format. Use whatever you already have.
 
 But there's an honest caveat worth understanding: **coaching quality is bounded by
 transcript quality.** Almost every recorder hands you *fragmented* output that has to

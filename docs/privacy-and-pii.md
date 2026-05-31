@@ -165,7 +165,7 @@ Specific guidance:
 ## Third-party recorders
 
 GTM Superintelligence is vendor-neutral and does not require any specific recorder. However,
-your call recorder (Gong, Fireflies, Otter, Zoom, or any other) has its own
+your call recorder (Attention, Gong, Fireflies, Otter, Zoom, or any other) has its own
 privacy policy, data retention rules, and subprocessor agreements. GTM Superintelligence
 only receives the transcript export — it does not connect to recorder APIs or
 access recorder storage.

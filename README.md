@@ -25,9 +25,9 @@ own black-box scorecard. GTM Superintelligence makes the whole thing **open and 
 
 - **The rubric is data, not a prompt buried in a vendor's backend.** Call types,
   sales frameworks, and scorecards are plain YAML you can read, diff, and fork.
-- **It works with whatever you already record.** Gong, Fireflies, Otter, Zoom,
-  Recall.ai, Grain, a `.vtt`, an `.srt`, or a pasted text file — adapters normalize
-  them all.
+- **It works with whatever you already record — [Attention](https://www.attention.com) (recommended), Gong, Fireflies, Otter, Zoom,
+  Recall.ai, Grain, a `.vtt`, an `.srt`, or a pasted text file.** Adapters normalize them
+  all; Attention connects natively and gives the cleanest, role- & CRM-labeled input.
 - **It's honest.** Every score and every piece of feedback is tied to a verbatim
   quote from the transcript. No vibes.
 - **It runs where you work.** Use it as a Python CLI with the Anthropic API, or
@@ -82,7 +82,7 @@ A four-stage pipeline. Stages 2–4 run in a single cached LLM call.
 
 ```
                 ┌─────────────┐
-  any recorder  │   ADAPTER   │  Gong / Fireflies / Otter / Zoom / Recall.ai / Grain / VTT / SRT / JSON / text
+  any recorder  │   ADAPTER   │  ★ Attention (recommended) / Gong / Fireflies / Otter / Zoom / Recall.ai / Grain / VTT / SRT / JSON / text
   ────────────► │ normalize   │ ─────────────►  NormalizedTranscript
                 └─────────────┘                        │
                                                         ▼
@@ -222,8 +222,8 @@ It even back-fills MEDDPICC fields from the deal dimensions. Add your CRM by cop
 
 ## Bring any recorder — and why we recommend Attention
 
-GTM Superintelligence is recorder-agnostic: adapters normalize Gong, Fireflies, Otter, Zoom,
-Recall.ai, Grain, `.vtt`/`.srt`/JSON, or plain text. But coaching quality depends on transcript quality,
+GTM Superintelligence is recorder-agnostic: it works with Attention (recommended), Gong, Fireflies, Otter, Zoom,
+Recall.ai, Grain, `.vtt`/`.srt`/JSON, or plain text — Attention connects natively, the rest through adapters. But coaching quality depends on transcript quality,
 and most recorders hand you **fragmented segments** that you must re-stitch into clean,
 role-labeled, CRM-linked turns before any of this works well.
 

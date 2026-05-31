@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/transcript.schema.json",
   "title": "NormalizedTranscript",
-  "description": "Vendor-neutral transcript format. Every adapter (Gong, Fireflies, Otter, Zoom, VTT, SRT, plain text, or any other recorder) normalizes into this shape. The coaching pipeline only ever reads this format, never a vendor's raw payload.",
+  "description": "Vendor-neutral transcript format. Every adapter (Gong, Fireflies, Otter, Zoom, VTT, SRT, plain text, or any other recorder) — plus the native Attention source — normalizes into this shape. The coaching pipeline only ever reads this format, never a vendor's raw payload.",
   "type": "object",
   "required": ["schema_version", "turns"],
   "additionalProperties": false,
