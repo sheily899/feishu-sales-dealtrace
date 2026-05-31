@@ -3,9 +3,9 @@
 # 🎯 GTM Superintelligence
 **by [Attention](https://www.attention.com)**
 
-**Open-source, Claude-native GTM intelligence for any call transcript** — coaching, deal & account health scoring, daily rep / team / company inboxes, and CRM auto-fill.
+**Open-source, Claude-native GTM intelligence and automation for any call transcript.** Coaching, deal and account health scoring, daily rep / team / company inboxes, CRM auto-fill, and 30 post-call agents.
 
-Turn raw sales & customer conversations into evidence-bound coaching and pipeline/account health a team can act on tomorrow. Vendor-neutral (any recorder, any CRM). Framework-aware. Forkable.
+Turn raw sales and customer conversations into evidence-bound coaching, pipeline and account health, an updated CRM, and the post-call work done for you. Vendor-neutral (any recorder, any CRM). Framework-aware. Forkable.
 
 [Quickstart](#quickstart) · [How it works](#how-it-works) · [Run it in Claude](#run-it-inside-claude-no-api-key) · [Customize](#make-it-yours) · [Docs](./docs)
 
@@ -19,15 +19,20 @@ Turn raw sales & customer conversations into evidence-bound coaching and pipelin
 
 ## Why this exists
 
-The GTM community keeps rebuilding the same thing in private: a way to take a call
-transcript and get *structured, consistent* coaching out of it. Every tool ships its
-own black-box scorecard. GTM Superintelligence makes the whole thing **open and editable**:
+The GTM community keeps rebuilding the same stack in private: turn a call into coaching,
+deal and account health, an updated CRM, and the follow-up work that comes after. Every
+tool ships it as a black box you can't see or change. GTM Superintelligence makes the
+whole thing **open and editable**:
 
 - **The rubric is data, not a prompt buried in a vendor's backend.** Call types,
   sales frameworks, and scorecards are plain YAML you can read, diff, and fork.
 - **It works with whatever you already record — [Attention](https://www.attention.com) (recommended), Gong, Fireflies, Otter, Zoom,
   Recall.ai, Grain, a `.vtt`, an `.srt`, or a pasted text file.** Adapters normalize them
   all; Attention connects natively and gives the cleanest, role- & CRM-labeled input.
+- **It does the post-call work, not just the scoring.** 30 forkable agents draft the
+  follow-up, flag at-risk deals, catch single-threaded deals, run lost-deal post-mortems,
+  watch renewals, and prep handoffs. They run natively on Attention or as Claude agents
+  on any stack.
 - **It's honest.** Every score and every piece of feedback is tied to a verbatim
   quote from the transcript. No vibes.
 - **It runs where you work.** Use it as a Python CLI with the Anthropic API, or
