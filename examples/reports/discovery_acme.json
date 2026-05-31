@@ -1,0 +1,223 @@
+{
+  "schema_version": "1.0",
+  "call_id": "discovery_acme",
+  "classification": {
+    "call_type": "discovery",
+    "phase": "pre-sales",
+    "confidence": 0.9,
+    "rationale": "A scheduled first substantive conversation. The rep opens with an agenda, spends the majority of the call asking open questions about current state, priorities, impact, and decision-makers, and only shows the product briefly near the end. The ask is information and a next step, not a purchase.",
+    "alternatives": [
+      { "call_type": "demo", "confidence": 0.08 }
+    ]
+  },
+  "outcomes": [
+    {
+      "id": "quantify-priority",
+      "statement": "Identify and quantify Acme's top priority (data trust / single source of truth) and the cost of inaction. Largely achieved on time and consequences; the dollar figure stayed an estimate rather than a defensible model.",
+      "status": "partial",
+      "evidence": [
+        { "speaker": "Sam", "text": "she's probably spending fifteen hours a week just on data wrangling. That's almost half her job." },
+        { "speaker": "Sam", "text": "I'd say hundreds of thousands of dollars isn't crazy." },
+        { "speaker": "Sam", "text": "We're about to close our Series B. The board is going to want operational visibility." }
+      ]
+    },
+    {
+      "id": "map-decision-process",
+      "statement": "Map who decides and how. Jordan identified the VP of Finance and Head of Operations as required for sign-off, but did not map the steps, criteria, or budget, and the budget question was deflected.",
+      "status": "partial",
+      "evidence": [
+        { "speaker": "Sam", "text": "Nothing this size gets signed off without Finance. And if we're touching Operations data, she'd want to be involved too." },
+        { "speaker": "Sam", "text": "I honestly don't know yet. We haven't gotten that far. I'm in discovery mode myself." }
+      ]
+    },
+    {
+      "id": "secure-next-step",
+      "statement": "Secure a concrete, calendared next step with the right people. Missed: the call ended on 'send me a summary' with no scheduled meeting and the key stakeholders left unconfirmed.",
+      "status": "missed",
+      "evidence": [
+        { "speaker": "Sam", "text": "Sure, send that over. I'll take a look." },
+        { "speaker": "Sam", "text": "Maybe. Let me feel it out with them first." }
+      ]
+    }
+  ],
+  "scores": [
+    {
+      "criterion_id": "agenda_and_framing",
+      "criterion_name": "Agenda & Framing",
+      "score": 82,
+      "band": "great",
+      "weight": 1,
+      "rationale": "Proposed a clear three-part agenda, checked for agreement, and explicitly invited the buyer to redirect. Buyer-centric and efficient.",
+      "evidence": [
+        { "speaker": "Jordan", "text": "I put together a quick agenda... we'd spend a few minutes making sure I understand what's going on in your world, then... your priorities... and if it makes sense, we can talk about whether Northstar fits. Sound okay?" },
+        { "speaker": "Jordan", "text": "feel free to stop me if I'm heading in the wrong direction." }
+      ]
+    },
+    {
+      "criterion_id": "current_state",
+      "criterion_name": "Current State & Why It Isn't Working",
+      "score": 88,
+      "band": "great",
+      "weight": 1.5,
+      "rationale": "Excellent layering: established scale and growth, then drilled from 'a shared Google Sheet' into the specific breakdowns (analyst time, conflicting dashboards, exec disputes) using 'tell me more' and 'how long' follow-ups.",
+      "evidence": [
+        { "speaker": "Sam", "text": "there are three different versions of the same dashboard floating around in different departments. Finance sees one number, Operations sees another." },
+        { "speaker": "Jordan", "text": "Tell me more about 'not really.'" }
+      ]
+    },
+    {
+      "criterion_id": "priority_quantified",
+      "criterion_name": "Top Priority Identified & Quantified",
+      "score": 76,
+      "band": "good",
+      "weight": 2,
+      "rationale": "Strong: the priority is named in the buyer's words and tied to time (15 hrs/week), bad decisions, and a board-level consequence. Held back from 'great' because the dollar impact stayed a gut estimate ('hard to quantify exactly') rather than a co-built model.",
+      "evidence": [
+        { "speaker": "Sam", "text": "she's probably spending fifteen hours a week just on data wrangling." },
+        { "speaker": "Sam", "text": "Hard to quantify exactly but I'd say hundreds of thousands of dollars isn't crazy." }
+      ]
+    },
+    {
+      "criterion_id": "future_state",
+      "criterion_name": "Ideal Future State",
+      "score": 85,
+      "band": "great",
+      "weight": 1,
+      "rationale": "Used a clean future-state question and let the buyer paint the picture, then reflected it back crisply — making the gap (and the value) tangible.",
+      "evidence": [
+        { "speaker": "Jordan", "text": "If you woke up six months from now and this was fixed — what would be different?" },
+        { "speaker": "Sam", "text": "One version of the truth... My analyst doing actual analysis, not data janitorial work. And... me being able to walk into a board meeting and not worry about someone challenging my numbers." }
+      ]
+    },
+    {
+      "criterion_id": "decision_process",
+      "criterion_name": "Decision Process & Stakeholders",
+      "score": 55,
+      "band": "developing",
+      "weight": 1.5,
+      "rationale": "Identified the two stakeholders required for sign-off, which is good. But stopped there: no decision criteria, no steps/timeline for how a decision gets made, budget probed once and dropped, and the stakeholders were not secured into the next step.",
+      "evidence": [
+        { "speaker": "Jordan", "text": "Who else at Acme cares about this problem the way you do?" },
+        { "speaker": "Sam", "text": "Nothing this size gets signed off without Finance." }
+      ]
+    },
+    {
+      "criterion_id": "timing_urgency",
+      "criterion_name": "Compelling Event & Timing",
+      "score": 80,
+      "band": "great",
+      "weight": 1,
+      "rationale": "Surfaced a genuine, dated compelling event (Series B close, end of Q3, board expectations) and connected it to the need to act — a real forcing function.",
+      "evidence": [
+        { "speaker": "Sam", "text": "We're about to close our Series B. The board is going to want operational visibility." },
+        { "speaker": "Sam", "text": "Should be end of Q3." }
+      ]
+    },
+    {
+      "criterion_id": "avoided_premature_pitch",
+      "criterion_name": "Avoided Premature Pitching",
+      "score": 60,
+      "band": "good",
+      "weight": 1,
+      "rationale": "Mostly disciplined — the pitch came late, after substantial discovery, and Jordan returned to questioning afterward. But he volunteered a feature monologue and an implementation reassurance before fully closing out priorities, slightly ahead of earning it.",
+      "evidence": [
+        { "speaker": "Jordan", "text": "can I show you quickly what Northstar does?" },
+        { "speaker": "Jordan", "text": "our implementation team is pretty hands-on — your analyst wouldn't need to do a ton of heavy lifting on the technical side." }
+      ]
+    },
+    {
+      "criterion_id": "next_steps",
+      "criterion_name": "Clear Next Steps with the Right People",
+      "score": 38,
+      "band": "poor",
+      "weight": 1.5,
+      "rationale": "The weakest part of an otherwise strong call. It ended on an open-ended 'I'll send a summary' with no calendared meeting, and the attempt to bring in Finance and Operations was left to the buyer to 'feel out' rather than secured.",
+      "evidence": [
+        { "speaker": "Jordan", "text": "What would make sense as a next step? I'm thinking I could put together a summary of what we discussed..." },
+        { "speaker": "Sam", "text": "Maybe. Let me feel it out with them first." }
+      ]
+    }
+  ],
+  "overall_score": 70,
+  "summary": "A strong discovery call with textbook current-state, future-state, and compelling-event work — Jordan built a clear, buyer-owned picture of the data-trust problem and its board-level stakes. The deal is being left on the table at the finish: impact never became a defensible ROI number, the decision process is only half-mapped, and the call closed without a calendared next step or committed stakeholders. Biggest lever: convert the impact into a dollar model and lock a specific next meeting with Finance and Operations.",
+  "coaching": {
+    "strengths": [
+      {
+        "title": "Layered discovery that earned the truth",
+        "detail": "Jordan didn't accept the first answer. He moved from a surface complaint ('not really') down through specific examples, duration, and prior attempts to fix — the buyer ended up articulating the pain, the trust spiral, and the cost themselves. That's the discovery doing the selling.",
+        "criterion_id": "current_state",
+        "evidence": [
+          { "speaker": "Jordan", "text": "Tell me more about 'not really.'" },
+          { "speaker": "Jordan", "text": "How long has that been the case — the trust issue?" }
+        ],
+        "priority": "low"
+      },
+      {
+        "title": "Surfaced a real compelling event",
+        "detail": "Rather than leaving timing vague, Jordan tied the problem to the Series B close and board expectations, and got a date (end of Q3). That forcing function is what will keep this deal from stalling.",
+        "criterion_id": "timing_urgency",
+        "evidence": [
+          { "speaker": "Jordan", "text": "what happens if you don't solve this in the next six months?" }
+        ],
+        "priority": "low"
+      },
+      {
+        "title": "Future-state framing that made the gap vivid",
+        "detail": "The 'wake up six months from now' question got the buyer to describe success in their own words, including the emotional board-meeting payoff — a gift for the business case later.",
+        "criterion_id": "future_state",
+        "evidence": [
+          { "speaker": "Jordan", "text": "If you woke up six months from now and this was fixed — what would be different?" }
+        ],
+        "priority": "low"
+      }
+    ],
+    "improvements": [
+      {
+        "title": "Close on a calendared next step, not a summary",
+        "detail": "After excellent discovery, the call ended with 'send me a summary' — an open loop with no date and no commitment. A document is not a next step; a meeting on the calendar is. This is the single biggest risk to the deal.",
+        "criterion_id": "next_steps",
+        "evidence": [
+          { "speaker": "Sam", "text": "Sure, send that over. I'll take a look." }
+        ],
+        "better_move": "I'll have that summary to you Thursday. Rather than you reading it cold, can we grab 30 minutes Friday so I can walk you and ideally your VP of Finance through it and the rough ROI? I'll send an invite for 2pm — does that work, or is morning better?",
+        "priority": "high"
+      },
+      {
+        "title": "Turn the impact into a number a CFO would accept",
+        "detail": "Jordan got hours (15/week) and a gut figure ('hundreds of thousands') but didn't co-build a defensible model. Before the Series B board, Sam will need a number he can defend. Anchor it together on the call so it's the buyer's number, not the vendor's.",
+        "criterion_id": "priority_quantified",
+        "evidence": [
+          { "speaker": "Sam", "text": "Hard to quantify exactly but I'd say hundreds of thousands of dollars isn't crazy." }
+        ],
+        "better_move": "Let's make that concrete. Fifteen hours a week is ~0.4 of an analyst — call it $X of loaded cost a year just in wrangling. Add the two or three resource decisions you'd have made differently — what would one of those have been worth? If we land around $Y, is that the number you'd be comfortable taking to the board?",
+        "priority": "high"
+      },
+      {
+        "title": "Secure the stakeholders, don't outsource the multi-thread",
+        "detail": "Jordan correctly identified that Finance and Operations own sign-off, then left it to Sam to 'feel it out.' Single-threaded deals stall. Make it easy and low-risk for Sam to bring them in now, while the pain is hot.",
+        "criterion_id": "decision_process",
+        "evidence": [
+          { "speaker": "Sam", "text": "Maybe. Let me feel it out with them first." }
+        ],
+        "better_move": "Totally fair to socialize it first. To make that easy — want me to send a short, two-paragraph summary written for them, framed around the board-prep angle your Head of Ops has been pushing? Then if it resonates, the three of you join the Friday session. What's the best way to get on her radar?",
+        "priority": "medium"
+      },
+      {
+        "title": "Map the decision process, not just the people",
+        "detail": "Knowing who signs off is half of it. The steps, criteria, and budget remain unknown — the budget question got deflected and wasn't revisited from a different angle. You don't need an exact number, but you do need the shape of how a yes happens.",
+        "criterion_id": "decision_process",
+        "evidence": [
+          { "speaker": "Sam", "text": "I honestly don't know yet. We haven't gotten that far. I'm in discovery mode myself." }
+        ],
+        "better_move": "No problem on exact budget. Help me understand the path instead: if you and the team decided this was worth doing, what would the steps to a signed agreement look like — and is there budget allocated for this kind of project this year, or would it need to be carved out?",
+        "priority": "medium"
+      }
+    ],
+    "next_call_focus": [
+      "Get a specific 30-minute meeting on the calendar before this call ends — don't let 'send a summary' be the next step.",
+      "Co-build a one-line ROI number Sam can defend to his board (loaded analyst cost + cost of bad decisions).",
+      "Get the VP of Finance and Head of Operations into the next session, framed around the Series B board-prep angle."
+    ]
+  },
+  "manager_notes": "High-quality discovery rep; the gap is consistently at the close, not the open. Coaching to 'always leave with a calendared multi-stakeholder next step' would likely move several deals. Strong, dated compelling event here (Series B, end of Q3) — worth inspecting in the forecast."
+}

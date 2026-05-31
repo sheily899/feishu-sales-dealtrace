@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/rubric_report.schema.json",
+  "title": "RubricReport",
+  "description": "Output of scoring a deal or account against a rubric (schemas/rubric.schema.json), aggregating across many calls. Used for both deal-health (sales) and account-health (CSM). Evidence references the calls it was drawn from.",
+  "type": "object",
+  "required": ["schema_version", "kind", "subject", "overall_score", "band", "risk", "dimensions", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "kind": { "type": "string", "enum": ["deal-health", "account-health"] },
+    "subject": {
+      "type": "object",
+      "description": "What is being scored.",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": ["string", "null"], "description": "Deal/opportunity id or account id (e.g. CRM record id)." },
+        "name": { "type": "string", "description": "e.g. 'Acme Corp — Northstar Platform'." },
+        "owner": { "type": ["string", "null"], "description": "Rep or CSM who owns it." },
+        "amount": { "type": ["number", "null"] },
+        "stage": { "type": ["string", "null"] },
+        "close_or_renewal_date": { "type": ["string", "null"] },
+        "call_count": { "type": ["integer", "null"], "description": "How many calls fed this score." }
+      }
+    },
+    "overall_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "band": { "type": "string", "description": "e.g. strong/promising/at-risk/long-shot or healthy/stable/at-risk/critical." },
+    "risk": { "type": "string", "description": "Risk label from the rubric's risk_bands (e.g. low/medium/high)." },
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dimension_id", "dimension_name", "score", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "dimension_id": { "type": "string" },
+          "dimension_name": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "weight": { "type": "number" },
+          "rationale": { "type": "string" },
+          "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "description": "Surfaced red flags (from dimension risk_flags or judgment), prioritized.",
+      "items": {
+        "type": "object",
+        "required": ["title", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string" },
+          "detail": { "type": "string" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low"] },
+          "dimension_id": { "type": "string" },
+          "evidence": { "type": "array", "items": { "$ref": "#/$defs/evidence" } }
+        }
+      }
+    },
+    "recommended_actions": {
+      "type": "array",
+      "description": "Concrete next moves to improve the score / reduce risk, prioritized.",
+      "items": {
+        "type": "object",
+        "required": ["action"],
+        "additionalProperties": false,
+        "properties": {
+          "action": { "type": "string" },
+          "why": { "type": "string" },
+          "owner": { "type": "string" },
+          "priority": { "type": "string", "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "summary": { "type": "string", "description": "2-4 sentences a manager reads in 15 seconds." },
+    "trend": {
+      "type": ["string", "null"],
+      "enum": ["improving", "flat", "declining", null],
+      "description": "Direction across the call history, if inferable."
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "call_id": { "type": "string", "description": "Which call this came from." },
+        "speaker": { "type": "string" },
+        "text": { "type": "string" }
+      }
+    }
+  }
+}

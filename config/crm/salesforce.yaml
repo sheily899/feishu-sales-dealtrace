@@ -1,0 +1,44 @@
+# Salesforce mapping. Custom fields use the __c suffix convention. Create these
+# custom fields in your org (or rename to your existing ones). Conforms to
+# schemas/crm_mapping.schema.json
+crm: salesforce
+description: >
+  Writes call coaching to Tasks and opportunity/account health to Opportunity and
+  Account custom fields. Pair with the salesforce writer (needs an access token).
+
+objects:
+  - source: coaching_report
+    object: Task
+    id_field: metadata.salesforce_task_id
+    fields:
+      - { crm_field: Subject, from: "GTM Superintelligence: {{classification.call_type}} ({{overall_score}})" }
+      - { crm_field: GTMSI_Call_Type__c, from: classification.call_type, transform: title_case }
+      - { crm_field: GTMSI_Score__c, from: overall_score, transform: round }
+      - { crm_field: Description, from: summary }
+      - { crm_field: GTMSI_Next_Steps__c, from: coaching.next_call_focus, transform: join_lines }
+
+  - source: deal_report
+    object: Opportunity
+    id_field: subject.id
+    fields:
+      - { crm_field: GTMSI_Deal_Health__c, from: overall_score, transform: round }
+      - { crm_field: GTMSI_Deal_Band__c, from: band, transform: title_case }
+      - { crm_field: GTMSI_Deal_Risk__c, from: risk, transform: title_case }
+      - { crm_field: GTMSI_Deal_Summary__c, from: summary }
+      - { crm_field: GTMSI_Top_Risks__c, from: risks, transform: join_lines }
+      - { crm_field: GTMSI_Next_Actions__c, from: recommended_actions, transform: join_lines }
+      # MEDDPICC-style coverage fields, pulled from named deal dimensions.
+      - { crm_field: MEDDPICC_Metrics__c, from: dimensions.pain_and_impact.rationale }
+      - { crm_field: MEDDPICC_Economic_Buyer__c, from: dimensions.economic_buyer.rationale }
+      - { crm_field: MEDDPICC_Champion__c, from: dimensions.champion.rationale }
+      - { crm_field: MEDDPICC_Decision_Process__c, from: dimensions.decision_process.rationale }
+
+  - source: account_report
+    object: Account
+    id_field: subject.id
+    fields:
+      - { crm_field: GTMSI_Account_Health__c, from: overall_score, transform: round }
+      - { crm_field: GTMSI_Account_Band__c, from: band, transform: title_case }
+      - { crm_field: GTMSI_Churn_Risk__c, from: risk, transform: title_case }
+      - { crm_field: GTMSI_Account_Summary__c, from: summary }
+      - { crm_field: GTMSI_Open_Risks__c, from: risks, transform: join_lines }

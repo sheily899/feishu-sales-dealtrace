@@ -1,0 +1,88 @@
+{
+  "id": "AGTContentGaps01",
+  "created": "2025-10-21T16:24:59.008Z",
+  "updated": "2025-10-21T16:24:59.008Z",
+  "name": "Content Gaps",
+  "description": "Identifies prospect questions and objections that reps struggle to answer, delivering weekly team summaries highlighting content and training gaps for enablement teams.",
+  "type": "AGENT",
+  "tags": [
+    "Sales Enablement"
+  ],
+  "signals": [
+    "content gap",
+    "training gap",
+    "unanswered questions",
+    "rep struggles",
+    "enablement",
+    "FAQ",
+    "sales content",
+    "missing content",
+    "training needs"
+  ],
+  "detectorPrompt": "Trigger if the user wants to find questions that sales reps cannot answer, identify missing sales content, or discover training and enablement gaps.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Content Gaps",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "search_calls": {
+            "displayName": "Search Calls",
+            "generic_action": "search_calls"
+          },
+          "ask_attention": {
+            "displayName": "Ask Attention",
+            "generic_action": "analyze_calls"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_week": {
+            "timezone": "UTC",
+            "displayName": "Every Week"
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "Purpose\n\nThis agent identifies prospect questions or objections that reps struggle to answer during calls and delivers a weekly team summary highlighting content and training gaps.\nIt helps Marketing, Product Marketing, and Enablement teams prioritize new content, FAQs, and playbook updates.\n\nBehavior\n\nTriggers automatically once per week (e.g., Friday morning).\n\nAnalyzes recent conversation transcripts and rep responses to detect moments of hesitation, uncertainty, or incomplete answers.\n\nFlags topics that appear frequently unanswered or inconsistently addressed.\n\nSummarizes these insights in a concise, structured team message organized by theme, question frequency, and recommended enablement actions.\n\nMaintains a constructive and collaborative tone focused on improvement, not performance criticism.\n\nProcedure\n\nInput Sources:\n\nyour call recorder conversation analyses (transcripts, Q&A sections, rep confidence indicators).\n\nConversation metadata (account, product line, rep name, sentiment).\n\nOptional CRM fields or team feedback tags (e.g., \"content_needed\", \"training_gap\").\n\nAnalysis Steps:\n\nIdentify all prospect or customer questions during the week.\n\nDetect rep uncertainty signals (e.g., filler language, topic deflection, low-confidence markers).\n\nCluster recurring question topics (e.g., pricing model, integrations, implementation timelines).\n\nScore each topic by frequency and impact (how often it appears and whether it influences deal outcomes).\n\nRecommend specific enablement or content actions (new one-pager, updated FAQ, product demo snippet, internal training).\n\nOutput Format (Team Message):\n\n📚 *Weekly Content Gap Report* — Week of {date_range}\n\n❓ *Frequently Asked (Unanswered) Questions*\n1. \"Does your platform integrate with {tool}?\" — Mentioned 8×, reps showed uncertainty\n   💡 *Recommendation:* Create quick integration explainer + demo clip\n\n2. \"How do you compare to {competitor} in onboarding speed?\" — Mentioned 5×\n   💡 *Recommendation:* Add side-by-side onboarding visual in battlecard\n\n⚙️ *Training Needs Observed*\n• Reps unsure about pricing flexibility\n• Inconsistent messaging around API capabilities\n\n🧩 *Suggested Actions:*\n- Update sales enablement deck with integration slides\n- Host 15-min \"Pricing Confidence\" micro-training next week\n\n🗂️ *Source:* your call recorder call analyses across all reps, {week_range}\n\nNEVER use double stars, only single stars in the message.\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "weekly, Monday 08:00",
+    "cron": "0 8 * * 1"
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

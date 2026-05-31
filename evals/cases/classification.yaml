@@ -1,0 +1,24 @@
+# Labeled cases for the call-type classifier eval.
+# Each case points at a transcript (relative to the repo root) and the expected
+# call_type id. Add your own cases here — the more diverse, the better the signal.
+# Paths are relative to the repo root.
+cases:
+  - transcript: examples/transcripts/discovery_acme.txt
+    expected_call_type: discovery
+    expected_phase: pre-sales
+    note: Scheduled first conversation, mostly open questioning.
+
+  - transcript: examples/transcripts/demo_globex.vtt
+    expected_call_type: demo
+    expected_phase: pre-sales
+    note: Screen-share walkthrough with a champion and a technical skeptic.
+
+  - transcript: examples/transcripts/cold_call_hooli.txt
+    expected_call_type: cold-call
+    expected_phase: pre-sales
+    note: First-touch outbound; the ask is a meeting, not a sale.
+
+  - transcript: examples/transcripts/renewal_initech.json
+    expected_call_type: renewal
+    expected_phase: post-sales
+    note: Existing customer, contract event + budget in focus.

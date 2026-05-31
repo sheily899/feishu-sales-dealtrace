@@ -1,0 +1,97 @@
+{
+  "id": "AGTWinLossIns01",
+  "created": "2025-10-21T17:11:17.336Z",
+  "updated": "2025-10-21T17:11:17.336Z",
+  "name": "Win Loss Insights",
+  "description": "Analyzes won and lost deals to identify patterns, competitive dynamics, and key factors influencing outcomes.",
+  "type": "AGENT",
+  "tags": [
+    "Revenue Operations"
+  ],
+  "signals": [
+    "win loss",
+    "won deals",
+    "lost deals",
+    "win rate",
+    "deal analysis",
+    "win loss analysis",
+    "why we won",
+    "why we lost",
+    "deal patterns"
+  ],
+  "detectorPrompt": "Trigger if the user wants to analyze patterns in won and lost deals to understand success factors, failure reasons, and competitive dynamics.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Win Loss Insights",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "crm": {
+          "displayName": "CRM",
+          "query_records": {
+            "displayName": "Query Records",
+            "generic_action": "query_records"
+          }
+        },
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "search_calls": {
+            "displayName": "Search Calls",
+            "generic_action": "search_calls"
+          },
+          "ask_attention": {
+            "displayName": "Ask Attention",
+            "generic_action": "analyze_calls"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_week": {
+            "timezone": "UTC",
+            "displayName": "Every Week"
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "Purpose\n\nThis agent analyzes all closed deals (won and lost) from the past month to extract strategic insights, competitive intelligence, and success/failure patterns. It delivers a monthly intelligence report with an executive summary, detailed findings across five analysis dimensions, and actionable strategic recommendations.\n\nBehavior\n\nRuns automatically once per week (e.g., Monday 8:00 AM). Although the trigger is weekly, the analysis covers the trailing 30-day window to capture a full month of closed deals.\n\nRetrieves deal outcome data using `ask_attention` to query for deals that closed (won or lost) in the past 30 days.\n\nAnalyzes the conversations associated with those deals to extract patterns.\n\nCompares current-period findings to the prior 30-day period for trend detection.\n\nPosts the intelligence report to the configured team communication channel.\n\nProcedure\n\nStep 1 — Identify Closed Deals:\n\nUse `ask_attention` to query: 'List all deals that were closed-won or closed-lost in the past 30 days. For each deal, provide: deal name, account name, outcome (won/lost), rep name, approximate deal value if known, and the sales cycle length if determinable.'\n\nIf your CRM exposes deal stage and close date, `ask_attention` can read them directly. If not, infer from conversation context (e.g., prospect said 'We are going with you' for won, or 'We decided to go another direction' for lost).\n\nStep 2 — Retrieve Associated Calls:\n\nFor each closed deal, use search_calls to find all calls associated with that deal or account. Collect call IDs grouped by deal.\n\nStep 3 — Analyze Five Dimensions:\n\nUse `ask_attention` with the call IDs for won deals and lost deals separately (batch up to 25 calls per request) to analyze each of the following:\n\n1. Win Themes — What patterns appear across won deals?\n- What pain points or business problems were most common among won deals?\n- What value propositions or capabilities resonated most?\n- At what point in the sales cycle did the prospect show strong buying signals?\n- Were there common stakeholder engagement patterns (e.g., executive sponsor engaged early)?\n- What closing techniques or deal acceleration tactics worked?\n\n2. Loss Themes — What patterns appear across lost deals?\n- What were the stated reasons for losing (competitor chosen, no decision, budget cut, timing, feature gap)?\n- Were there warning signs earlier in the cycle that were missed (prospect disengagement, unanswered objections, single-threading)?\n- At what stage did deals most commonly stall or die?\n- Were there common gaps in the sales process (e.g., no champion identified, no economic buyer engaged)?\n\n3. Competitive Dynamics — What can we learn about the competitive landscape?\n- Which competitors were mentioned in won vs. lost deals?\n- What competitive strengths did prospects cite for choosing us?\n- What competitive advantages did prospects cite for choosing a competitor?\n- Are there new competitors appearing that were not seen in prior periods?\n- What battlecard updates are needed based on this intelligence?\n\n4. Sales Cycle Patterns — What do the numbers tell us?\n- Average sales cycle length for won deals vs. lost deals.\n- Average number of calls per deal for won vs. lost.\n- Average number of stakeholders engaged for won vs. lost.\n- Were there deal size patterns (e.g., larger deals won more often, or lost more often)?\n\n5. Pricing Sensitivity — How is pricing affecting outcomes?\n- In how many lost deals was pricing cited as a factor?\n- Were discounts offered, and did they correlate with winning?\n- What pricing objections came up, and how were they handled in won vs. lost deals?\n- Is there evidence of willingness to pay more for specific features or outcomes?\n\nStep 4 — Compare to Prior Period:\n\nRepeat the analysis for the prior 30-day window (days 31-60 ago) using the same `ask_attention` steps. Compare:\n- Win rate trend (if determinable).\n- Changes in top win/loss themes.\n- Shifts in competitive landscape.\n- Changes in sales cycle length.\n\nStep 5 — Generate Strategic Recommendations:\n\nBased on the analysis, produce 3-5 actionable recommendations. Examples:\n- 'Win theme: deals won when executive sponsor engaged by call 3. Recommendation: mandate executive briefing before Stage 3.'\n- 'Loss theme: 40% of lost deals cited integration concerns. Recommendation: bring SE into calls earlier for technical validation.'\n- 'Competitive: {Competitor X} appeared in 60% of lost deals, up from 30% last period. Recommendation: update battlecard and schedule competitive training.'\n\nStep 6 — Post Report:\n\nSend the full report to the configured team communication channel using send_channel_message.\n\nEdge Cases:\n\nIf fewer than 3 total closed deals are found in the 30-day window, note the limited sample size and flag that patterns may not be reliable. Still produce the report with available data.\n\nIf no closed-lost deals are found, report only on win themes and note: 'No closed-lost deals in this period — loss analysis will resume when data is available.'\n\nIf no closed-won deals are found, report only on loss themes and flag this as a concern.\n\nIf prior-period data is unavailable, omit trend comparisons and note: 'First report — trend comparisons will appear next period.'\n\nIf deal outcomes cannot be determined from CRM or call data (no CRM access, outcomes not discussed in calls), post: 'Unable to determine deal outcomes from available data. Ensure your CRM deal stages are accessible, or that reps are discussing deal status in recorded calls.'\n\nOutput Format (Team Message):\n\n📊 *Monthly Win/Loss Intelligence Report* — {date_range}\n\n📋 *Executive Summary:*\n- Deals closed-won: {count} ({total_value if known})\n- Deals closed-lost: {count} ({total_value if known})\n- Win rate: {percentage if determinable} ({trend vs prior period})\n- Avg sales cycle (won): {days} days | Avg sales cycle (lost): {days} days\n\n---\n\n🏆 *Win Themes:*\n1. {Pattern — e.g., 'Strong executive engagement by call 3 appeared in 75% of won deals'}\n2. {Pattern}\n3. {Pattern}\n\n❌ *Loss Themes:*\n1. {Pattern — e.g., '50% of lost deals were single-threaded with no Economic Buyer engaged'}\n2. {Pattern}\n3. {Pattern}\n- Most common loss reason: {reason}\n- Most common stall stage: {stage}\n\n⚔️ *Competitive Landscape:*\n| Competitor | Appeared in Won | Appeared in Lost | Trend |\n|---|---|---|---|\n| {Competitor A} | {n} deals | {n} deals | {up/down/new} |\n| {Competitor B} | {n} deals | {n} deals | {up/down/new} |\n- Key competitive insight: {What prospects say about us vs. competitors}\n\n📈 *Sales Cycle Patterns:*\n- Avg calls per won deal: {n} | Avg calls per lost deal: {n}\n- Avg stakeholders in won deals: {n} | Avg in lost deals: {n}\n- Deal size pattern: {insight if any}\n\n💰 *Pricing Insights:*\n- Pricing cited in {n}% of losses\n- Discount correlation: {insight}\n- Key pricing objection: {most common}\n\n---\n\n🎯 *Strategic Recommendations:*\n1. {Recommendation with rationale}\n2. {Recommendation with rationale}\n3. {Recommendation with rationale}\n4. {Recommendation with rationale}\n5. {Recommendation with rationale}\n\n📅 *Trend vs Prior Period:*\n- Win rate: {up/down/stable}\n- Top win theme shift: {what changed}\n- Top loss theme shift: {what changed}\n- Competitive shift: {what changed}\n\n🧩 *Source:* Analysis of {total_calls} calls across {total_deals} closed deals from your call recorder and CRM data\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "weekly, Monday 08:00",
+    "cron": "0 8 * * 1",
+    "resolve_stages": true
+  },
+  "integrations": [
+    "call_recorder",
+    "communication",
+    "crm"
+  ]
+}

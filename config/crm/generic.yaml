@@ -1,0 +1,42 @@
+# Generic CRM mapping — the vendor-neutral template. Copy this and rename the
+# crm_field values to your CRM's actual field API names. Conforms to
+# schemas/crm_mapping.schema.json
+#
+# `from` is a dotted path into a GTM Superintelligence report, or a {{template}} of such paths.
+# `id_field` says where to find the CRM record id to update.
+crm: generic
+description: Neutral template mapping GTM Superintelligence reports to CRM fields. Customize field names.
+
+objects:
+  # Per-call coaching -> an activity/note + a couple of call fields.
+  - source: coaching_report
+    object: Activity
+    id_field: metadata.activity_id
+    fields:
+      - { crm_field: call_type, from: classification.call_type, transform: title_case }
+      - { crm_field: call_score, from: overall_score, transform: round }
+      - { crm_field: call_summary, from: summary }
+      - { crm_field: next_steps, from: coaching.next_call_focus, transform: join_lines }
+
+  # Opportunity-level health from the deal report.
+  - source: deal_report
+    object: Opportunity
+    id_field: subject.id
+    fields:
+      - { crm_field: deal_health_score, from: overall_score, transform: round }
+      - { crm_field: deal_health_band, from: band, transform: title_case }
+      - { crm_field: deal_risk, from: risk, transform: title_case }
+      - { crm_field: deal_health_summary, from: summary }
+      - { crm_field: top_risks, from: risks, transform: join_lines }
+      - { crm_field: recommended_actions, from: recommended_actions, transform: join_lines }
+
+  # Account-level health from the account report (CSM).
+  - source: account_report
+    object: Account
+    id_field: subject.id
+    fields:
+      - { crm_field: account_health_score, from: overall_score, transform: round }
+      - { crm_field: account_health_band, from: band, transform: title_case }
+      - { crm_field: churn_risk, from: risk, transform: title_case }
+      - { crm_field: account_health_summary, from: summary }
+      - { crm_field: open_risks, from: risks, transform: join_lines }

@@ -1,0 +1,183 @@
+# MEDDPICC — enterprise qualification framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: meddpicc
+name: MEDDPICC
+acronym: MEDDPICC
+origin: >
+  MEDDIC was created at PTC (Parametric Technology Corporation) in the 1990s by
+  Jack Napoli and Dick Dunkel. MEDDPICC is the widely-adopted extension that adds
+  Paper Process and Competition.
+summary: >
+  A rigorous enterprise qualification framework that interrogates every deal across
+  eight dimensions: Metrics, Economic Buyer, Decision Criteria, Decision Process,
+  Paper Process, Identify Pain, Champion, and Competition. Designed for complex,
+  multi-stakeholder deals where incomplete qualification is the leading cause of
+  forecast misses and late-stage surprises.
+best_for: [discovery, technical-validation, go-no-go, negotiation, closing]
+
+elements:
+  - id: metrics
+    name: Metrics
+    question: What quantified outcomes will the economic buyer use to justify and measure success?
+    why_it_matters: >
+      Numbers create urgency and give a champion the business case they need to
+      sell internally. Without metrics, ROI conversations stay theoretical and
+      procurement pushes back on price.
+    good_signals:
+      - "A specific, agreed-upon number (dollars saved, hours reclaimed, deals closed) is on the table."
+      - "Rep can articulate the ROI model in the buyer's language."
+      - "Metrics are tied to a business outcome the economic buyer owns."
+    missing_signals:
+      - "Value is described qualitatively ('it will help the team') without figures."
+      - "Rep has not asked what success looks like six months post-deployment."
+    example_questions:
+      - "How does your team measure success for an initiative like this today?"
+      - "If we solve this, what does a good outcome look like in numbers — revenue, cost, time?"
+      - "What ROI threshold would the CFO need to see to approve this without friction?"
+      - "What would a 10% improvement here mean in actual dollars this year?"
+
+  - id: economic_buyer
+    name: Economic Buyer
+    question: Who has the budget authority to say yes — and have we spoken to them?
+    why_it_matters: >
+      Every deal has one person who can unilaterally approve spend. Selling only to
+      champions who cannot sign off creates an illusion of momentum that collapses
+      at the last stage.
+    good_signals:
+      - "Economic buyer is identified by name and title, not just 'someone in finance'."
+      - "Rep has had at least one direct conversation with the economic buyer."
+      - "Economic buyer's priorities and concerns are understood."
+    missing_signals:
+      - "Rep is only talking to a champion who says 'I'll handle the approval'."
+      - "Economic buyer's name and role are unknown or assumed."
+    example_questions:
+      - "Who ultimately signs off on this level of investment — is that you, or someone above you?"
+      - "What does the approval process look like once we reach a commercial agreement?"
+      - "Has your CFO or VP of Finance been briefed on this initiative yet?"
+      - "What are the two or three things the economic buyer will want answered before approving?"
+
+  - id: decision_criteria
+    name: Decision Criteria
+    question: What criteria will the buyer use to evaluate and select a solution?
+    why_it_matters: >
+      Knowing the criteria lets a rep align proof points and steer evaluation in
+      favorable directions. Reps who let criteria stay implicit lose to whoever
+      shapes them first.
+    good_signals:
+      - "Criteria are explicit, ranked, and written down (RFP, scorecard, or shared list)."
+      - "Rep has influenced at least one criterion to reflect a differentiating strength."
+      - "Technical, commercial, and strategic criteria are all surfaced."
+    missing_signals:
+      - "Rep assumes criteria are standard and hasn't asked."
+      - "Criteria were set before rep engaged and have not been revisited."
+    example_questions:
+      - "If you had to score three vendors side by side, what categories would you grade us on?"
+      - "Are there non-negotiable requirements that would disqualify a vendor outright?"
+      - "Which criterion is most important to your team versus which matters most to the economic buyer?"
+      - "Has your team documented these criteria somewhere we could review together?"
+
+  - id: decision_process
+    name: Decision Process
+    question: What are the specific steps, owners, and sequence needed to reach a signed agreement?
+    why_it_matters: >
+      Deals stall when reps don't understand the internal gauntlet. Mapping each step
+      turns a vague 'we'll decide soon' into a concrete mutual action plan with dates.
+    good_signals:
+      - "Rep can name every step from evaluation to signature."
+      - "Each step has an owner and an approximate date."
+      - "Rep is proactively working the process rather than waiting on the buyer."
+    missing_signals:
+      - "Process ends at 'they'll let us know' with no clear next milestone."
+      - "Key internal steps (legal review, security review, board approval) are unknown."
+    example_questions:
+      - "Walk me through every step your team goes through from shortlist to signature."
+      - "Who needs to be satisfied at each stage, and what does 'satisfied' look like for them?"
+      - "Have you done a purchase like this before? What slowed it down last time?"
+      - "After the technical evaluation, what happens next before legal gets involved?"
+
+  - id: paper_process
+    name: Paper Process
+    question: What is the legal, procurement, and security review process that must run before a contract is executed?
+    why_it_matters: >
+      Paper process is where deals go to die in the final stretch. Legal redlines,
+      security questionnaires, and procurement rituals add weeks of unforecasted time.
+      Identifying them early prevents quarter-end shocks.
+    good_signals:
+      - "Rep knows whether procurement, legal, and security reviews are required and in what sequence."
+      - "Rep has confirmed whether standard terms are acceptable or heavy negotiation is expected."
+      - "Security and compliance questionnaires have been submitted early."
+    missing_signals:
+      - "Rep assumes procurement is straightforward and hasn't asked."
+      - "Vendor security review or GDPR/SOC 2 requirements haven't been discussed."
+    example_questions:
+      - "Once we agree on commercial terms, what does the paper process look like — legal, security, procurement?"
+      - "Does your legal team typically redline vendor MSAs, or do you use a standard process?"
+      - "Is there a security or compliance review we should start now to avoid delays at the end?"
+      - "Roughly how long has this process taken for similar-sized purchases in the past?"
+
+  - id: identify_pain
+    name: Identify Pain
+    question: What is the specific, quantified pain that is forcing a change now?
+    why_it_matters: >
+      Pain is the fuel of every deal. Without a burning, owned, time-sensitive problem,
+      budget is reallocated and decisions slip. Surfacing and confirming pain prevents
+      deals built on lukewarm interest from entering the forecast.
+    good_signals:
+      - "Pain is stated in the buyer's words, not paraphrased by the rep."
+      - "Pain is ranked as a top priority, not a nice-to-fix."
+      - "A named stakeholder owns the pain and its resolution."
+    missing_signals:
+      - "Pain is vague ('we could be more efficient') with no specific broken scenario."
+      - "No single person owns the problem — it's everyone's and therefore no one's."
+    example_questions:
+      - "Tell me the specific moment this breaks down for your team — what actually happens?"
+      - "Of every initiative your team is running this quarter, where does fixing this rank?"
+      - "Who within the organization feels this pain most acutely — and who's accountable for fixing it?"
+      - "What does it cost you every month while this stays unsolved?"
+
+  - id: champion
+    name: Champion
+    question: Is there an internal advocate with influence and personal motivation who is actively selling for us?
+    why_it_matters: >
+      A champion is not just a friendly contact — they are someone who loses something
+      if this doesn't get bought. Without a true champion, the deal has no internal voice
+      when the rep is not in the room.
+    good_signals:
+      - "Champion has voluntarily shared internal documents, org charts, or political context."
+      - "Champion has arranged introductions to the economic buyer or skeptics."
+      - "Champion has a personal, visible stake in the outcome (career, bonus, department outcome)."
+    missing_signals:
+      - "No single person is consistently driving the evaluation forward internally."
+      - "Contact is friendly but passive — hasn't fought for budget or time on anyone's calendar."
+    example_questions:
+      - "Who inside your organization is the most vocal advocate for solving this — and why do they care?"
+      - "If this initiative stalled, who would feel the most pain? Would they push to restart it?"
+      - "Is there anything I can prepare to help you make the case internally?"
+      - "What's in it for you personally if this project succeeds?"
+
+  - id: competition
+    name: Competition
+    question: Who else is being evaluated, what are their perceived strengths, and how does the buyer's team compare us?
+    why_it_matters: >
+      Understanding the competitive field lets reps reinforce differentiation and
+      neutralize threats before they crystallize into objections. Reps who ignore
+      competition get blindsided in the final evaluation.
+    good_signals:
+      - "Rep knows which vendors are on the shortlist by name."
+      - "Rep understands what each competitor is positioned as strong on in this buyer's mind."
+      - "Rep has proactively addressed the competitor's likely strongest argument."
+    missing_signals:
+      - "Rep assumes the only competition is the status quo."
+      - "Rep hasn't asked whether other vendors were invited into the evaluation."
+    example_questions:
+      - "Are you evaluating anyone else alongside us, or are we the primary vendor you're looking at?"
+      - "When you picture the ideal solution, what does the vendor who wins look like?"
+      - "Where do you think other options you've seen are stronger than what we've shown you?"
+      - "Have you worked with any of our competitors before? What was that experience like?"
+
+further_reading:
+  - title: "MEDDICC — The Book by Andy Whyte"
+    url: "https://meddicc.com/meddicc-book"
+  - title: "Winning with MEDDPICC (Jack Napoli, PTC origin)"
+    url: "https://www.meddicc.com/medpicc"

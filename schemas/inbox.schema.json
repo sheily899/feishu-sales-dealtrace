@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/inbox.schema.json",
+  "title": "CoachingInbox",
+  "description": "A prioritized 'what to improve' digest computed by aggregating many call coaching reports. Scoped to a rep, a team, or the whole company. The rep inbox is what a seller opens each morning; the team/company inboxes are what managers and enablement use to direct coaching.",
+  "type": "object",
+  "required": ["schema_version", "scope", "generated_for", "period", "focus_areas"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "scope": { "type": "string", "enum": ["rep", "team", "company"] },
+    "generated_for": { "type": "string", "description": "Rep name, team name, or 'company'." },
+    "period": { "type": "string", "description": "e.g. '2026-05-23..2026-05-30' or 'last 20 calls'." },
+    "stats": {
+      "type": "object",
+      "description": "Roll-up metrics over the period.",
+      "additionalProperties": true,
+      "properties": {
+        "calls_analyzed": { "type": "integer" },
+        "avg_overall_score": { "type": ["number", "null"] },
+        "by_call_type": { "type": "object", "additionalProperties": { "type": "integer" } }
+      }
+    },
+    "focus_areas": {
+      "type": "array",
+      "description": "Prioritized improvement themes. For a rep these are personal habits; for a team/company they aggregate across people.",
+      "items": {
+        "type": "object",
+        "required": ["title", "priority", "evidence_count"],
+        "additionalProperties": false,
+        "properties": {
+          "criterion_id": { "type": ["string", "null"], "description": "The criterion this theme maps to, when applicable." },
+          "title": { "type": "string", "description": "e.g. 'Close on a calendared next step'." },
+          "detail": { "type": ["string", "null"], "description": "What the pattern is and why it matters." },
+          "priority": { "type": "string", "enum": ["high", "medium", "low"] },
+          "evidence_count": { "type": "integer", "description": "How many calls exhibited this." },
+          "avg_score": { "type": ["number", "null"], "description": "Average score on the related criterion over the period." },
+          "trend": { "type": ["string", "null"], "enum": ["improving", "flat", "declining", null] },
+          "example_calls": { "type": "array", "items": { "type": "string" }, "description": "Call ids/titles illustrating it." },
+          "drill": { "type": ["string", "null"], "description": "A concrete practice rep/manager can run, or a 'better move' to rehearse." },
+          "affected_reps": { "type": "array", "items": { "type": "string" }, "default": [], "description": "For team/company scope: who shows this pattern." }
+        }
+      }
+    },
+    "wins": {
+      "type": "array",
+      "description": "Positive patterns worth reinforcing (keep doing this).",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string" },
+          "detail": { "type": ["string", "null"] },
+          "evidence_count": { "type": "integer" }
+        }
+      }
+    },
+    "members": {
+      "type": "array",
+      "description": "For team/company scope: a per-rep (or per-team) summary line.",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "calls_analyzed": { "type": "integer" },
+          "avg_overall_score": { "type": ["number", "null"] },
+          "top_focus": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

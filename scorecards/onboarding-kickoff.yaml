@@ -1,0 +1,179 @@
+# Onboarding Kickoff scorecard — coaching rubric for the first post-sale working session.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Next-Steps). Fork it and tune the criteria/weights for your business.
+id: onboarding-kickoff
+name: Onboarding / Kickoff
+version: "1.0"
+description: >
+  Evaluates how well the CS or implementation rep aligned on goals and success
+  metrics, established a clear rollout plan, clarified roles and ownership,
+  defined the path to first value, identified the internal champion, and
+  set expectations for the relationship ahead.
+applies_to: [onboarding-kickoff]
+frameworks: [next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: goals_and_success_metrics
+    name: Goals & Success Metrics
+    weight: 2
+    intent: >
+      Customers who start without defined success metrics drift; those who agree
+      on metrics upfront have a shared benchmark that drives adoption and renewal.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep opens by asking the customer what success looks like at 30, 60, and 90 days."
+      - "Goals are specific and measurable, not vague aspirations ('improved efficiency')."
+      - "Success metrics are agreed in writing and referenced throughout the call."
+    what_poor_looks_like:
+      - "Rep presents a generic success framework without asking the customer to validate or personalise it."
+      - "Goals remain at the level of 'get up and running' without quantified outcomes."
+      - "No written success criteria exist at the end of the call."
+    evidence_cues:
+      - "\"What does a successful first 90 days look like for your team — specifically?\""
+      - "\"If we're on this call in three months and you're thrilled, what will have changed?\""
+    coaching_prompts:
+      - "Can you show me the written success metrics agreed on this call? Where do they live?"
+      - "How did the customer's definition of success differ from what the sales team promised?"
+
+  - id: rollout_plan_and_timeline
+    name: Rollout Plan & Timeline
+    weight: 2
+    intent: >
+      A clear rollout plan with milestones and dates converts excitement at
+      kickoff into structured progress rather than stalled adoption.
+    framework_refs: [next-steps.specific_action, next-steps.committed_date]
+    what_great_looks_like:
+      - "A phased rollout plan with milestones, dates, and owners is reviewed and agreed on the call."
+      - "Rep and customer agree on which team or use case to start with and why."
+      - "Timeline is realistic — rep does not overpromise speed to please the customer."
+    what_poor_looks_like:
+      - "No rollout plan exists; implementation will 'figure itself out.'"
+      - "Timeline is dictated by the vendor without input from the customer's constraints."
+      - "Milestones are defined but have no owners or dates."
+    evidence_cues:
+      - "\"Here's the phase-one plan — does the timeline work given what's on your plate right now?\""
+      - "\"Which team do you want to start with, and why does that make sense as the first rollout group?\""
+    coaching_prompts:
+      - "Is the rollout plan written down and shared with the customer? What happens if the timeline slips?"
+      - "Did the customer flag any constraints (bandwidth, competing projects) that will affect the plan?"
+
+  - id: roles_and_ownership
+    name: Roles & Ownership
+    weight: 1.5
+    intent: >
+      Ambiguous ownership is the most common cause of implementation stalls;
+      naming a single owner on each side for each workstream prevents gaps.
+    framework_refs: [next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep introduces the full post-sale team and explains each person's role."
+      - "Rep asks the customer to name their internal project owner and any other key contacts."
+      - "A RACI or equivalent ownership map is discussed and agreed."
+    what_poor_looks_like:
+      - "Rep is the only contact mentioned; customer does not know who else to call for technical issues."
+      - "Customer's internal owner is not identified; tasks are assigned to 'the team.'"
+      - "Roles are introduced verbally with no written record or follow-up."
+    evidence_cues:
+      - "\"Who is your point person for this rollout — and who should we involve for technical setup?\""
+      - "\"On our side, [name] owns [area] and [name] is your technical contact for [area].\""
+    coaching_prompts:
+      - "Who is the customer's internal project owner, and did they confirm they have bandwidth for this?"
+      - "Did any roles or responsibilities seem unclear after the call? How will you resolve that?"
+
+  - id: path_to_first_value
+    name: Path to First Value
+    weight: 2
+    intent: >
+      Time-to-first-value is the strongest predictor of long-term retention;
+      defining a quick win in the first two to four weeks creates momentum and
+      proves the product delivers before the novelty wears off.
+    framework_refs: [next-steps.committed_date, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep explicitly identifies one high-impact, low-effort use case to deliver value within the first few weeks."
+      - "First-value milestone is agreed and calendared as a check-in moment."
+      - "Customer can articulate what 'first value' will look like for their team."
+    what_poor_looks_like:
+      - "Rollout plan jumps straight to full deployment without identifying an early win."
+      - "First value is only possible after months of setup, with no interim milestone."
+      - "Rep does not define first value; customer discovers what it means on their own."
+    evidence_cues:
+      - "\"What's the one thing, if it worked in the first two weeks, that would make your team say 'this was worth it'?\""
+      - "\"Let's prioritise getting you to [first value milestone] before we expand to other use cases.\""
+    coaching_prompts:
+      - "What is the first-value milestone for this customer, and when is it scheduled?"
+      - "How will you know when the customer has reached first value — what does that look like?"
+
+  - id: champion_identification
+    name: Champion Identification
+    weight: 1.5
+    intent: >
+      A strong internal champion drives adoption and advocates for the product
+      when leadership asks whether the investment was worth it.
+    framework_refs: [next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep identifies the person most likely to drive internal adoption and invests in their success."
+      - "Champion's motivations (career, team efficiency, recognition) are understood and acknowledged."
+      - "Rep agrees on how to keep the champion engaged and informed throughout rollout."
+    what_poor_looks_like:
+      - "Rep treats all customer contacts equally with no champion identified."
+      - "Champion is assumed to be whoever signed the contract, not necessarily the most motivated adopter."
+      - "No plan to keep the champion engaged after kickoff."
+    evidence_cues:
+      - "\"Who internally is most excited about this and will help drive adoption across the team?\""
+      - "\"How can we make [champion name] look great to their leadership through this rollout?\""
+    coaching_prompts:
+      - "Who is the internal champion for this customer, and what do they personally gain from a successful rollout?"
+      - "How will you keep the champion engaged and motivated beyond the kickoff call?"
+
+  - id: expectation_setting
+    name: Expectation Setting
+    weight: 1.5
+    intent: >
+      Misaligned expectations are the leading cause of customer dissatisfaction;
+      setting honest, specific expectations at kickoff prevents churn conversations later.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep addresses what the customer should and should not expect in the first 30 days."
+      - "Rep is honest about any constraints, limitations, or dependencies that could affect the timeline."
+      - "Rep explains how issues or questions will be handled (support channels, response times, escalation path)."
+    what_poor_looks_like:
+      - "Rep paints an overly optimistic picture to maintain enthusiasm, setting the customer up for disappointment."
+      - "No mention of what could go wrong or how problems will be handled."
+      - "Customer does not know how to reach support or escalate if something is not working."
+    evidence_cues:
+      - "\"I want to set realistic expectations — here's what you should expect in the first month and what we'll work toward in months two and three.\""
+      - "\"If you ever run into an issue, here's how to reach us: [channel], and you can expect a response within [timeframe].\""
+    coaching_prompts:
+      - "Did you set any expectations that could be hard to meet? How did you handle that?"
+      - "What constraints or risks did you flag on this call, and how did the customer react?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      The kickoff call must end with a specific next action that keeps the
+      rollout moving rather than letting momentum dissipate after the enthusiasm of kickoff.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Next steps for both sides are summarised and confirmed before the call ends."
+      - "At least one near-term check-in or milestone review is calendared on the call."
+      - "Rep confirms the customer's first action and the date by which it should be completed."
+    what_poor_looks_like:
+      - "Call ends with general excitement but no specific next step on either side."
+      - "Follow-up email is sent after the call to assign actions that should have been confirmed live."
+      - "No check-in meeting is booked; rep waits for the customer to reach out."
+    evidence_cues:
+      - "\"Before we wrap, let's confirm what each of us is doing before we speak again.\""
+      - "\"Let's lock in our first check-in for [date] — at that point we should have [milestone] done.\""
+    coaching_prompts:
+      - "What are the customer's specific next actions, and do they know the dates?"
+      - "Is the first check-in calendared? What needs to be true before that meeting to make it productive?"

@@ -1,0 +1,89 @@
+{
+  "id": "AGTPreCallPrep01",
+  "created": "2025-10-21T17:21:27.838Z",
+  "updated": "2025-10-21T17:21:27.838Z",
+  "name": "Pre-Call Prep",
+  "description": "Every morning at 7:30 AM, review the sales rep’s calendar and identify all meetings scheduled for that day between 7:00 AM and 7:00 PM. For each meeting, collect the title, start and end times, meeting link or location, and all attendee names and emails. Use those attendees to identify the people and companies the rep will be meeting with.\n\nThen, check your CRM to see if any of the attendees match a contact, account, or opportunity. If an attendee’s email or company domain matches an account, associate that meeting with that account and the most relevant opportunity. Prefer open opportunities, and if none exist, use the most recent closed one. Once identified, store the associated account and opportunity IDs with the meeting.\n\nNext, look in your call recorder for all prior conversations related to those same accounts or opportunities. Gather summaries of past interactions — no full transcripts, only high-level conversation summaries. Include the following context for each conversation:\n\nThe date and type of interaction (call, meeting, email, or message)\n\nDuration of the meeting (if available)\n\nParticipants and their roles (for example, champion, economic buyer, or technical evaluator)\n\nWhat topics were discussed (pricing, contract terms, product capabilities, security, implementation, ROI, etc.)\n\nAny objections or concerns raised\n\nCompetitor mentions\n\nNext steps or action items that came out of the call\n\nSentiment or tone of the conversation (positive, neutral, negative, uncertain)\n\nThe decision-making clues gathered (such as who influences the deal or who has final authority)\n\nUse this to understand the deal context before today’s meeting — how long the opportunity has been open, the overall stage of the process, and whether the tone is trending positively or negatively.\n\nStore everything in a structured storage bucket, one record per meeting. Each stored record should contain:\n\nMeeting details (title, time, attendees, location or link)\n\nThe matched CRM account and opportunity information (name, stage, amount, close date, forecast category)\n\nKey people and their roles (economic buyer, champion, influencer, end user)\n\nSummaries of the most recent 3–5 conversations from your call recorder\n\nEngagement metrics (meeting count, total minutes, last interaction date, sentiment trend)\n\nOpen items or tasks the rep owes, including due dates or blockers\n\nKnown objections, competitive pressure, or unresolved issues\n\nNotable commitments made by the customer\n\nHelpful resources or documents already shared (decks, proposals, contracts, etc.)\n\nAny timing signals (upcoming renewal dates, budget cycles, procurement steps)\n\nOnce all this data is in storage, have the agent analyze it and generate a detailed pre-call preparation summary for the rep. Each meeting’s section should be rich and practical, showing not just data but context and insight.\n\nFor each meeting, the agent should provide:\n\nA short, human-style TL;DR explaining where the deal or relationship stands and why today’s meeting matters.\n\nAttendee context: who will be on the call, their roles, and what they’ve been involved with so far.\n\nRelationship summary: the account history, how long this relationship has been active, and any major wins or issues from past interactions.\n\nOpportunity context: deal stage, value, close date, forecast category, and any recent changes in amount or timing.\n\nRecent activity recap: what’s happened in the last few interactions, what was agreed on, and whether action items were completed.\n\nRisks or challenges: any red flags or blockers identified in previous calls, such as pricing objections, legal delays, or lack of executive alignment.\n\nCompetitive landscape: if other vendors were mentioned, how this deal compares, and what arguments have been effective so far.\n\nRecommended talking points and focus areas for today: what the rep should aim to accomplish, questions to ask, and decisions to push forward.\n\nStrategic tips: cues for tone, relationship management, or value reinforcement — for example, “Reinforce ROI from pilot results” or “Remind them of onboarding readiness.”\n\nUseful artifacts: which materials to have ready (proposal, security document, ROI deck, case study, etc.).\n\nFinally, send the pre-call briefing to the rep in your team communication tool as a single, clearly structured message. The team message should not use any bold text or markdown symbols (no ** or *). It should be formatted with emojis and clean headings, easy to skim but full of context.\n\nEach meeting in your team communication tool should appear in this general structure:\n\n📅 10:30 AM — Acme Corp\nAttendees: John Doe (CFO), Sarah Green (Director of IT)\nOpportunity: Enterprise renewal — Stage: Negotiation — Amount: $150,000 — Close Date: 2024-11-05\n\nTL;DR: Renewal discussions nearing final terms; pricing and contract structure under review. Sarah requested updated SOC 2 documentation before signing.\n\nRecent Activity:\n\nLast call (Oct 10): discussed contract length and multi-year discount.\n\nEmail follow-up (Oct 13): rep shared revised pricing sheet.\n\nCustomer reviewing redlines; legal feedback pending.\n\nRisks and Challenges:\n\nPotential delay from legal review.\n\nProcurement might request additional security paperwork.\n\nRecommended Focus for Today:\n\nConfirm legal status and expected sign-off date.\n\nReinforce ROI and renewal benefits.\n\nOffer optional onboarding session to show readiness for 2025.\n\nHelpful Materials: Updated pricing proposal, SOC 2 doc, onboarding checklist.\n\nIf multiple meetings are scheduled, list them in chronological order, one detailed block per meeting. If there are no meetings that day, send a simple team message that says:\n“Good morning! You have no customer meetings on your calendar today.”\n\nThe team message should read naturally, use emojis for structure, and avoid all markdown bolding or special formatting. Each section should feel like a personalized prep briefing — short enough to skim quickly, but with enough depth to give the rep real context, risks, and action steps for every conversation.",
+  "type": "AGENT",
+  "tags": [
+    "communication",
+    "crm",
+    "automation"
+  ],
+  "signals": [
+    "pre-call",
+    "call prep",
+    "meeting prep",
+    "briefing",
+    "before meeting",
+    "morning prep",
+    "calendar prep",
+    "daily prep",
+    "preparar llamada",
+    "reunion",
+    "upcoming meetings"
+  ],
+  "detectorPrompt": "Trigger if the user wants to prepare for upcoming calls or meetings with customer context, CRM history, previous conversations, and talking points.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Pre-Call Prep",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_direct_message": {
+            "displayName": "Send Message To A User",
+            "generic_action": "send_direct_message"
+          }
+        },
+        "crm": {
+          "run_query": {
+            "displayName": "Run Query (Advanced)",
+            "generic_action": "query_records"
+          },
+          "displayName": "CRM"
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_day": {
+            "displayName": "Every Day"
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "Every morning at 7:30 AM, review the sales rep's calendar and identify all meetings scheduled for that day between 7:00 AM and 7:00 PM. For each meeting, collect the title, start and end times, meeting link or location, and all attendee names and emails. Use those attendees to identify the people and companies the rep will be meeting with.\n\nThen, check your CRM to see if any of the attendees match a contact, account, or opportunity. If an attendee's email or company domain matches an account, associate that meeting with that account and the most relevant opportunity. Prefer open opportunities, and if none exist, use the most recent closed one. Once identified, store the associated account and opportunity IDs with the meeting.\n\nNext, look in your call recorder for all prior conversations related to those same accounts or opportunities. Gather summaries of past interactions — no full transcripts, only high-level conversation summaries. Include the following context for each conversation:\n\nThe date and type of interaction (call, meeting, email, or message)\n\nDuration of the meeting (if available)\n\nParticipants and their roles (for example, champion, economic buyer, or technical evaluator)\n\nWhat topics were discussed (pricing, contract terms, product capabilities, security, implementation, ROI, etc.)\n\nAny objections or concerns raised\n\nCompetitor mentions\n\nNext steps or action items that came out of the call\n\nSentiment or tone of the conversation (positive, neutral, negative, uncertain)\n\nThe decision-making clues gathered (such as who influences the deal or who has final authority)\n\nUse this to understand the deal context before today's meeting — how long the opportunity has been open, the overall stage of the process, and whether the tone is trending positively or negatively.\n\nFor each meeting record:\n\nMeeting details (title, time, attendees, location or link)\n\nThe matched CRM account and opportunity information (name, stage, amount, close date, forecast category)\n\nKey people and their roles (economic buyer, champion, influencer, end user)\n\nSummaries of the most recent 3–5 conversations from your call recorder\n\nEngagement metrics (meeting count, total minutes, last interaction date, sentiment trend)\n\nOpen items or tasks the rep owes, including due dates or blockers\n\nKnown objections, competitive pressure, or unresolved issues\n\nNotable commitments made by the customer\n\nHelpful resources or documents already shared (decks, proposals, contracts, etc.)\n\nAny timing signals (upcoming renewal dates, budget cycles, procurement steps)\n\nOnce all this data is determined ,analyze it and generate a detailed pre-call preparation summary for the rep. Each meeting's section should be rich and practical, showing not just data but context and insight.\n\nFor each meeting you should provide:\n\nA short, human-style TL;DR explaining where the deal or relationship stands and why today's meeting matters.\n\nAttendee context: who will be on the call, their roles, and what they've been involved with so far.\n\nRelationship summary: the account history, how long this relationship has been active, and any major wins or issues from past interactions.\n\nOpportunity context: deal stage, value, close date, forecast category, and any recent changes in amount or timing.\n\nRecent activity recap: what's happened in the last few interactions, what was agreed on, and whether action items were completed.\n\nRisks or challenges: any red flags or blockers identified in previous calls, such as pricing objections, legal delays, or lack of executive alignment.\n\nCompetitive landscape: if other vendors were mentioned, how this deal compares, and what arguments have been effective so far.\n\nRecommended talking points and focus areas for today: what the rep should aim to accomplish, questions to ask, and decisions to push forward.\n\nStrategic tips: cues for tone, relationship management, or value reinforcement — for example, \"Reinforce ROI from pilot results\" or \"Remind them of onboarding readiness.\"\n\nUseful artifacts: which materials to have ready (proposal, security document, ROI deck, case study, etc.).\n\nFinally, send the pre-call briefing to the rep in your team communication tool as a single, clearly structured message. The team message should not use any bold text or markdown symbols (no ** or *). It should be formatted with emojis and clean headings, easy to skim but full of context.\n\nEach meeting in your team communication tool should appear in this general structure:\n\n📅 10:30 AM — Acme Corp\nAttendees: John Doe (CFO), Sarah Green (Director of IT)\nOpportunity: Enterprise renewal — Stage: Negotiation — Amount: $150,000 — Close Date: 2024-11-05\n\nTL;DR: Renewal discussions nearing final terms; pricing and contract structure under review. Sarah requested updated SOC 2 documentation before signing.\n\nRecent Activity:\n\nLast call (Oct 10): discussed contract length and multi-year discount.\n\nEmail follow-up (Oct 13): rep shared revised pricing sheet.\n\nCustomer reviewing redlines; legal feedback pending.\n\nRisks and Challenges:\n\nPotential delay from legal review.\n\nProcurement might request additional security paperwork.\n\nRecommended Focus for Today:\n\nConfirm legal status and expected sign-off date.\n\nReinforce ROI and renewal benefits.\n\nOffer optional onboarding session to show readiness for 2025.\n\nHelpful Materials: Updated pricing proposal, SOC 2 doc, onboarding checklist.\n\nIf multiple meetings are scheduled, list them in chronological order, one detailed block per meeting. If there are no meetings that day, send a simple team message that says:\n\"Good morning! You have no customer meetings on your calendar today.\"\n\nThe team message should read naturally, use emojis for structure, and avoid all markdown bolding or special formatting. Each section should feel like a personalized prep briefing — short enough to skim quickly, but with enough depth to give the rep real context, risks, and action steps for every conversation.\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "every weekday at 07:00 (the rep's local morning)",
+    "cron": "0 7 * * 1-5"
+  },
+  "integrations": [
+    "communication",
+    "crm",
+    "call_recorder",
+    "calendar"
+  ]
+}

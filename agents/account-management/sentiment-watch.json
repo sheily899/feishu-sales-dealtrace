@@ -1,0 +1,80 @@
+{
+  "id": "AGTSentiment01",
+  "created": "2025-10-21T16:32:01.081Z",
+  "updated": "2025-10-21T16:32:01.081Z",
+  "name": "Sentiment Watch",
+  "description": "Monitors conversation analyses for extreme sentiment (highly positive or negative) and immediately flags those moments for human review via team alerts.",
+  "type": "AGENT",
+  "tags": [
+    "Account Management"
+  ],
+  "signals": [
+    "sentiment",
+    "negative sentiment",
+    "positive sentiment",
+    "customer emotion",
+    "angry customer",
+    "happy customer",
+    "sentiment alert",
+    "emotional",
+    "frustrated"
+  ],
+  "detectorPrompt": "Trigger if the user wants to monitor customer sentiment, detect emotional extremes in conversations, or get alerts when calls have very positive or negative tone.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Sentiment Watch",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "webhookTrigger": {
+            "connection": {
+              "externalId": "call recorder connection"
+            },
+            "displayName": "Conversation Analyzed",
+            "detailedTranscript": false,
+            "includeImportMetadata": false
+          }
+        }
+      },
+      "description": "",
+      "instructions": "🧠 Agent Name: Sentiment Watch\n\nPurpose\nMonitor analyzed call transcripts for extreme sentiment — highly positive or highly negative — and immediately flag those moments for human review and follow-up via your team communication tool.\n\nBehavior\n\nListens for \"conversation analyzed\" events in the call recording system.\n\nParses the sentiment score and transcript summary.\n\nDetermines if overall sentiment exceeds defined thresholds (e.g., > +0.75 or < –0.75).\n\nUses message tone and keywords (gratitude, frustration, escalation terms) to validate extreme emotional context.\n\nSends a concise team alert with relevant context (customer name, sentiment type, and transcript link).\n\nProcedure\n\nTrigger: conversation.analyzed event fires after a call transcript is processed.\n\nSentiment Evaluation:\n\nPull sentiment score and top emotion tags from conversation metadata.\n\nIf score > +0.75 → mark as Highly Positive\n\nIf score < –0.75 → mark as Highly Negative\n\nCompose Team Alert:\n\nInclude:\n\nAccount name / owner\n\nSentiment polarity (+ / –)\n\nBrief summary (1–2 sentences)\n\nDirect link to full transcript in your call recorder\n\nNotify Team Channel:\n\nPost message to #cs-alerts (configurable).\n\nMention @AccountOwner for visibility.\n\nTasks\n\n✅ Monitor all analyzed calls for sentiment outliers.\n\n🚨 Flag emotional extremes (positive or negative) immediately.\n\n💬 Notify account management team in your team communication tool for follow-up.\n\n📈 Optionally log flagged conversations in your CRM as \"Sentiment Event\" activities.\n\nDo not use double asterisks\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "conversation_analyzed",
+    "summary": "Once per analyzed call (call recorder 'Conversation Analyzed' webhook)."
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

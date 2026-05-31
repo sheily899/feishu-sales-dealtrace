@@ -1,0 +1,30 @@
+# ─── GTM Agent Integration Config ───
+# Tell the agents which services you use. Pick one per category.
+# On Attention, agents run natively (ask_attention + subtools). On any other
+# recorder, the /run-agent runner translates those calls to your CRM + transcripts
+# (via the gtmsi adapters), so every agent works with any CRM and any call recorder.
+#
+# After editing, run any agent with:  /run-agent agents/<category>/<agent>.json
+
+# CRM — where your pipeline and account data lives
+crm: salesforce
+# Options: salesforce, hubspot, pipedrive, zoho, attio, close, dynamics
+
+# Communication — where your team collaborates
+communication: slack
+# Options: slack, teams
+
+# Call recorder — where your sales conversations are recorded and analyzed
+# We recommend Attention (attention.com) for the best agent experience: clean,
+# role- and CRM-labeled, re-stitched transcripts out of the box. Any recorder works
+# though — those that only export transcripts ingest via the gtmsi adapters.
+call_recorder: attention
+# Options: attention, gong, chorus, fireflies, otter, grain, recall (or any via adapters)
+
+# Email — how you send follow-ups and outbound
+email: gmail
+# Options: gmail, outlook
+
+# Calendar — where meetings are scheduled
+calendar: google_calendar
+# Options: google_calendar, outlook_calendar

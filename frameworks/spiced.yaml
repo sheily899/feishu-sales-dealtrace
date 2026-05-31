@@ -1,0 +1,88 @@
+# SPICED — a discovery & qualification framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: spiced
+name: SPICED
+acronym: SPICED
+origin: Winning by Design (revenue architecture methodology).
+summary: >
+  A discovery framework that organizes a buyer conversation around Situation,
+  Pain, Impact, Critical Event, and Decision. It pushes past surface problems to
+  quantified impact and a compelling event, which is what actually moves deals.
+best_for: [discovery, demo, technical-validation, renewal, qbr]
+
+elements:
+  - id: situation
+    name: Situation
+    question: What is the buyer's current state — context, tools, team, scale?
+    why_it_matters: >
+      Anchors the conversation in reality and earns the right to dig deeper. Skipping
+      it makes later impact claims feel generic.
+    good_signals:
+      - "Rep establishes current process, stack, and scale before pitching."
+      - "Specifics surface (team size, volume, tools in use)."
+    missing_signals:
+      - "Rep assumes the situation and jumps to features."
+    example_questions:
+      - "Walk me through how your team handles this today."
+      - "What tools are in the workflow right now, and where do they break down?"
+      - "How many people / deals / calls does this touch in a month?"
+
+  - id: pain
+    name: Pain
+    question: What problem is the buyer trying to solve, and is it a top priority?
+    why_it_matters: >
+      No pain, no deal. Strong reps separate a nice-to-have from a ranked, owned priority.
+    good_signals:
+      - "Pain is named in the buyer's words and tied to a priority."
+      - "Rep asks why it's the priority and what's been tried."
+    missing_signals:
+      - "Pain is assumed, vague, or rep-supplied rather than buyer-confirmed."
+    example_questions:
+      - "Of everything on your plate, where does this rank — and why?"
+      - "What have you already tried, and why didn't it stick?"
+
+  - id: impact
+    name: Impact
+    question: What is the quantified business impact of the pain (and of solving it)?
+    why_it_matters: >
+      Impact converts a problem into a number a champion can take to a CFO. It is
+      the single biggest predictor of deal velocity.
+    good_signals:
+      - "Pain is quantified in time, money, or risk."
+      - "Cost of inaction is articulated."
+    missing_signals:
+      - "Conversation stays qualitative ('it's annoying') with no number."
+    example_questions:
+      - "If this stayed broken for another year, what does it cost you?"
+      - "What would solving this be worth in hours or dollars per month?"
+
+  - id: critical_event
+    name: Critical Event
+    question: Is there a deadline or event that forces a decision by a date?
+    why_it_matters: >
+      A compelling event creates urgency and a timeline. Without one, deals slip.
+    good_signals:
+      - "A dated event (board meeting, renewal, launch, audit) is surfaced."
+    missing_signals:
+      - "No timeline; 'sometime this year' with no forcing function."
+    example_questions:
+      - "Is there a date this needs to be solved by? What happens on that date?"
+      - "What's driving the timing now versus six months ago?"
+
+  - id: decision
+    name: Decision
+    question: How will the buyer decide — who, what criteria, and what process?
+    why_it_matters: >
+      Maps the path to yes: economic buyer, criteria, steps, and blockers.
+    good_signals:
+      - "Decision-makers, criteria, and steps to a decision are known."
+    missing_signals:
+      - "Single-threaded; process and economic buyer unknown."
+    example_questions:
+      - "Who else weighs in, and what will they each care about?"
+      - "Walk me through how a decision like this gets made and signed off."
+
+further_reading:
+  - title: "Winning by Design — SPICED Sales Methodology"
+    url: "https://winningbydesign.com/resources/the-spiced-sales-methodology/"

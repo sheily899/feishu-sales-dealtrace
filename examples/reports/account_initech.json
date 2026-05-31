@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0",
+  "kind": "account-health",
+  "subject": {
+    "id": "001INITECH01",
+    "name": "Initech",
+    "owner": "Taylor (CSM)",
+    "amount": 90000,
+    "stage": "Customer",
+    "close_or_renewal_date": "renewal in ~1 quarter",
+    "call_count": 1
+  },
+  "overall_score": 66,
+  "band": "stable",
+  "risk": "low",
+  "trend": "flat",
+  "summary": "A genuinely happy, well-adopted account with quantified value — but two things keep it out of 'healthy': a live budget concern from the budget owner, and a renewal that has no committed path. Adoption and sentiment are assets; convert them into an explicit renewal commitment and address the budget question head-on this quarter.",
+  "dimensions": [
+    {
+      "dimension_id": "adoption_usage",
+      "dimension_name": "Adoption & Usage",
+      "score": 80,
+      "weight": 2,
+      "rationale": "Broad, active usage; the champion describes real, daily work in the product.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Dana", "text": "the team basically lives in it now" }
+      ]
+    },
+    {
+      "dimension_id": "value_realized",
+      "dimension_name": "Value Realized (ROI)",
+      "score": 78,
+      "weight": 2,
+      "rationale": "Concrete, quantified outcomes tied to original goals were recapped by the CSM and confirmed by the customer.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Taylor", "text": "you've cut reporting turnaround from days to hours" }
+      ]
+    },
+    {
+      "dimension_id": "sentiment",
+      "dimension_name": "Sentiment & Satisfaction",
+      "score": 74,
+      "weight": 1.5,
+      "rationale": "Positive, collaborative tone from the champion; no unresolved complaints surfaced.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Dana", "text": "honestly it's been one of the better tools we've rolled out" }
+      ]
+    },
+    {
+      "dimension_id": "engagement",
+      "dimension_name": "Engagement & Cadence",
+      "score": 70,
+      "weight": 1.5,
+      "rationale": "Both the champion and the budget owner showed up and engaged; cadence is healthy.",
+      "evidence": []
+    },
+    {
+      "dimension_id": "relationship_depth",
+      "dimension_name": "Relationship Depth & Multithreading",
+      "score": 68,
+      "weight": 1.5,
+      "rationale": "Multi-threaded across the champion (Dana) and budget owner (Lee); no senior executive sponsor yet.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Lee", "text": "I'm the one who has to defend the line item" }
+      ]
+    },
+    {
+      "dimension_id": "champion_health",
+      "dimension_name": "Champion Health",
+      "score": 70,
+      "weight": 1,
+      "rationale": "Dana is engaged and credible; influence beyond her team is not yet established.",
+      "evidence": []
+    },
+    {
+      "dimension_id": "risk_signals",
+      "dimension_name": "Risk Signals",
+      "score": 45,
+      "weight": 1.5,
+      "rationale": "An explicit budget-pressure signal from the budget owner that was acknowledged but not resolved on the call.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Lee", "text": "budgets are tighter this year, so I need to justify every renewal" }
+      ]
+    },
+    {
+      "dimension_id": "renewal_readiness",
+      "dimension_name": "Renewal Readiness",
+      "score": 48,
+      "weight": 1.5,
+      "rationale": "Renewal is within a quarter, the budget owner is engaged and value was recapped, but no commitment or dated path to renew was secured.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Taylor", "text": "we can circle back on the paperwork closer to the date" }
+      ]
+    },
+    {
+      "dimension_id": "expansion_potential",
+      "dimension_name": "Expansion Potential",
+      "score": 50,
+      "weight": 1,
+      "rationale": "A second-team use case was mentioned but only lightly explored and not followed up.",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Dana", "text": "the ops team has been asking about it too" }
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "title": "Budget pressure unresolved",
+      "detail": "The budget owner flagged tighter budgets and the need to justify the renewal; this was acknowledged but not addressed with an ROI case on the call.",
+      "severity": "high",
+      "dimension_id": "risk_signals",
+      "evidence": [
+        { "call_id": "renewal_initech", "speaker": "Lee", "text": "budgets are tighter this year, so I need to justify every renewal" }
+      ]
+    },
+    {
+      "title": "Renewal not committed",
+      "detail": "Renewal is ~1 quarter out with no commitment and no dated plan; the ask was deferred.",
+      "severity": "medium",
+      "dimension_id": "renewal_readiness"
+    }
+  ],
+  "recommended_actions": [
+    {
+      "action": "Send Lee a one-page ROI/value summary (days-to-hours, team adoption) he can use to defend the line item, and ask directly for a renewal commitment with a date.",
+      "why": "Turns the budget owner's objection into his justification, and closes the open renewal loop.",
+      "owner": "Taylor",
+      "priority": "high"
+    },
+    {
+      "action": "Scope the Operations-team expansion Dana mentioned into a concrete next conversation.",
+      "why": "Converts a healthy account into growth while sentiment is high.",
+      "owner": "Taylor",
+      "priority": "medium"
+    },
+    {
+      "action": "Identify and engage a senior executive sponsor to deepen the relationship beyond Dana and Lee.",
+      "why": "Reduces single-point-of-failure risk before renewal.",
+      "owner": "Taylor",
+      "priority": "medium"
+    }
+  ]
+}

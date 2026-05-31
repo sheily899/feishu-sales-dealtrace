@@ -1,0 +1,156 @@
+# Gap Selling — problem-centric discovery framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: gap-selling
+name: Gap Selling
+origin: >
+  Developed by Keenan (James Muir "Keenan"), founder of A Sales Growth Company.
+  Introduced in the 2018 book "Gap Selling: Getting the Customer to Yes."
+summary: >
+  A problem-centric selling methodology that argues buyers don't buy products —
+  they buy the distance between where they are (current state) and where they want
+  to be (future state). That distance is the gap, and the gap is what the rep sells.
+  Gap Selling trains reps to deeply understand the current state problem, quantify
+  its impact, diagnose its root cause, and paint a compelling future state before
+  ever presenting a solution. Features are irrelevant without a gap.
+best_for: [discovery, demo]
+
+elements:
+  - id: current_state
+    name: Current State
+    question: What is the buyer's existing situation — their environment, process, constraints, and problems — in specific detail?
+    why_it_matters: >
+      Current state is the foundation of the entire Gap Selling approach. Without a
+      deep, precise picture of where the buyer is today, a rep cannot credibly define
+      the gap or demonstrate that their solution spans it. Surface-level current state
+      discovery produces surface-level urgency. Depth here drives everything else.
+    good_signals:
+      - "Rep can describe the buyer's current process in as much detail as the buyer can."
+      - "Current state includes operational data (volumes, timelines, error rates, headcount)."
+      - "Problems within the current state are surfaced in the buyer's own words."
+    missing_signals:
+      - "Rep assumes the current state based on the industry or persona rather than asking."
+      - "Current state discussion is rushed to get to the product demo."
+    example_questions:
+      - "Walk me through exactly how your team handles this today — from beginning to end."
+      - "What tools, people, and steps are involved in this process right now?"
+      - "Where in this process do things break down most often, and how often does that happen?"
+      - "What does a bad week look like for your team when this doesn't work the way it should?"
+      - "How long has the process worked this way, and what's changed recently that makes it more of a problem?"
+
+  - id: future_state
+    name: Future State
+    question: What does the buyer's ideal outcome look like — what is the world they are trying to reach?
+    why_it_matters: >
+      Future state creates the destination on the map. It gives the rep and the buyer
+      a shared vision of what success looks like, which makes the gap real and tangible.
+      Reps who sell to an undefined future state are selling to a moving target. A
+      clearly articulated future state also gives the champion language to use internally.
+    good_signals:
+      - "Buyer can describe the future state in specific, outcome-oriented terms."
+      - "Future state is confirmed and co-owned by the buyer, not invented by the rep."
+      - "Future state connects to a business goal the buyer is evaluated against."
+    missing_signals:
+      - "Future state is vague ('we just want things to be better') with no specifics."
+      - "Rep describes the future state for the buyer rather than eliciting it."
+    example_questions:
+      - "If this were completely solved, what would be different for your team six months from now?"
+      - "What does the ideal version of this process look like — not perfect, but genuinely good?"
+      - "When you imagine this working the way it should, what specifically changes for you personally?"
+      - "What outcomes would you need to see to call this project a success at year-end?"
+      - "If you could wave a wand and fix this, what's the first thing that changes?"
+
+  - id: the_gap
+    name: The Gap
+    question: How large and significant is the distance between where the buyer is today and where they need to be?
+    why_it_matters: >
+      The gap is the core sales unit in Gap Selling. A small gap means small urgency
+      and small deal size. A large, consequential gap creates urgency and justifies
+      investment. The rep's job is to make the gap visible, understood, and felt —
+      not to manufacture it, but to help the buyer see it clearly.
+    good_signals:
+      - "Gap is articulated as the difference between a specific current state and a specific future state."
+      - "Both rep and buyer agree on the size and significance of the gap."
+      - "Gap is large enough to justify the cost and disruption of change."
+    missing_signals:
+      - "Rep moves to solution before the gap is acknowledged and quantified."
+      - "Gap is described in terms of missing features rather than business distance."
+    example_questions:
+      - "So on one side you have [current state problem] and on the other you need [future state outcome] — how far apart does that feel to you?"
+      - "Given where you are today and where you need to be, how much ground is there to cover?"
+      - "Is the gap between your current situation and where you need to get to something your team can close on their own, or do you need external help?"
+      - "If you think about the investment required to close that gap, does the size of the gap justify it?"
+
+  - id: impact
+    name: Impact
+    question: What is the quantified, multi-dimensional cost of the gap — financial, operational, and strategic?
+    why_it_matters: >
+      Impact converts the gap from a conceptual problem into a number the economic
+      buyer can act on. Keenan argues that every problem has an impact, and the rep's
+      job is to find it. Impact includes hard costs (money lost), soft costs (time
+      wasted), strategic costs (competitive disadvantage), and personal costs (stress,
+      career risk).
+    good_signals:
+      - "Impact is quantified in at least one hard metric (dollars, hours, deals, headcount)."
+      - "Impact is confirmed by the buyer, not estimated by the rep."
+      - "Multiple impact dimensions are surfaced (financial, operational, reputational)."
+    missing_signals:
+      - "Impact stays qualitative ('it's frustrating') without being quantified."
+      - "Rep accepts the buyer's first answer ('it's a problem') without probing for magnitude."
+    example_questions:
+      - "What does this problem cost you — in time, money, or deals — every month?"
+      - "If you put a number to the impact of this gap, what would it be?"
+      - "Beyond the direct cost, what's the downstream effect — on revenue, on customers, on your team?"
+      - "What's the opportunity cost — what would your team be doing if they weren't dealing with this?"
+      - "How does this gap affect your ability to hit your targets this year?"
+
+  - id: root_cause
+    name: Root Cause
+    question: Why does this gap exist — what is the underlying cause, not just the surface symptom?
+    why_it_matters: >
+      Root cause separates a rep who sells a band-aid from one who solves the actual
+      problem. If a rep sells to the symptom, the gap reopens post-implementation and
+      the customer churns. Understanding root cause also reveals whether the rep's
+      solution actually addresses it — which prevents late-stage surprises and
+      post-sale disappointment.
+    good_signals:
+      - "Rep has peeled back at least two layers of 'why' before accepting the root cause."
+      - "Root cause is something the solution directly addresses."
+      - "Buyer acknowledges the root cause and has not successfully fixed it themselves."
+    missing_signals:
+      - "Rep accepts the first-stated problem as the root cause without probing."
+      - "Root cause is outside the scope of the solution being sold — a red flag the rep ignores."
+    example_questions:
+      - "Why do you think this keeps happening — have you been able to trace it back to a root cause?"
+      - "If you fixed [surface symptom], do you think that would actually solve it, or would the problem come back?"
+      - "What have you tried before to address this? Why didn't that work?"
+      - "Is this a people issue, a process issue, or a technology issue — or some combination?"
+      - "When this breaks down, what's the first domino that falls?"
+
+  - id: intangibles
+    name: Intangibles
+    question: What are the personal, emotional, and political dimensions of the problem that aren't captured in the numbers?
+    why_it_matters: >
+      Deals are won and lost on intangibles that never appear in a spreadsheet.
+      Career risk, team morale, frustration, competitive pressure, and personal
+      credibility all influence how urgently a buyer acts. Reps who surface intangibles
+      build deeper relationships and create urgency that metrics alone can't generate.
+    good_signals:
+      - "Rep has asked about the personal impact on the buyer, not just the business impact."
+      - "Buyer has shared something candid about the political or emotional dimension of the problem."
+      - "Intangibles are woven into the value narrative alongside quantified impact."
+    missing_signals:
+      - "Rep stays strictly analytical and never acknowledges the human dimension."
+      - "Buyer seems engaged emotionally but rep is treating the deal as purely transactional."
+    example_questions:
+      - "How does this affect you personally — not just the business, but your day-to-day and your career?"
+      - "Is there pressure from above to have this solved? What happens to you if it isn't?"
+      - "How much of your team's morale is tied up in this problem — are people frustrated?"
+      - "Beyond the numbers, what's the political cost of this staying unsolved inside your organization?"
+      - "If you're being honest, how much stress does this situation cause you?"
+
+further_reading:
+  - title: "Gap Selling — the book by Keenan"
+    url: "https://www.gapsellingbook.com"
+  - title: "A Sales Growth Company — Gap Selling resources"
+    url: "https://asalesgrowthcompany.com/gap-selling/"

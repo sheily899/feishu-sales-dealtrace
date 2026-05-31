@@ -1,0 +1,79 @@
+{
+  "id": "AGTPersonaMapper01",
+  "created": "2025-10-21T16:04:33.227Z",
+  "updated": "2025-10-21T16:04:33.227Z",
+  "name": "Persona Mapper",
+  "description": "Listens for analyzed conversation events and generates concise team summaries identifying key personas and their marketing-related priorities from each call transcript.",
+  "type": "AGENT",
+  "tags": [
+    "Marketing"
+  ],
+  "signals": [
+    "persona",
+    "buyer persona",
+    "stakeholder mapping",
+    "audience",
+    "marketing personas",
+    "buyer roles",
+    "decision maker",
+    "stakeholder"
+  ],
+  "detectorPrompt": "Trigger if the user wants to identify buyer personas, stakeholder roles, decision makers, or marketing priorities from customer conversations.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Persona Mapper",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "webhookTrigger": {
+            "connection": {
+              "externalId": "call recorder connection"
+            },
+            "displayName": "Conversation Analyzed",
+            "detailedTranscript": false,
+            "includeImportMetadata": false
+          }
+        }
+      },
+      "description": "",
+      "instructions": "Purpose\n\nThis agent listens for analyzed conversation events and generates a concise team summary identifying key personas and their marketing-related priorities from each call transcript. The output is optimized for marketing teams to quickly understand customer focus areas and emerging opportunities.\n\nBehavior\n\nWhen triggered by a \"conversation analyzed\" event, review the conversation summary and transcript.\n\nIdentify all personas mentioned or speaking, such as job titles, departments, or inferred buyer roles.\n\nExtract each persona's goals, challenges, and priorities—especially those relevant to marketing strategy, messaging, campaigns, or GTM alignment.\n\nSynthesize findings into a clear, structured team message with three sections:\n\nPersonas Identified – concise role-based summaries\n\nKey Priorities – actionable themes derived from their dialogue\n\nOpportunities for Marketing – concrete suggestions the marketing team could act on\n\nProcedure\n\nInput:\nReceive the full transcript and any existing conversation summary metadata.\n\nAnalysis Steps:\n\nUse semantic and contextual understanding to group speakers into personas.\n\nDetect explicit and implicit marketing-related needs (e.g., demand gen, messaging, attribution, brand, sales enablement).\n\nSummarize insights in business language suitable for a marketing audience.\n\nAvoid repetition; focus on clarity and actionability.\n\nEnsure tone is professional, neutral, and insight-driven.\n\nOutput:\nPost a message in your team communication tool using this format:\n\n📞 *Persona Mapper* — <{conversation_link}|Call Transcript>\n\n👤 *Personas Identified:*\n• *{Persona 1}* — {brief summary of role and focus}\n• *{Persona 2}* — {brief summary of role and focus}\n\n🎯 *Key Priorities:*\n• {Priority 1}\n• {Priority 2}\n\n💡 *Opportunities for Marketing:*\n• {Marketing opportunity 1}\n• {Marketing opportunity 2}\n\n🧩 *Source:* Conversation analyzed on {date}\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "conversation_analyzed",
+    "summary": "Once per analyzed call (call recorder 'Conversation Analyzed' webhook)."
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "AGTObjectionDrill01",
+  "created": "2025-10-21T17:13:50.675Z",
+  "updated": "2025-10-21T17:13:50.675Z",
+  "name": "Objection Drilldown",
+  "description": "Provides deep analysis of objection types including frequency, context, and resolution strategies.",
+  "type": "AGENT",
+  "tags": [
+    "Sales Enablement"
+  ],
+  "signals": [
+    "objection analysis",
+    "objection trends",
+    "objection patterns",
+    "objection intelligence",
+    "objection report",
+    "objection deep dive",
+    "objection categories"
+  ],
+  "detectorPrompt": "Trigger if the user wants deep analysis of objection types, frequency trends, resolution patterns, and their impact on deal outcomes.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Objection Drilldown",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "search_calls": {
+            "displayName": "Search Calls",
+            "generic_action": "search_calls"
+          },
+          "ask_attention": {
+            "displayName": "Ask Attention",
+            "generic_action": "analyze_calls"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_week": {
+            "timezone": "UTC",
+            "displayName": "Every Week"
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "Purpose\n\nThis agent performs a deep weekly analysis of objections raised across all sales conversations. It categorizes objections by type, tracks frequency trends, evaluates how effectively reps handle each category, extracts best-practice rebuttals, and delivers a structured objection intelligence report to the team.\n\nBehavior\n\nRuns automatically once per week (e.g., Monday 8:00 AM).\n\nRetrieves all team calls from the past 7 days using search_calls.\n\nAnalyzes objection patterns across those calls using ask_attention.\n\nCompares current-period objection data to the prior period for trend detection.\n\nPosts the objection intelligence report to the configured team communication channel.\n\nProcedure\n\nStep 1 — Retrieve Calls:\n\nUse search_calls with a date range of the past 7 days. Collect all call IDs across the team. If the result set is large, batch into groups of up to 25 call IDs for ask_attention queries.\n\nStep 2 — Classify Objections by Taxonomy:\n\nUse ask_attention to identify and classify every objection raised by prospects across the calls. Categorize each objection into one of the following types:\n\n1. Pricing / Budget: 'Too expensive,' 'Over budget,' 'Need a discount,' cost comparisons to alternatives.\n2. Timing / Urgency: 'Not the right time,' 'Maybe next quarter,' 'We have other priorities right now.'\n3. Competition: 'We are also looking at {competitor},' 'Your competitor offers X,' direct feature comparisons.\n4. Feature Gaps: 'Does it do X?', 'We need Y and you do not have it,' missing functionality concerns.\n5. Authority / Decision Process: 'I need to run this by my boss,' 'The committee decides,' 'I am not the right person.'\n6. Security / Legal / Compliance: 'Our security team needs to review,' 'We need a DPA,' 'SOC 2?', data residency concerns.\n7. Integration / Technical: 'Does it integrate with X?', 'Our tech stack is Y,' implementation complexity concerns.\n8. ROI / Proof: 'How do I know this works?', 'Do you have case studies?', 'What results have similar companies seen?'\n\nFor each objection found, record: the objection category, the rep who handled it, the call ID, and a brief paraphrase of what the prospect said.\n\nStep 3 — Score Response Effectiveness:\n\nFor each objection instance, use ask_attention to evaluate the rep's response on a 3-point scale:\n\n- Effective (3): The rep acknowledged the objection, provided a substantive response (evidence, reframe, or solution), and the conversation advanced (prospect agreed to a next step, asked follow-up questions, or moved to the next topic positively).\n- Partial (2): The rep addressed the objection but incompletely — the prospect seemed unconvinced, or the rep changed the subject without confirming resolution.\n- Ineffective (1): The rep ignored, deflected, or fumbled the objection — the conversation stalled, the prospect disengaged, or the call ended without progress.\n\nStep 4 — Extract Best-Practice Rebuttals:\n\nFor each objection category, identify the top-performing response (highest effectiveness score). Use ask_attention to extract the specific language or approach the rep used. Format this as a reusable rebuttal template the team can adopt.\n\nStep 5 — Analyze Trends:\n\nCompare this week's objection frequency by category to the prior week (retrieve prior-week calls using search_calls with the appropriate date range). Identify:\n- Rising objections: categories that increased in frequency (flag as potential market shift or messaging issue).\n- Declining objections: categories that decreased (possible sign of improved positioning or messaging).\n- New objections: categories that appeared this week but were absent last week.\n\nStep 6 — Assess Deal Impact:\n\nUse ask_attention to correlate objection categories with deal outcomes where possible. Note which objection types most frequently appear in calls where no next step was set or where the prospect disengaged. Flag these as 'high-risk objection categories.'\n\nStep 7 — Post Report:\n\nSend the intelligence report to the configured team communication channel using send_channel_message.\n\nEdge Cases:\n\nIf fewer than 5 calls are found in the period, note the limited sample size and flag that trends may not be statistically meaningful.\n\nIf no objections are detected in any calls, post a brief note: 'No prospect objections detected in {n} calls this week. This may indicate early-stage pipeline (discovery calls) or insufficient sample size.'\n\nIf prior-period data is unavailable, omit trend comparisons and note 'First report — trends will appear next period.'\n\nOutput Format (Team Message):\n\n🛡️ *Weekly Objection Intelligence Report* — {date_range}\n📞 *Calls Analyzed:* {count}\n\n📊 *Objection Frequency by Category:*\n| Category | Count | Trend | Avg Effectiveness |\n|---|---|---|---|\n| Pricing / Budget | {n} | {up/down/flat} | {avg score}/3 |\n| Timing / Urgency | {n} | {up/down/flat} | {avg score}/3 |\n| Competition | {n} | {up/down/flat} | {avg score}/3 |\n| Feature Gaps | {n} | {up/down/flat} | {avg score}/3 |\n| Authority / Decision | {n} | {up/down/flat} | {avg score}/3 |\n| Security / Legal | {n} | {up/down/flat} | {avg score}/3 |\n| Integration / Technical | {n} | {up/down/flat} | {avg score}/3 |\n| ROI / Proof | {n} | {up/down/flat} | {avg score}/3 |\n\n⚠️ *High-Risk Objection Categories:* {Categories most associated with stalled deals}\n\n🏆 *Best-Practice Rebuttals:*\n1. *{Category}* — {Rep Name} used this approach: \"{Brief paraphrase of effective response}\". Result: {What happened next — e.g., prospect agreed to a technical review}.\n2. *{Category}* — {Rep Name}: \"{Rebuttal}\". Result: {Outcome}.\n3. *{Category}* — {Rep Name}: \"{Rebuttal}\". Result: {Outcome}.\n\n📈 *Trend Alerts:*\n- Rising: {Category} objections up {n}% — consider updating talk track or battlecard.\n- Declining: {Category} objections down {n}% — current messaging may be working.\n- New this week: {Category} — monitor next week to see if this is a pattern.\n\n🧩 *Source:* Conversation analysis from your call recorder\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "weekly, Monday 08:00",
+    "cron": "0 8 * * 1"
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

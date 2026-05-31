@@ -1,0 +1,53 @@
+BDR (Alex): Hi, is this Morgan?
+
+Prospect (Morgan): Yeah, speaking. Who's this?
+
+BDR (Alex): Hey Morgan, this is Alex calling from Northstar. I know this is out of the blue — do you have about two minutes?
+
+Prospect (Morgan): Two minutes, sure. What's this about?
+
+BDR (Alex): Appreciate it. So the reason I'm reaching out specifically to you is that we work with a few VP-level ops leaders at companies around your stage — I think Hooli's in that three-hundred to five-hundred employee range. What we hear most often at that size is that operational reporting starts to get pretty painful — multiple sources, things falling out of sync. Does any of that resonate or is that totally off base for you?
+
+Prospect (Morgan): I mean... somewhat. We have a few dashboards that don't always agree with each other.
+
+BDR (Alex): Yeah, that's pretty common. What do you use today to track operational metrics — is it mostly spreadsheets, or do you have a BI tool?
+
+Prospect (Morgan): Mostly spreadsheets, honestly. We've talked about getting a proper tool but it hasn't been prioritized.
+
+BDR (Alex): Got it. And when you say the dashboards don't agree — is that causing friction, or is it more of a background annoyance?
+
+Prospect (Morgan): Little of both. The finance team and my team have had some back-and-forth about numbers. It's manageable but it's not great.
+
+BDR (Alex): That back-and-forth tends to get worse as you grow, unfortunately. That's actually the exact problem Northstar solves — we give teams a single unified layer on top of whatever you're already using, so everyone's looking at the same numbers. But look, I'm not trying to sell you on a demo right this second. I'm just wondering if it's worth a fifteen-minute conversation with my AE to see if there's anything relevant. Is that something you'd be open to?
+
+Prospect (Morgan): Honestly, we've been pretty heads-down this quarter. And like I said — we've gotten by with spreadsheets so far. I'm not sure we're at the point where we need another tool.
+
+BDR (Alex): That's fair. Can I ask — is the spreadsheet approach working because the problem isn't big enough yet, or is it more that there isn't budget or bandwidth to change it?
+
+Prospect (Morgan): Bit of both. The spreadsheet works — mostly. And any new tool is going to take time to set up.
+
+BDR (Alex): Understood. And I'm not going to pretend a tool sets itself up. There's always some work involved. For what it's worth, most companies that come to us waited until a spreadsheet failure cost them something before they acted. Sometimes that's a bad board meeting, sometimes it's a hiring decision made on wrong data. I'm not saying that's where you are — just worth knowing it's available before you hit that point.
+
+Prospect (Morgan): Sure. That makes sense.
+
+BDR (Alex): Would it be worth a quick call to at least hear what it looks like? Fifteen minutes, no commitment. If it's not relevant, you'll know in the first five.
+
+Prospect (Morgan): You know what, just send me an email. I'll take a look when I have a bit more headspace. We're in the middle of a product launch and I can't really commit to another meeting right now.
+
+BDR (Alex): Of course, totally understand. Happy to send something over. What's the best email for you?
+
+Prospect (Morgan): It's morgan dot chen at hooli dot io.
+
+BDR (Alex): Got it — morgan dot chen at hooli dot io. I'll send something short today. When's the product launch wrapping up — like, when might things calm down a bit?
+
+Prospect (Morgan): Probably end of next month.
+
+BDR (Alex): Okay, I'll keep that in mind. I'll send the email now and then maybe check back in early July when things are less hectic. Does that work?
+
+Prospect (Morgan): Yeah, that's fine.
+
+BDR (Alex): Great. Morgan, I appreciate you taking the two minutes. I'll keep it short in the email. Good luck with the launch.
+
+Prospect (Morgan): Thanks. Bye.
+
+BDR (Alex): Take care.

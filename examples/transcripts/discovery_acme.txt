@@ -1,0 +1,97 @@
+Rep (Jordan): Hey Sam, thanks for making time today. I know you're busy so I really appreciate it.
+
+Prospect (Sam): Of course. Happy to chat. We've been hearing a bit about Northstar from a colleague over at Globex.
+
+Rep (Jordan): Oh great, good to hear. So before we dive in — I put together a quick agenda. I was thinking we'd spend a few minutes making sure I understand what's going on in your world, then I'd love to understand your priorities for the back half of the year, and if it makes sense, we can talk about whether Northstar fits. Sound okay?
+
+Prospect (Sam): Yeah, works for me.
+
+Rep (Jordan): Perfect. And feel free to stop me if I'm heading in the wrong direction. So Acme — you're about how big right now, headcount-wise?
+
+Prospect (Sam): Around six hundred employees. We've grown pretty fast over the last two years, almost doubled.
+
+Rep (Jordan): Wow, that's significant. How has that growth affected how you manage and report on operational data internally?
+
+Prospect (Sam): That's actually kind of why we're having this call. When we were three hundred people, everything was in a shared Google Sheet and one of my analysts would produce a weekly report. That still technically works but... not really.
+
+Rep (Jordan): Tell me more about "not really."
+
+Prospect (Sam): The analyst spends half her time just pulling numbers together. And there are three different versions of the same dashboard floating around in different departments. Finance sees one number, Operations sees another. We had an exec meeting last month where two VPs were literally arguing about whose data was right.
+
+Rep (Jordan): That's a painful situation. So just to make sure I'm hearing this right — the problem isn't just time, it's actually affecting decisions at the executive level?
+
+Prospect (Sam): Yeah. And trust. People have stopped trusting the numbers, which means they're pulling their own data, which means the problem gets worse.
+
+Rep (Jordan): How long has that been the case — the trust issue?
+
+Prospect (Sam): Honestly since about Q3 last year. When we crossed the four-hundred headcount mark, things started to break down. But the exec arguments started more recently, like the last two or three months.
+
+Rep (Jordan): Got it. And has anything been tried to fix it?
+
+Prospect (Sam): We looked at building something in-house. Our data team scoped it out and said it would take about six months and two engineers. We don't really have two engineers to spare right now.
+
+Rep (Jordan): Makes sense. So what does this cost you today? Like if you tried to put a number on the wasted time and the bad decisions —
+
+Prospect (Sam): I mean, the analyst alone — she's probably spending fifteen hours a week just on data wrangling. That's almost half her job. And we've made at least two or three resource decisions this year that I think we'd have made differently if we'd had cleaner numbers. Hard to quantify exactly but I'd say hundreds of thousands of dollars isn't crazy.
+
+Rep (Jordan): That's real money. And what happens if you don't solve this in the next six months?
+
+Prospect (Sam): We're about to close our Series B. The board is going to want operational visibility. I'm going to have to either solve this or answer some uncomfortable questions.
+
+Rep (Jordan): Series B — congrats by the way. When does that close?
+
+Prospect (Sam): Should be end of Q3.
+
+Rep (Jordan): So you'd want something in place before that, ideally.
+
+Prospect (Sam): Ideally before, yeah. Or at minimum have a clear plan.
+
+Rep (Jordan): Understood. Now, I want to make sure I understand what "solving this" looks like in your mind. If you woke up six months from now and this was fixed — what would be different?
+
+Prospect (Sam): One version of the truth. Everyone pulling from the same place. My analyst doing actual analysis, not data janitorial work. And honestly, me being able to walk into a board meeting and not worry about someone challenging my numbers.
+
+Rep (Jordan): One version of the truth, analyst freed up, board-ready reporting. That's very clear. Who else at Acme cares about this problem the way you do?
+
+Prospect (Sam): My VP of Finance definitely. And our Head of Operations, she's been the loudest voice internally actually.
+
+Rep (Jordan): Would they be part of evaluating a solution?
+
+Prospect (Sam): Almost certainly. Nothing this size gets signed off without Finance. And if we're touching Operations data, she'd want to be involved too.
+
+Rep (Jordan): That makes sense. Ballpark — for something like this, what kind of investment range would be in scope? I don't need an exact number, just want to make sure I'm thinking about the right tier.
+
+Prospect (Sam): I honestly don't know yet. We haven't gotten that far. I'm in discovery mode myself.
+
+Rep (Jordan): Fair enough. I'll make sure whatever I put in front of you has the ROI story attached so it's easy to make the case internally. Actually — speaking of which, can I show you quickly what Northstar does? I think given what you've described, there are a couple of things that are pretty directly relevant.
+
+Prospect (Sam): Sure, go ahead.
+
+Rep (Jordan): So Northstar is essentially a single operational analytics layer that sits on top of your existing tools — your CRM, your finance system, your HR data — and gives every team a unified view. We have a concept called "canonical metrics" where you define what revenue means, what headcount means, one time, and every dashboard everywhere reflects that definition. Sounds like that might land well given the VP argument situation.
+
+Prospect (Sam): Yeah, that's pretty much exactly the problem. How long does it typically take to get set up?
+
+Rep (Jordan): Depends on the data sources but for a company your size, usually six to eight weeks to get to first dashboard. Full rollout tends to be three to four months.
+
+Prospect (Sam): Okay. That timeline's workable if we started soon.
+
+Rep (Jordan): Exactly. And our implementation team is pretty hands-on — your analyst wouldn't need to do a ton of heavy lifting on the technical side. Now, I do want to ask — we've been talking about the data trust problem. Is that the number-one thing, or is there something else that's equally urgent?
+
+Prospect (Sam): Honestly the board prep is tied to it. But the day-to-day pain is mostly the data wrangling and the version conflicts.
+
+Rep (Jordan): Good to know. I want to make sure I'm not chasing the wrong problem. Okay, I've probably taken enough of your time for today. What would make sense as a next step? I'm thinking I could put together a summary of what we discussed and maybe a rough picture of what an Acme deployment might look like?
+
+Prospect (Sam): Sure, send that over. I'll take a look.
+
+Rep (Jordan): Great. And would it make sense to get your VP of Finance and Head of Operations in on the next one? Given what you said about sign-off?
+
+Prospect (Sam): Maybe. Let me feel it out with them first. Send the summary and I'll share it and see what they say.
+
+Rep (Jordan): Sounds good. I'll get that over to you by end of week. And if you do loop them in, I'm happy to come back for a group session — I could tailor it specifically to the board-prep angle.
+
+Prospect (Sam): That could be useful. Let me see.
+
+Rep (Jordan): Perfect. Sam, this was really helpful. I feel like I've got a clear picture of where you are. I'll make sure what I send is worth your time.
+
+Prospect (Sam): Appreciate it. Talk soon.
+
+Rep (Jordan): Take care.

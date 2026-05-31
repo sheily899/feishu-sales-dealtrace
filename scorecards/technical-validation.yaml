@@ -1,0 +1,200 @@
+# Technical Validation scorecard — coaching rubric for POV / POC / technical eval calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (MEDDPICC, Next-Steps). Fork it and tune the criteria/weights for your business.
+id: technical-validation
+name: Technical Validation / POV / POC
+version: "1.0"
+description: >
+  Evaluates how well the rep scoped a rigorous, time-boxed technical evaluation
+  with explicit success criteria, covered the right stakeholders, surfaced
+  integration risks, mapped value to business outcomes, and secured a clear
+  next step after the eval.
+applies_to: [technical-validation]
+frameworks: [meddpicc, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: success_criteria_defined
+    name: Success Criteria Defined
+    weight: 2.5
+    intent: >
+      Without explicit, mutually agreed success criteria, a technical eval has
+      no objective exit condition and becomes an endless loop.
+    framework_refs: [meddpicc.metrics, meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Specific, measurable success criteria are documented and agreed by both sides before the eval begins."
+      - "Criteria are tied to the business problem, not just to feature checklists."
+      - "Rep confirms which criteria are must-pass vs. nice-to-have."
+    what_poor_looks_like:
+      - "Eval starts without written success criteria."
+      - "Criteria are vague ('we need to see if it works for us')."
+      - "Rep lets the technical buyer define criteria in isolation without linking to business value."
+    evidence_cues:
+      - "\"Before we kick off, let's agree on what 'success' looks like so we know when we've proved it.\""
+      - "\"Of these three criteria, which one is a blocker versus a bonus?\""
+    coaching_prompts:
+      - "Can you show me the written success criteria for this eval? Who signed off on them?"
+      - "Which criteria were the buyer's idea and which did you suggest — and why does that matter?"
+
+  - id: stakeholder_coverage
+    name: Stakeholder Coverage
+    weight: 2
+    intent: >
+      A technical eval signed off by only the technical evaluator but not the
+      economic buyer or security team will stall at procurement.
+    framework_refs: [meddpicc.economic_buyer, meddpicc.champion, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep maps all stakeholders involved in or affected by the technical decision."
+      - "Economic buyer is aware of the eval and what a positive outcome means commercially."
+      - "Security, IT, legal, or other gatekeepers are identified and their concerns addressed proactively."
+    what_poor_looks_like:
+      - "Rep engages only with the technical evaluator and never reaches other stakeholders."
+      - "Economic buyer is unaware of the eval or has not been briefed on progress."
+      - "Rep discovers a security or compliance blocker only after the eval concludes."
+    evidence_cues:
+      - "\"Who else needs to be comfortable with the technical outcome before you can move forward?\""
+      - "\"Have you looped in your security team yet — what will they need to see?\""
+    coaching_prompts:
+      - "Who in the customer org knows about this eval, and who should but doesn't yet?"
+      - "When did you last speak to someone other than the technical evaluator at this account?"
+
+  - id: scoping_and_test_plan
+    name: Scoping & Test Plan
+    weight: 1.5
+    intent: >
+      A scoped, time-boxed test plan prevents evals from drifting and gives
+      both sides a shared understanding of what will be tested and by when.
+    framework_refs: [meddpicc.decision_process, next-steps.specific_action]
+    what_great_looks_like:
+      - "A written test plan with timelines, milestones, and owners is agreed before work begins."
+      - "Scope is explicitly limited to the agreed use cases — out-of-scope requests are handled deliberately."
+      - "Rep holds the timeline and raises scope creep rather than silently absorbing it."
+    what_poor_looks_like:
+      - "Eval has no defined end date or milestone plan."
+      - "Scope expands without re-negotiation, leading to an indefinite eval."
+      - "Rep agrees to every new request to keep the buyer happy, burning resources with no close path."
+    evidence_cues:
+      - "\"Here's the plan: week one we'll tackle X, week two Y, and by [date] we'll have a read-out.\""
+      - "\"That's outside the scope we agreed — I want to make sure we nail the core use case first.\""
+    coaching_prompts:
+      - "Is there a written test plan? Where does it live and who has it?"
+      - "Has the eval scope grown since you started? How did you respond to that?"
+
+  - id: risk_and_blockers
+    name: Risk & Blockers Surfaced
+    weight: 1.5
+    intent: >
+      Identifying technical blockers early — security reviews, data privacy,
+      legacy integration constraints — prevents last-minute deal kills.
+    framework_refs: [meddpicc.identify_pain, meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Rep proactively asks about security, compliance, and data requirements at the start."
+      - "Known risks are logged and each has an owner and a resolution plan."
+      - "Rep escalates blockers internally and back to the buyer rather than hoping they resolve themselves."
+    what_poor_looks_like:
+      - "Security or compliance requirements surface only at the end of the eval."
+      - "Rep minimises risks to keep the buyer happy rather than surfacing them clearly."
+      - "No formal risk log; blockers are tracked only informally or not at all."
+    evidence_cues:
+      - "\"What are the biggest technical concerns your team has going into this eval?\""
+      - "\"Is there anything on the compliance or security side we should get ahead of now?\""
+    coaching_prompts:
+      - "What were the top three risks at the start of this eval and where do they stand now?"
+      - "Were any blockers a surprise? What would have surfaced them earlier?"
+
+  - id: integration_data_clarity
+    name: Integration & Data Clarity
+    weight: 1.5
+    intent: >
+      Integration complexity and data readiness are the most common reasons
+      technical evals slow down or fail; surfacing them early protects the timeline.
+    framework_refs: [meddpicc.identify_pain]
+    what_great_looks_like:
+      - "Rep maps the buyer's current tech stack and identifies all required integrations before the eval starts."
+      - "Data requirements (format, volume, access rights) are confirmed and a data readiness plan is in place."
+      - "API access, sandbox credentials, or data samples are secured before the start date."
+    what_poor_looks_like:
+      - "Integration requirements are discovered mid-eval, causing delays."
+      - "Rep assumes data is available without confirming access and format."
+      - "Eval stalls because the buyer's team does not have the internal resources to provide data or API access."
+    evidence_cues:
+      - "\"What does your current stack look like, and which systems need to connect?\""
+      - "\"Do you have API access set up, or do we need to involve your IT team to get that ready?\""
+    coaching_prompts:
+      - "What integrations were required, and how long did it take to confirm they were feasible?"
+      - "Was data readiness ever a blocker? What would you do before the next eval to prevent it?"
+
+  - id: value_mapping
+    name: Value Mapping Throughout the Eval
+    weight: 1.5
+    intent: >
+      Technical stakeholders focus on 'does it work?'; the rep must continuously
+      connect technical wins to business outcomes so the eval builds a business case, not just a feature check.
+    framework_refs: [meddpicc.metrics, meddpicc.identify_pain]
+    what_great_looks_like:
+      - "Rep ties each technical milestone back to the business metric it enables."
+      - "Mid-eval check-ins include a business value summary, not just a status update."
+      - "By the end of the eval, a draft business case or ROI estimate exists."
+    what_poor_looks_like:
+      - "Eval is run purely as a technical exercise with no connection to business value."
+      - "Rep lets the technical team drive the narrative exclusively; economic buyer never sees the value story."
+      - "At the end of the eval, there is no documented business outcome to present."
+    evidence_cues:
+      - "\"We've confirmed X works — what this means for your team is [business outcome].\""
+      - "\"Based on what we've seen so far, here is what we estimate the impact to be.\""
+    coaching_prompts:
+      - "How did you keep the business case visible to the economic buyer during the technical work?"
+      - "Could you present an ROI estimate today from this eval? What would it include?"
+
+  - id: multithreading
+    name: Multithreading
+    weight: 1
+    intent: >
+      A deal that lives in one technical contact's inbox dies when that contact
+      goes on leave, loses interest, or gets overruled by stakeholders the rep has never met.
+    framework_refs: [meddpicc.champion, meddpicc.economic_buyer]
+    what_great_looks_like:
+      - "Rep has active relationships with at least two people at the account beyond the technical evaluator."
+      - "Economic buyer or a business champion has been briefed on the eval at least once."
+      - "Rep uses the eval as an opportunity to introduce additional stakeholders to the product."
+    what_poor_looks_like:
+      - "Rep's only contact is the technical evaluator."
+      - "When asked about other stakeholders, rep says 'my contact will handle it internally.'"
+      - "Rep has not spoken to the economic buyer since discovery."
+    evidence_cues:
+      - "\"Would it make sense to loop in your Head of [X] for our mid-eval check-in?\""
+      - "\"I'd love to do a brief update call with [economic buyer] — can you set that up?\""
+    coaching_prompts:
+      - "Who else at this account knows your name, and what do they think of the eval so far?"
+      - "What would happen to this deal if your main technical contact left the company tomorrow?"
+
+  - id: next_step
+    name: Clear Next Step After Eval
+    weight: 1.5
+    intent: >
+      The technical eval should have a pre-agreed exit: a read-out meeting,
+      go/no-go decision, or commercial conversation — not an open-ended 'we'll be in touch'.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "The outcome of the eval and the resulting next step are defined before the eval begins."
+      - "A read-out or go/no-go meeting is calendared while the eval is running."
+      - "Rep confirms the next step with all relevant stakeholders, not just the technical evaluator."
+    what_poor_looks_like:
+      - "Eval ends with 'we'll review internally and get back to you' and no meeting booked."
+      - "Rep waits for the buyer to initiate the next step after the eval."
+      - "Next step is a further evaluation rather than a decision."
+    evidence_cues:
+      - "\"Let's lock in the read-out for [date] now so we can keep the momentum.\""
+      - "\"When the eval wraps, what needs to happen for you to move forward — and who needs to be in the room?\""
+    coaching_prompts:
+      - "What was the agreed next step at the end of this eval, and was it calendared before the call ended?"
+      - "Who was in the room for the next-step conversation, and who should have been?"

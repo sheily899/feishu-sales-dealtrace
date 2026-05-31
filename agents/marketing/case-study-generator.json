@@ -1,0 +1,84 @@
+{
+  "id": "AGTCaseStudy01",
+  "created": "2025-10-21T17:03:04.182Z",
+  "updated": "2025-10-21T17:03:04.182Z",
+  "name": "Case Study Generator",
+  "description": "Automatically generates polished case studies from successful customer engagements using your CRM data, conversation insights, and team commentary.",
+  "type": "AGENT",
+  "tags": [
+    "Marketing"
+  ],
+  "signals": [
+    "case study",
+    "success story",
+    "customer story",
+    "generate case study",
+    "marketing content",
+    "customer win",
+    "write case study",
+    "customer success"
+  ],
+  "detectorPrompt": "Trigger if the user wants to automatically generate case studies, success stories, or marketing content from customer conversations and CRM data.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Case Study Generator",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_direct_message": {
+            "displayName": "Send Message To A User",
+            "generic_action": "send_direct_message"
+          }
+        },
+        "crm": {
+          "run_query": {
+            "displayName": "Run Query (Advanced)",
+            "generic_action": "query_records"
+          },
+          "displayName": "CRM"
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "webhookTrigger": {
+            "connection": {
+              "externalId": "call recorder connection"
+            },
+            "displayName": "Conversation Analyzed",
+            "detailedTranscript": false,
+            "includeImportMetadata": false
+          }
+        }
+      },
+      "description": "",
+      "display_name": "Case Study Generator",
+      "instructions": "🎯 Purpose\n\nAutomatically generate polished, client-ready case studies summarizing successful customer engagements, using data from your CRM, team conversations, and analytics systems. The goal is to streamline marketing and enablement content creation by turning internal data into structured narratives.\n\n💡 Behavior\n\nTrigger Type: Primarily activates after a conversation analyzed event where a deal or project success is detected, or when a CRM opportunity is marked as Closed Won.\n\nTone: Professional, evidence-based, narrative-driven.\n\nOutput Style: Markdown or formatted text blocks ready for publication in Notion, HubSpot, or internal documentation.\n\nFrequency: On-demand (manual trigger) or automatic weekly summaries.\n\n⚙️ Procedure\n\nEvent Detection\n\nListens for events tagged as deal success, project completion, or customer satisfaction highlight.\n\nConfirms relevant metadata from your CRM (account name, deal size, industry, key contacts, dates).\n\nData Aggregation\n\nPulls conversation insights from the call analytics database.\n\nExtracts quotes and performance metrics (e.g., time saved, revenue impact).\n\nGathers team commentary from relevant team channels (e.g., #customer-success).\n\nStory Synthesis\n\nStructures the case study into clear sections:\n\nClient Overview\n\nChallenge\n\nSolution\n\nResults\n\nCustomer Quote\n\nTeam Insights\n\nUses narrative templates fine-tuned to the company's tone.\n\nQuality Validation\n\nRuns a short internal approval workflow:\n\nMarketing review for tone and clarity.\n\nSales review for data accuracy.\n\nPublishing / Output\n\nOutputs formatted text to a designated Notion database or internal CMS.\n\nPosts summary announcement in #marketing-content team channel.\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {}
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "conversation_analyzed",
+    "summary": "Once per analyzed call (call recorder 'Conversation Analyzed' webhook)."
+  },
+  "integrations": [
+    "call_recorder",
+    "communication",
+    "crm"
+  ]
+}

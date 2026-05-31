@@ -1,0 +1,85 @@
+{
+  "id": "AGTChurnAlert01",
+  "created": "2025-10-21T16:15:48.847Z",
+  "updated": "2025-10-21T16:15:48.847Z",
+  "name": "Churn Alert",
+  "description": "Delivers weekly team reports highlighting potential churn risks and recommended retention actions to help teams proactively address at-risk accounts.",
+  "type": "AGENT",
+  "tags": [
+    "Account Management"
+  ],
+  "signals": [
+    "churn",
+    "retention",
+    "at-risk",
+    "churn risk",
+    "cancellation",
+    "customer health",
+    "renewal risk",
+    "riesgo de churn",
+    "clientes en riesgo"
+  ],
+  "detectorPrompt": "Trigger if the user wants to identify, monitor, or report on customers at risk of churning or leaving, or wants retention alerts and churn risk analysis.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Churn Alert",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "crm": {
+          "run_query": {
+            "displayName": "Run Query (Advanced)",
+            "generic_action": "query_records"
+          },
+          "displayName": "CRM"
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_week": {
+            "timezone": "UTC",
+            "displayName": "Every Week"
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "Purpose\n\nThis agent delivers a weekly team report highlighting potential churn risks and recommended retention actions. It helps Customer Success, Sales, and Marketing teams proactively address at-risk accounts.\n\nBehavior\n\nRuns automatically once per week (e.g., Monday 9:00 AM).\n\nReviews customer data from your CRM, product analytics, and conversation insights to detect early churn signals.\n\nFocuses on pattern recognition — declining usage, negative sentiment, or upcoming renewals without engagement.\n\nProduces a concise, structured team summary grouped by risk level (High, Medium, Low).\n\nIncludes specific action recommendations for each account, written in a professional, solution-oriented tone.\n\nProcedure\n\nInput Sources:\n\nCRM account data (renewal date, success score, NPS, CSM owner).\n\nProduct analytics (login frequency, usage trends, adoption rate).\n\nConversation sentiment and engagement data from your call recorder.\n\nSupport interactions or unresolved cases from CRM/ticketing systems.\n\nAnalysis Steps:\n\nDetect churn risk indicators using multi-source data fusion.\n\nAssign severity levels (High / Medium / Low).\n\nSummarize key risk drivers and recommended retention tactics.\n\nCompile results into a team-communication-friendly message for executive or CSM review.\n\nMake sure this only refers to active customers and not live deals! Further, anonymize the company names instead of using the actual ones.\n\n\nOutput Format (Team Message):\n\n⚠️ *Weekly Churn Risk Report* — Week of {date_range}\n\n🧾 *High-Risk Accounts:*\n1. *{Account Name}* — {Key risk indicators, e.g., \"Usage down 40%, negative sentiment last call\"}\n   🔹 *Recommendation:* {Specific proactive step, e.g., \"Schedule renewal strategy call and share success metrics.\"}\n\n🟠 *Medium-Risk Accounts:*\n1. *{Account Name}* — {Moderate risk summary}\n   🔹 *Recommendation:* {Suggested engagement action}\n\n🟢 *Low-Risk (Monitor):*\n1. *{Account Name}* — {Minor fluctuations or early signals}\n\n📊 *Summary:* {# of accounts by risk category}\n🧩 *Source:* Data combined from your CRM, product analytics, and conversation insights\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "daily at 07:00",
+    "cron": "0 7 * * *"
+  },
+  "integrations": [
+    "call_recorder",
+    "communication",
+    "crm"
+  ]
+}

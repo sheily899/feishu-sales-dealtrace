@@ -1,0 +1,151 @@
+# Deal / Opportunity health rubric (SALES) — scores an opportunity across ALL its
+# calls, not a single conversation. Conforms to schemas/rubric.schema.json
+#
+# Evaluated over the set of call coaching reports for one opportunity (plus optional
+# CRM metadata: stage, amount, close date). Output: a deal health score, a
+# win-likelihood band, qualification coverage, risks, and recommended actions.
+# Fork the dimensions/weights to match how your team actually qualifies.
+id: deal-health
+name: Deal Health
+version: "1.0"
+kind: deal-health
+description: >
+  A MEDDPICC- and SPICED-grounded view of opportunity health: how completely the deal
+  is qualified, how much momentum it has, and what is most likely to kill it.
+frameworks: [meddpicc, spiced, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: strong, min: 75, meaning: "Well-qualified, multi-threaded, moving. Forecastable." }
+    - { label: promising, min: 55, meaning: "Real but with named gaps to close." }
+    - { label: at-risk, min: 35, meaning: "Material gaps; needs intervention to survive." }
+    - { label: long-shot, min: 0, meaning: "Poorly qualified or stalled. Inspect or disqualify." }
+  # Lower score => higher slip/loss risk. Evaluated ascending (score <= max wins).
+  risk_bands:
+    - { label: high, max: 34, meaning: "High risk of slip or loss." }
+    - { label: medium, max: 64, meaning: "Moderate risk; specific gaps to close." }
+    - { label: low, max: 100, meaning: "Low risk if execution continues." }
+
+dimensions:
+  - id: pain_and_impact
+    name: Pain & Quantified Impact
+    weight: 2
+    intent: Deals without quantified, owned pain stall in procurement and "no decision".
+    framework_refs: [spiced.pain, spiced.impact, meddpicc.identify_pain, meddpicc.metrics]
+    strong_signals:
+      - "A ranked top priority is named in the buyer's words across calls."
+      - "Impact is quantified (time/money/risk) and the cost of inaction is explicit."
+    weak_signals:
+      - "Pain stays qualitative; no number a champion could take to finance."
+    risk_flags:
+      - "No quantified impact anywhere in the deal history."
+
+  - id: economic_buyer
+    name: Economic Buyer Engagement
+    weight: 2
+    intent: Deals where the economic buyer is unknown or unengaged routinely slip.
+    framework_refs: [meddpicc.economic_buyer]
+    strong_signals:
+      - "The economic buyer is identified AND has engaged directly (not just via champion)."
+    weak_signals:
+      - "EB named but never met; access mediated entirely by a single contact."
+    risk_flags:
+      - "Economic buyer unknown late in the cycle."
+
+  - id: champion
+    name: Champion Strength
+    weight: 1.5
+    intent: A real champion sells for you when you're not in the room.
+    framework_refs: [meddpicc.champion]
+    strong_signals:
+      - "A champion actively advocates internally and has given access to power."
+      - "Champion has shared internal context (process, politics, competition)."
+    weak_signals:
+      - "A friendly contact who likes the product but can't or won't push."
+    risk_flags:
+      - "No identified champion."
+
+  - id: decision_process
+    name: Decision Process & Criteria
+    weight: 1.5
+    intent: You can't drive to a close you can't see.
+    framework_refs: [meddpicc.decision_process, meddpicc.decision_criteria, spiced.decision]
+    strong_signals:
+      - "The steps to a signed agreement, the criteria, and the approvers are known."
+    weak_signals:
+      - "Vague sense of 'they'll decide' with no mapped steps."
+    risk_flags:
+      - "Decision process unknown past mid-stage."
+
+  - id: paper_process
+    name: Paper / Procurement Process
+    weight: 1
+    intent: Legal, security, and procurement surprises are the classic late slip.
+    framework_refs: [meddpicc.paper_process]
+    strong_signals:
+      - "Procurement, security review, and legal path are understood and started in time."
+    weak_signals:
+      - "No discussion of how a contract actually gets signed."
+    risk_flags:
+      - "Late-stage deal with paper process never discussed."
+
+  - id: compelling_event
+    name: Compelling Event & Timeline
+    weight: 1.5
+    intent: Without a forcing function, deals default to no decision.
+    framework_refs: [spiced.critical_event]
+    strong_signals:
+      - "A dated, real compelling event ties the decision to a deadline."
+    weak_signals:
+      - "Timeline is 'sometime this year' with no driver."
+    risk_flags:
+      - "No compelling event and a slipping close date."
+
+  - id: multithreading
+    name: Multithreading
+    weight: 1.5
+    intent: Single-threaded deals die when one person leaves or goes quiet.
+    framework_refs: [meddpicc.champion, meddpicc.economic_buyer]
+    strong_signals:
+      - "Multiple stakeholders across functions are engaged across calls."
+    weak_signals:
+      - "Every interaction is with the same one contact."
+    risk_flags:
+      - "Single-threaded on a large/late-stage deal."
+
+  - id: competition
+    name: Competition & Alternatives
+    weight: 1
+    intent: "'Do nothing' and incumbents are competitors too."
+    framework_refs: [meddpicc.competition]
+    strong_signals:
+      - "Alternatives (including status quo) are known and positioned against on value."
+    weak_signals:
+      - "No idea what else is being considered."
+    risk_flags:
+      - "Active competitor with no differentiation strategy."
+
+  - id: next_step_hygiene
+    name: Next-Step Hygiene
+    weight: 1.5
+    intent: A deal that consistently ends calls without a calendared next step is drifting.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    strong_signals:
+      - "Most calls end with a specific, dated, mutually-owned next step."
+    weak_signals:
+      - "Recurring 'I'll send something' / 'let me get back to you' endings."
+    risk_flags:
+      - "No scheduled next step on the books right now."
+
+  - id: momentum
+    name: Momentum
+    weight: 1
+    intent: Cadence and forward motion predict close better than any single call.
+    framework_refs: [next-steps.specific_action]
+    strong_signals:
+      - "Regular, meaningful progress between calls; each advances the deal."
+    weak_signals:
+      - "Long gaps; calls that re-tread old ground without advancing."
+    risk_flags:
+      - "No meaningful contact in an unusually long window (ghosting)."

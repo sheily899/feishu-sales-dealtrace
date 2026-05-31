@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0",
+  "call_id": "renewal-initech-2026-q2-001",
+  "title": "Initech Corp <> Northstar Renewal & Expansion",
+  "started_at": "2026-05-15T14:00:00Z",
+  "duration_seconds": 2580,
+  "source": {
+    "recorder": "generic",
+    "adapter": "gtmsi-plaintext-v1",
+    "language": "en-US"
+  },
+  "participants": [
+    {
+      "id": "taylor",
+      "name": "Taylor",
+      "side": "rep",
+      "title": "Customer Success Manager",
+      "organization": "Northstar",
+      "talk_seconds": 980
+    },
+    {
+      "id": "dana",
+      "name": "Dana",
+      "side": "customer",
+      "title": "Director of Operations",
+      "organization": "Initech Corp",
+      "talk_seconds": 1100
+    },
+    {
+      "id": "lee",
+      "name": "Lee",
+      "side": "customer",
+      "title": "VP Finance",
+      "organization": "Initech Corp",
+      "talk_seconds": 500
+    }
+  ],
+  "turns": [
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Hey Dana, hey Lee — thanks for joining. Good to see you both. Dana, I think this is the first time Lee's been on one of our calls directly, so welcome Lee.",
+      "start_seconds": 5,
+      "end_seconds": 16
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "Yeah, first time. Dana's kept me in the loop but I wanted to hear directly about the renewal.",
+      "start_seconds": 17,
+      "end_seconds": 24
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Completely makes sense, and I'm glad you're here. So here's what I had in mind — I want to start by walking through what we've accomplished together over the past year, make sure we're aligned on value, then we can talk about where things stand on the renewal and whether there's anything on the expansion side worth discussing. Does that work?",
+      "start_seconds": 25,
+      "end_seconds": 44
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "That works. And I'd say upfront — the platform itself has been great. My team loves it. This is really a budget conversation more than anything.",
+      "start_seconds": 45,
+      "end_seconds": 56
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "I appreciate you saying that, and good to hear. Let me make sure the value side is really crisp before we get to numbers, because I want Lee to have the full picture. So — over the past twelve months, Initech has had about eighty-three active users on the platform. That's actually up from thirty-one when you started, so almost triple the adoption.",
+      "start_seconds": 57,
+      "end_seconds": 79
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "Yeah, we rolled it out to the regional ops teams in November and that's where a lot of the growth came from.",
+      "start_seconds": 80,
+      "end_seconds": 90
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Exactly. And the Monday reporting process — I know that was the original problem that brought you to Northstar. How long was that taking before?",
+      "start_seconds": 91,
+      "end_seconds": 102
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "The manual pull was about three to four hours every Monday morning. My senior analyst was basically useless until noon.",
+      "start_seconds": 103,
+      "end_seconds": 114
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Right. And now that's automated through the scheduled reports — what's the current state?",
+      "start_seconds": 115,
+      "end_seconds": 122
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "It runs overnight. The report is in everyone's inbox by eight AM Monday. So yeah, we've gotten that time back completely.",
+      "start_seconds": 123,
+      "end_seconds": 134
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "That's meaningful. If I put a rough number on it — three hours a week, fifty-two weeks, at a senior analyst salary — you're looking at roughly forty thousand dollars in recovered capacity, just on that one workflow. Lee, does that math land for you?",
+      "start_seconds": 135,
+      "end_seconds": 152
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "The logic is right. I'd say it's a bit generous because that time didn't just disappear — she's doing other things — but yes, the efficiency is real.",
+      "start_seconds": 153,
+      "end_seconds": 165
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Fair point — it's recovered capacity, not pure cost savings. But she's doing higher-value work now. Dana, would you say that's accurate?",
+      "start_seconds": 166,
+      "end_seconds": 176
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "Definitely. She's been leading our forecasting project instead of pulling numbers. That's a real shift.",
+      "start_seconds": 177,
+      "end_seconds": 186
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Great example. The other thing I wanted to highlight — you've had zero data discrepancy escalations this year. Last year, before Northstar, you had — I think it was four or five incidents where different teams had conflicting numbers in exec meetings.",
+      "start_seconds": 187,
+      "end_seconds": 204
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "Yeah. The Q2 board meeting last year was a disaster because Finance and Ops had different revenue numbers. That hasn't happened since we standardized on Northstar's metric definitions.",
+      "start_seconds": 205,
+      "end_seconds": 220
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "I was in that meeting. It was embarrassing.",
+      "start_seconds": 221,
+      "end_seconds": 226
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "I can imagine. And that kind of credibility problem is hard to put a number on but it's very real. Okay — so current contract is at sixty-two thousand annually, covering up to a hundred users, and it renews July first. What I want to make sure is that Lee has context on what you'd be renewing and why.",
+      "start_seconds": 227,
+      "end_seconds": 250
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "So my question is pretty direct. Sixty-two thousand is not a small line item. We're under pressure to cut discretionary spend by about fifteen percent across the board this cycle. I need to understand what the case is for keeping this at the current rate.",
+      "start_seconds": 251,
+      "end_seconds": 270
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "I appreciate you being direct, Lee — that's exactly what I need to respond to properly. So — the case is essentially what Dana just walked through. You're at eighty-three active users and growing, the Monday process is eliminated, the exec data conflicts are gone, and your analyst is working on forecasting instead of data janitorial work. The ROI is well above the contract value. But I hear that there's a budget constraint that's real regardless of ROI.",
+      "start_seconds": 271,
+      "end_seconds": 300
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "Right. The ROI argument is fine. But I have to make cuts somewhere and this is something I can point to as a line item.",
+      "start_seconds": 301,
+      "end_seconds": 312
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Understood. Can I ask — is this a matter of the total spend, or is it about the rate per seat? Because you're actually on a very favorable rate right now. At eighty-three users, you're paying less than seven fifty per user per year, which is well below our current list price.",
+      "start_seconds": 313,
+      "end_seconds": 334
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "Hmm. I wasn't aware of that comparison. Dana, did you know that?",
+      "start_seconds": 335,
+      "end_seconds": 342
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "I knew we had a good rate but I didn't have the per-seat breakdown.",
+      "start_seconds": 343,
+      "end_seconds": 350
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Yeah, when you signed, we locked in early-adopter pricing. The current list for your tier is closer to twelve hundred per user annually. So you're at a meaningful discount already. I want to be transparent about that because if you were to churn and come back later, you'd be coming back at a higher rate.",
+      "start_seconds": 351,
+      "end_seconds": 374
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "That's a fair point. What flexibility do you have on the renewal price?",
+      "start_seconds": 375,
+      "end_seconds": 382
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "So our standard renewal holds the current rate flat. If you were to expand — say, move to a hundred and twenty users, which is where you're tracking based on the growth this year — we could actually keep the per-seat rate the same, which means the total goes up modestly but the unit economics stay favorable. I'm not sure I can go below sixty-two without escalating to my leadership team.",
+      "start_seconds": 383,
+      "end_seconds": 410
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "I'm not expecting a huge discount. But if you could find something, even five percent, it helps me show I pushed.",
+      "start_seconds": 411,
+      "end_seconds": 422
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "I hear you. Let me take that back and see what I can do. I can't promise anything but I'll advocate. Can I ask — is there a scenario where you'd look at a two-year commitment? Sometimes that's a path to a better rate.",
+      "start_seconds": 423,
+      "end_seconds": 440
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "Potentially. I'd need to know the number first.",
+      "start_seconds": 441,
+      "end_seconds": 447
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Understood. I'll come back with a couple of scenarios — flat one-year, two-year with a discount, and possibly an expansion option if that's relevant. Dana, on the expansion side — you mentioned the regional teams came on in November. Are there other teams that haven't onboarded yet?",
+      "start_seconds": 448,
+      "end_seconds": 468
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "The customer success team has been asking about it. They want to use Northstar to track customer health metrics. That's maybe fifteen to twenty more seats.",
+      "start_seconds": 469,
+      "end_seconds": 481
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "That's a natural extension and we have a lot of customers using it for exactly that. I'd love to show you what that looks like — there's a customer health dashboard template that might map well. Could be worth a separate call with whoever owns that on your side.",
+      "start_seconds": 482,
+      "end_seconds": 499
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "Yeah, I can connect you with our CS ops lead. That's a good idea.",
+      "start_seconds": 500,
+      "end_seconds": 508
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Great. Okay — so to wrap up what I'm taking away. I'll come back to you with renewal scenarios by end of this week, including the two-year option. I'll see what I can do on a small discount and I'll be transparent about what's possible. And I'll send you an intro to our CS ops template so you can share with Dana's contact. Does that cover everything from your side, Lee?",
+      "start_seconds": 509,
+      "end_seconds": 536
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "That covers it. I just need the numbers by end of week because our budget cycle closes in two weeks.",
+      "start_seconds": 537,
+      "end_seconds": 547
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Understood. You'll have it by Friday. Dana, anything else from your side?",
+      "start_seconds": 548,
+      "end_seconds": 556
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "No, I think that's good. Thanks Taylor. And thanks for putting together the usage data — it actually helped me make the case internally before this call.",
+      "start_seconds": 557,
+      "end_seconds": 570
+    },
+    {
+      "speaker": "taylor",
+      "side": "rep",
+      "text": "Really glad to hear that. That's exactly what it's there for. Okay — talk to you both soon. Have a good rest of your week.",
+      "start_seconds": 571,
+      "end_seconds": 582
+    },
+    {
+      "speaker": "lee",
+      "side": "customer",
+      "text": "Thanks. Bye.",
+      "start_seconds": 583,
+      "end_seconds": 585
+    },
+    {
+      "speaker": "dana",
+      "side": "customer",
+      "text": "Take care, Taylor.",
+      "start_seconds": 586,
+      "end_seconds": 589
+    }
+  ],
+  "metadata": {
+    "call_type": "renewal",
+    "crm_stage": "Renewal - Negotiation",
+    "deal_amount_usd": 62000,
+    "renewal_date": "2026-07-01",
+    "account_name": "Initech Corp",
+    "contract_start": "2025-07-01",
+    "current_seats": 83,
+    "seat_limit": 100,
+    "coaching_flags": [
+      "rep did not explicitly ask for commitment at any point",
+      "expansion opportunity identified but not pursued in depth",
+      "good value recap with specific metrics",
+      "pricing transparency was effective"
+    ]
+  }
+}

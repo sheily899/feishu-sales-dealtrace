@@ -1,0 +1,132 @@
+# Account health rubric (CUSTOMER SUCCESS) — scores an existing customer account
+# across ALL its post-sales calls/signals. Conforms to schemas/rubric.schema.json
+#
+# Evaluated over the set of post-sales coaching reports (onboarding, check-in,
+# renewal, QBR) for one account, plus optional usage/CRM signals. Output: an account
+# health score, a churn-risk band, risks, expansion potential, and recommended plays.
+# This is the CSM (Customer Success Manager) counterpart to deal-health.
+id: account-health
+name: Account Health
+version: "1.0"
+kind: account-health
+description: >
+  A leading-indicator view of customer health for CSMs: are they adopting, realizing
+  value, well-related, and likely to renew and expand — or quietly churning?
+frameworks: [command-of-the-message, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: healthy, min: 75, meaning: "Adopting, getting value, multi-threaded. Renewal + expansion likely." }
+    - { label: stable, min: 55, meaning: "Fine but not a fan; watch for drift." }
+    - { label: at-risk, min: 35, meaning: "Leading indicators are flashing; intervene now." }
+    - { label: critical, min: 0, meaning: "Likely to churn without urgent action." }
+  # Lower health => higher churn risk. Evaluated ascending (score <= max wins).
+  risk_bands:
+    - { label: high, max: 34, meaning: "High churn risk." }
+    - { label: medium, max: 64, meaning: "Elevated churn risk; specific gaps to close." }
+    - { label: low, max: 100, meaning: "Low churn risk." }
+
+dimensions:
+  - id: adoption_usage
+    name: Adoption & Usage
+    weight: 2
+    intent: Usage is the single strongest leading indicator of renewal.
+    strong_signals:
+      - "Active, broad, and growing usage across the intended teams/use cases."
+      - "Customer references doing real work in the product."
+    weak_signals:
+      - "Usage is narrow, declining, or concentrated in one person."
+    risk_flags:
+      - "Usage flat-lined or dropped meaningfully."
+
+  - id: value_realized
+    name: Value Realized (ROI)
+    weight: 2
+    intent: Customers renew on outcomes, not features.
+    framework_refs: [command-of-the-message.positive_business_outcomes, command-of-the-message.metrics]
+    strong_signals:
+      - "Concrete outcomes/metrics achieved are stated and tied to original goals."
+    weak_signals:
+      - "No articulated value; the original success metrics were never revisited."
+    risk_flags:
+      - "Customer cannot name a single concrete win."
+
+  - id: sentiment
+    name: Sentiment & Satisfaction
+    weight: 1.5
+    intent: How the customer feels colors every renewal conversation.
+    strong_signals:
+      - "Positive, proactive tone; volunteers praise or references."
+    weak_signals:
+      - "Frustration, unresolved complaints, or a transactional tone."
+    risk_flags:
+      - "Open escalation or repeated negative feedback."
+
+  - id: engagement
+    name: Engagement & Cadence
+    weight: 1.5
+    intent: Quiet accounts churn quietly.
+    framework_refs: [next-steps.committed_date]
+    strong_signals:
+      - "Regular, two-way engagement; the customer shows up and participates."
+    weak_signals:
+      - "Hard to reach; cancellations; one-way communication."
+    risk_flags:
+      - "No meaningful contact in an unusually long window."
+
+  - id: relationship_depth
+    name: Relationship Depth & Multithreading
+    weight: 1.5
+    intent: Single-threaded accounts are one departure away from churn.
+    strong_signals:
+      - "Multiple stakeholders engaged, including a senior sponsor."
+    weak_signals:
+      - "Entire relationship rests on one contact."
+    risk_flags:
+      - "Sole champion is leaving or disengaging."
+
+  - id: champion_health
+    name: Champion Health
+    weight: 1
+    intent: A healthy, empowered champion sustains the account.
+    strong_signals:
+      - "An engaged champion with influence and continuity."
+    weak_signals:
+      - "Champion is junior, overloaded, or losing internal support."
+    risk_flags:
+      - "Champion departed with no successor."
+
+  - id: risk_signals
+    name: Risk Signals
+    weight: 1.5
+    intent: Explicit churn precursors deserve their own lens.
+    strong_signals:
+      - "No active risk signals; concerns are surfaced and resolved quickly."
+    weak_signals:
+      - "Budget pressure, reorg, M&A, competitor evaluation, or support pain mentioned."
+    risk_flags:
+      - "Budget cut, sponsor change, or competitor evaluation in progress."
+
+  - id: renewal_readiness
+    name: Renewal Readiness
+    weight: 1.5
+    intent: Renewal should be de-risked long before the date.
+    framework_refs: [next-steps.committed_date, next-steps.right_people]
+    strong_signals:
+      - "Renewal timing/process known; value recap underway; budget owner engaged."
+    weak_signals:
+      - "Renewal approaching with no plan and no commitment signal."
+    risk_flags:
+      - "Renewal within one quarter and no engaged budget owner."
+
+  - id: expansion_potential
+    name: Expansion Potential
+    weight: 1
+    intent: Healthy accounts are where growth comes from.
+    framework_refs: [command-of-the-message.differentiated_value]
+    strong_signals:
+      - "Credible expansion use case / team / seats identified and warm."
+    weak_signals:
+      - "No expansion path explored despite a healthy account."
+    risk_flags: []

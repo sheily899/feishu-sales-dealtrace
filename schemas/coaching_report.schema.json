@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/coaching_report.schema.json",
+  "title": "CoachingReport",
+  "description": "The structured output of the pipeline. This is the contract the LLM must satisfy. Everything is evidence-bound: scores and feedback reference verbatim transcript quotes so the coaching is auditable and never hand-wavy.",
+  "type": "object",
+  "required": ["schema_version", "classification", "outcomes", "scores", "summary", "coaching"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "call_id": { "type": ["string", "null"] },
+    "classification": {
+      "type": "object",
+      "required": ["call_type", "phase", "confidence", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "call_type": { "type": "string", "description": "Chosen call_type id." },
+        "phase": { "type": "string", "enum": ["pre-sales", "post-sales", "neither"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rationale": { "type": "string" },
+        "alternatives": {
+          "type": "array",
+          "description": "Runner-up call types with confidence, for transparency.",
+          "items": {
+            "type": "object",
+            "required": ["call_type", "confidence"],
+            "additionalProperties": false,
+            "properties": {
+              "call_type": { "type": "string" },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "description": "The desired outcomes inferred for THIS call, and whether they were achieved.",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "statement": { "type": "string", "description": "The concrete desired outcome, phrased for this specific deal." },
+          "status": { "type": "string", "enum": ["achieved", "partial", "missed", "unknown"] },
+          "evidence": { "type": "array", "items": { "$ref": "#/$defs/quote" } }
+        }
+      }
+    },
+    "scores": {
+      "type": "array",
+      "description": "One entry per scorecard criterion.",
+      "items": {
+        "type": "object",
+        "required": ["criterion_id", "criterion_name", "score", "band", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "criterion_id": { "type": "string" },
+          "criterion_name": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "band": { "type": "string" },
+          "weight": { "type": "number" },
+          "rationale": { "type": "string" },
+          "evidence": { "type": "array", "items": { "$ref": "#/$defs/quote" } }
+        }
+      }
+    },
+    "overall_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Weighted average of criterion scores."
+    },
+    "summary": {
+      "type": "string",
+      "description": "2-4 sentence executive summary a manager could read in 15 seconds."
+    },
+    "coaching": {
+      "type": "object",
+      "required": ["strengths", "improvements", "next_call_focus"],
+      "additionalProperties": false,
+      "properties": {
+        "strengths": {
+          "type": "array",
+          "description": "What the rep did well, with evidence. Reinforce these.",
+          "items": { "$ref": "#/$defs/coaching_point" }
+        },
+        "improvements": {
+          "type": "array",
+          "description": "Specific, prioritized improvements. Each ties to evidence and offers a concrete better move.",
+          "items": { "$ref": "#/$defs/coaching_point" }
+        },
+        "next_call_focus": {
+          "type": "array",
+          "description": "1-3 things the rep should do on the very next interaction with this account.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "manager_notes": {
+      "type": ["string", "null"],
+      "description": "Optional aside for the manager (e.g. deal risk, pattern across calls). Not shown to the rep by default."
+    }
+  },
+  "$defs": {
+    "quote": {
+      "type": "object",
+      "required": ["speaker", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "speaker": { "type": "string" },
+        "text": { "type": "string", "description": "Verbatim (or near-verbatim) quote from the transcript." },
+        "timestamp_seconds": { "type": ["number", "null"] }
+      }
+    },
+    "coaching_point": {
+      "type": "object",
+      "required": ["title", "detail"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "description": "Short headline, e.g. 'Quantify the cost of inaction'." },
+        "detail": { "type": "string", "description": "What happened and why it matters." },
+        "criterion_id": { "type": "string", "description": "Which criterion this maps to, if any." },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/quote" } },
+        "better_move": {
+          "type": "string",
+          "description": "A concrete, copy-pasteable example of what the rep could have said or done instead."
+        },
+        "priority": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    }
+  }
+}

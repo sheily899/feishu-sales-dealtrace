@@ -1,0 +1,178 @@
+# Closing scorecard — coaching rubric for final commitment and signature calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (MEDDPICC, Next-Steps). Fork it and tune the criteria/weights for your business.
+id: closing
+name: Closing / Commit
+version: "1.0"
+description: >
+  Evaluates how well the rep navigated the mutual action plan, removed final
+  blockers, secured a verbal and written commitment, handled signature logistics,
+  confirmed multi-stakeholder sign-off, maintained urgency, and locked the
+  next step into the post-sale motion.
+applies_to: [closing]
+frameworks: [meddpicc, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: mutual_action_plan
+    name: Mutual Action Plan Reviewed
+    weight: 2
+    intent: >
+      A shared, written close plan eliminates ambiguity about what needs to
+      happen and who owns each step before the contract is signed.
+    framework_refs: [next-steps.specific_action, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep opens the call by reviewing the mutual action plan with the buyer."
+      - "Every open item has an owner and a completion date that both sides have agreed to."
+      - "Rep updates the plan live on the call if anything has changed."
+    what_poor_looks_like:
+      - "No mutual action plan exists; next steps are tracked only in the rep's head."
+      - "Plan exists but is not reviewed on the call — items slip through without notice."
+      - "Rep is the only one contributing to the plan; buyer is not actively engaged."
+    evidence_cues:
+      - "\"Let's run through where we are on the plan — I have [X] still open on our side and [Y] on yours.\""
+      - "\"Is there anything on the plan that has changed since we last spoke?\""
+    coaching_prompts:
+      - "Can you show me the mutual action plan for this deal? Is it written down and shared with the buyer?"
+      - "When you last reviewed the plan with the buyer, how did they respond to the remaining items?"
+
+  - id: final_blockers_removed
+    name: Final Blockers Removed
+    weight: 2
+    intent: >
+      At the closing stage, blockers are not hypothetical — they are the specific
+      things standing between a verbal yes and a signed contract.
+    framework_refs: [meddpicc.identify_pain, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep opens the door to any remaining concerns before assuming everything is clear."
+      - "Each blocker is addressed with a concrete resolution plan or timeline."
+      - "Rep escalates internal blockers (legal, security, finance) rather than hoping they self-resolve."
+    what_poor_looks_like:
+      - "Rep assumes all blockers are resolved because the buyer sounded positive last time."
+      - "Blocker surfaces on this call for the first time, derailing the close."
+      - "Rep minimises a blocker to maintain momentum, only to have it resurface later."
+    evidence_cues:
+      - "\"What, if anything, is still standing between where we are today and a signed agreement?\""
+      - "\"Is there anything your legal / finance / IT team raised that we haven't addressed yet?\""
+    coaching_prompts:
+      - "What was the last blocker you removed from this deal? How did you remove it?"
+      - "Were there any surprises on this call — things you didn't know were still open?"
+
+  - id: commitment_secured
+    name: Commitment Secured
+    weight: 2
+    intent: >
+      A verbal commitment that is not confirmed explicitly is fragile; the rep
+      must hear a clear yes and confirm what it means for both sides.
+    framework_refs: [meddpicc.economic_buyer, next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep explicitly asks for the commitment rather than assuming it from positive signals."
+      - "Buyer's verbal yes is confirmed and summarised on the call."
+      - "Rep confirms the commitment with the economic buyer, not just the champion."
+    what_poor_looks_like:
+      - "Rep interprets enthusiasm as commitment without asking directly."
+      - "Verbal yes is obtained from a champion who does not have authority to sign."
+      - "Rep ends the call without explicitly confirming what the buyer has agreed to."
+    evidence_cues:
+      - "\"Are you in a position to move forward? I want to make sure I heard that correctly.\""
+      - "\"So we have a yes from your side — let me confirm what that means for the next steps.\""
+    coaching_prompts:
+      - "At what point on this call did you hear an explicit commitment — and from whom?"
+      - "How confident are you that the person who said yes has the authority to mean it?"
+
+  - id: signature_logistics
+    name: Signature Logistics
+    weight: 1.5
+    intent: >
+      Deals fall apart between verbal yes and signature because logistics are
+      assumed rather than managed; owning the process is the rep's job.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep walks through the signature process step by step and confirms who will sign, via what tool, by when."
+      - "Rep sends the contract promptly after the call, while commitment is fresh."
+      - "Rep confirms that all signatories have access to the document and know it is coming."
+    what_poor_looks_like:
+      - "Rep assumes the buyer knows how to sign and does not confirm the process."
+      - "Contract sits in an inbox unsigned for days because no one followed up."
+      - "Wrong version of the contract is sent, causing delays."
+    evidence_cues:
+      - "\"Who are the signatories on your end — I'll make sure they're on the signature request.\""
+      - "\"I'll send the agreement right after this call. Can you confirm [signing tool/process] works for you?\""
+    coaching_prompts:
+      - "What is the exact path from today to a fully executed contract — and is anything on that path unclear?"
+      - "How quickly did the contract go out after the verbal yes, and why?"
+
+  - id: stakeholder_signoff
+    name: Stakeholder Sign-Off Confirmed
+    weight: 1.5
+    intent: >
+      Missing a required approver at close is a deal-killer; confirming every
+      signature authority before the contract goes out prevents last-minute surprises.
+    framework_refs: [meddpicc.economic_buyer, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep has mapped every required approver and confirmed their position before the close call."
+      - "Economic buyer has been engaged directly, not just briefed through the champion."
+      - "Rep is aware of any board, legal, or procurement sign-off required and has planned for it."
+    what_poor_looks_like:
+      - "Rep learns about a required approver for the first time on this call."
+      - "Economic buyer's support is assumed but not confirmed directly."
+      - "Contract requires a signature from someone who has not been part of the process."
+    evidence_cues:
+      - "\"Who needs to sign or approve this on your side — is there anyone beyond you?\""
+      - "\"Has [economic buyer / board / procurement] given the green light, or is that a step we still need?\""
+    coaching_prompts:
+      - "List every person who needs to sign or formally approve this deal. Have you spoken to each of them?"
+      - "What would happen if an approver you haven't met pushes back at the last minute?"
+
+  - id: urgency_maintained
+    name: Urgency Maintained
+    weight: 1
+    intent: >
+      Deals that lose urgency at the close stage slip; reinforcing the compelling
+      event or cost of delay keeps both sides motivated to finish quickly.
+    framework_refs: [meddpicc.identify_pain, next-steps.committed_date]
+    what_great_looks_like:
+      - "Rep references the buyer's compelling event or cost of delay to maintain momentum."
+      - "Rep does not let the close drag — proactively follows up on outstanding items."
+      - "Rep articulates what the buyer loses for every week the decision is delayed."
+    what_poor_looks_like:
+      - "Rep stops driving urgency once a verbal yes is received, letting the deal go cold."
+      - "Rep waits for the buyer to follow up rather than managing the remaining steps."
+      - "No compelling event is referenced; deal slips without a forcing function."
+    evidence_cues:
+      - "\"You mentioned [event/deadline] — we need the contract signed by [date] to hit that. What do we need to do to make that happen?\""
+      - "\"Every week we delay is [cost/risk] — let's make sure we stay on track.\""
+    coaching_prompts:
+      - "What is the buyer's compelling event, and how did you reference it to maintain urgency on this call?"
+      - "Did the deal accelerate or decelerate after the verbal yes? What drove that?"
+
+  - id: next_step
+    name: Clear Next Step into Post-Sale
+    weight: 1.5
+    intent: >
+      The last step of closing is handing off cleanly to the post-sale motion;
+      an abrupt end to the seller relationship erodes early customer experience.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep previews what happens after signature: who the customer will hear from, when, and what the onboarding kickoff will cover."
+      - "Onboarding or success handoff is scheduled or at least described on the closing call."
+      - "Customer's key contacts are identified and introduced to the post-sale team."
+    what_poor_looks_like:
+      - "Call ends at signature with no mention of what happens next."
+      - "Customer does not know who their main contact will be after the deal closes."
+      - "Rep goes dark after the contract is signed, leaving the customer to wonder what comes next."
+    evidence_cues:
+      - "\"Once you sign, here's exactly what happens next: you'll hear from [team] within [timeframe] to schedule your kickoff.\""
+      - "\"Let's make sure the right people on your team are lined up for the kickoff — who should be in the room?\""
+    coaching_prompts:
+      - "What did you tell the buyer about what happens after they sign? Were they clear on the next steps?"
+      - "How did you introduce the post-sale team, and did the buyer seem confident in the transition?"

@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "kind": "deal-health",
+  "subject": {
+    "id": "006ACME0001",
+    "name": "Acme Corp — Northstar Platform",
+    "owner": "Jordan",
+    "amount": null,
+    "stage": "Discovery",
+    "close_or_renewal_date": "Q3 (target)",
+    "call_count": 1
+  },
+  "overall_score": 49,
+  "band": "at-risk",
+  "risk": "medium",
+  "trend": "improving",
+  "summary": "Early but real: strong, quantified pain and a genuine Series-B compelling event give this deal a spine. It is fragile where it counts — single-threaded on Sam, economic buyer unconfirmed, decision and paper process unmapped, and no calendared next step. Multi-thread to Finance/Ops and lock a next meeting before this cools.",
+  "dimensions": [
+    {
+      "dimension_id": "pain_and_impact",
+      "dimension_name": "Pain & Quantified Impact",
+      "score": 74,
+      "weight": 2,
+      "rationale": "Top priority (data trust / single source of truth) is named in the buyer's words and tied to 15 hrs/week plus board-level stakes; dollar impact is still a gut estimate, not a model.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "she's probably spending fifteen hours a week just on data wrangling." },
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "I'd say hundreds of thousands of dollars isn't crazy." }
+      ]
+    },
+    {
+      "dimension_id": "economic_buyer",
+      "dimension_name": "Economic Buyer Engagement",
+      "score": 35,
+      "weight": 2,
+      "rationale": "Sam indicates Finance must sign off but the economic buyer has not been identified or engaged directly.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "Nothing this size gets signed off without Finance." }
+      ]
+    },
+    {
+      "dimension_id": "champion",
+      "dimension_name": "Champion Strength",
+      "score": 55,
+      "weight": 1.5,
+      "rationale": "Sam is engaged and feels the pain, but is unproven as a champion — has not yet given access to power or pushed internally.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "Maybe. Let me feel it out with them first." }
+      ]
+    },
+    {
+      "dimension_id": "decision_process",
+      "dimension_name": "Decision Process & Criteria",
+      "score": 40,
+      "weight": 1.5,
+      "rationale": "Stakeholders for sign-off are named, but the steps, criteria, and budget are unmapped; the budget probe was deflected.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "I honestly don't know yet. We haven't gotten that far. I'm in discovery mode myself." }
+      ]
+    },
+    {
+      "dimension_id": "paper_process",
+      "dimension_name": "Paper / Procurement Process",
+      "score": 30,
+      "weight": 1,
+      "rationale": "No discussion yet of security review, legal, or how a contract actually gets signed. Acceptable this early but must be opened before it bites.",
+      "evidence": []
+    },
+    {
+      "dimension_id": "compelling_event",
+      "dimension_name": "Compelling Event & Timeline",
+      "score": 78,
+      "weight": 1.5,
+      "rationale": "A dated, real forcing function: the Series B close at end of Q3 and board expectations for operational visibility.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "We're about to close our Series B. The board is going to want operational visibility." }
+      ]
+    },
+    {
+      "dimension_id": "multithreading",
+      "dimension_name": "Multithreading",
+      "score": 28,
+      "weight": 1.5,
+      "rationale": "Entirely single-threaded on Sam; Finance and Operations are named but not engaged.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Jordan", "text": "would it make sense to get your VP of Finance and Head of Operations in on the next one?" }
+      ]
+    },
+    {
+      "dimension_id": "competition",
+      "dimension_name": "Competition & Alternatives",
+      "score": 50,
+      "weight": 1,
+      "rationale": "The status-quo alternative (in-house build, ~6 months / 2 engineers) is known and weak; no third-party competitor surfaced yet.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "Our data team scoped it out and said it would take about six months and two engineers." }
+      ]
+    },
+    {
+      "dimension_id": "next_step_hygiene",
+      "dimension_name": "Next-Step Hygiene",
+      "score": 35,
+      "weight": 1.5,
+      "rationale": "The one call closed on 'send me a summary' with no calendared next step — the deal currently has nothing on the books.",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "Sure, send that over. I'll take a look." }
+      ]
+    },
+    {
+      "dimension_id": "momentum",
+      "dimension_name": "Momentum",
+      "score": 60,
+      "weight": 1,
+      "rationale": "Only one call so far, but it was substantive and advanced understanding materially; trend is positive if a next step is secured quickly.",
+      "evidence": []
+    }
+  ],
+  "risks": [
+    {
+      "title": "Single-threaded on one contact",
+      "detail": "The entire deal rests on Sam. Finance (likely economic buyer) and Operations are unengaged. One quiet week and this stalls.",
+      "severity": "high",
+      "dimension_id": "multithreading",
+      "evidence": [
+        { "call_id": "discovery_acme", "speaker": "Sam", "text": "Maybe. Let me feel it out with them first." }
+      ]
+    },
+    {
+      "title": "No next step on the calendar",
+      "detail": "The deal has no scheduled next interaction — the most common cause of early-stage slippage.",
+      "severity": "high",
+      "dimension_id": "next_step_hygiene"
+    },
+    {
+      "title": "Economic buyer unconfirmed",
+      "detail": "Finance must approve but has not been identified or met.",
+      "severity": "medium",
+      "dimension_id": "economic_buyer"
+    }
+  ],
+  "recommended_actions": [
+    {
+      "action": "Send Sam a short, stakeholder-ready summary framed on the board-prep angle and get the next meeting on the calendar with Finance + Operations invited.",
+      "why": "Fixes the two highest-severity risks at once (single-thread + no next step).",
+      "owner": "Jordan",
+      "priority": "high"
+    },
+    {
+      "action": "Co-build a defensible ROI number (loaded analyst cost + cost of bad decisions) Sam can take to the board.",
+      "why": "Converts strong-but-soft impact into a CFO-ready business case.",
+      "owner": "Jordan",
+      "priority": "high"
+    },
+    {
+      "action": "Map the decision and paper process: approvers, criteria, security/legal, and whether budget is allocated for this fiscal year.",
+      "why": "Removes the late-stage surprises that kill Series-B-timed deals.",
+      "owner": "Jordan",
+      "priority": "medium"
+    }
+  ]
+}

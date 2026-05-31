@@ -1,0 +1,201 @@
+# Cold Call scorecard — coaching rubric for outbound prospecting calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (BANT, Next-Steps). Fork it and tune the criteria/weights for your business.
+id: cold-call
+name: Cold Call / Prospecting
+version: "1.0"
+description: >
+  Evaluates how well the rep earned permission, delivered a sharp hook, provoked
+  a problem worth exploring, communicated value in one line, handled objections
+  gracefully, and booked a concrete next meeting.
+applies_to: [cold-call]
+frameworks: [bant, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: opener_and_permission
+    name: Opener & Permission
+    weight: 1.5
+    intent: >
+      Earning permission in the first ten seconds reduces hang-ups and sets a
+      collaborative tone that makes everything else easier.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep states their name and company crisply, then immediately asks for a moment rather than plowing ahead."
+      - "Uses a pattern interrupt or honest opener that is not manipulative."
+      - "Prospect signals willingness to continue before the rep pitches anything."
+    what_poor_looks_like:
+      - "Launches into a pitch without checking whether the prospect has a minute."
+      - "Uses fake familiarity ('Hi, it's [name], how are you?') that erodes trust."
+      - "Asks permission so weakly that silence is taken as a yes."
+    evidence_cues:
+      - "\"I know I'm catching you cold — can I take thirty seconds to explain why I called?\""
+      - "\"Fair enough if this isn't relevant — may I just tell you why I reached out?\""
+    coaching_prompts:
+      - "How did you know the prospect was willing to hear you before you moved on?"
+      - "What would you change about your opener if the prospect sounded annoyed?"
+
+  - id: hook_and_relevance
+    name: Hook & Relevance
+    weight: 2
+    intent: >
+      A relevant, personalised hook signals that the call is worth the prospect's
+      time and creates the curiosity that keeps them on the line.
+    framework_refs: [bant.need]
+    what_great_looks_like:
+      - "Hook is specific to the prospect's industry, role, or a visible trigger (hiring, funding, news)."
+      - "Rep connects the trigger to a problem category before asking a question."
+      - "Prospect asks a follow-up question or says 'tell me more.'"
+    what_poor_looks_like:
+      - "Generic hook that could apply to any company ('we help companies like yours...')."
+      - "No personalisation visible in the opening 60 seconds."
+      - "Rep reads from a script word-for-word with no natural variation."
+    evidence_cues:
+      - "\"I noticed you recently expanded to three new markets — a lot of teams in that situation tell me...\""
+      - "\"I saw your job post for a Head of X, which usually means...\""
+    coaching_prompts:
+      - "What specific trigger did you use for this prospect, and how did you find it?"
+      - "How would you test whether your hook is actually landing with this buyer persona?"
+
+  - id: problem_provocation
+    name: Problem Provocation
+    weight: 1.5
+    intent: >
+      A cold call that surfaces a real, felt problem gives the prospect a reason
+      to invest thirty minutes in a discovery meeting.
+    framework_refs: [bant.need]
+    what_great_looks_like:
+      - "Rep names a specific, common problem for the buyer's role and asks whether it resonates."
+      - "Problem is framed around the prospect's world, not around the product."
+      - "Rep pauses and listens after posing the problem question."
+    what_poor_looks_like:
+      - "Problem statement is so broad it sounds like a pitch deck headline."
+      - "Rep asks 'is that a priority for you?' immediately after describing the product, not the problem."
+      - "No pause — rep answers the problem question themselves."
+    evidence_cues:
+      - "\"A lot of [role]s I talk to say that [specific pain] is eating hours they don't have — is that showing up for you?\""
+      - "\"The challenge we hear most is [X]. How are you handling it today?\""
+    coaching_prompts:
+      - "Did the prospect confirm the problem in their own words, or did you supply it for them?"
+      - "What is the one problem that, if you surface it, makes a meeting obvious for this persona?"
+
+  - id: value_in_one_line
+    name: Value in One Line
+    weight: 1
+    intent: >
+      A crisp, jargon-free value statement lets the prospect quickly decide if a
+      deeper conversation makes sense — removing friction from the booking step.
+    framework_refs: [bant.need]
+    what_great_looks_like:
+      - "Rep states what the product does and who it is for in one sentence, free of jargon."
+      - "Value is anchored to an outcome, not a feature list."
+      - "Delivered only after the problem is acknowledged, not before."
+    what_poor_looks_like:
+      - "Rep gives a two-minute product overview unprompted."
+      - "Value statement uses internal company language the prospect cannot parse."
+      - "Feature-first framing: 'we have X, Y, and Z' without linking to an outcome."
+    evidence_cues:
+      - "\"In short, we help [persona] [outcome] without [common trade-off].\""
+      - "\"The simplest way I describe it: [one sentence].\""
+    coaching_prompts:
+      - "Could you explain what your product does in one sentence to a non-expert?"
+      - "How does your value line differ from a competitor's?"
+
+  - id: objection_handling
+    name: Objection Handling
+    weight: 1.5
+    intent: >
+      Cold-call objections are often reflexive, not considered; a rep who
+      acknowledges and pivots smoothly turns a 'no' into a 'not yet'.
+    framework_refs: [bant.need]
+    what_great_looks_like:
+      - "Rep acknowledges the objection genuinely before responding."
+      - "Response reframes the objection rather than arguing against it."
+      - "Rep does not get defensive or over-explain."
+      - "Handles 'we already have a solution' and 'send me an email' objections with a pivot question."
+    what_poor_looks_like:
+      - "Rep argues with the objection or bulldozes past it."
+      - "Immediately concedes ('OK, I'll send you an email') without a second attempt."
+      - "Pauses awkwardly, signalling lack of preparation for common push-backs."
+    evidence_cues:
+      - "\"That makes sense — most people I speak to already have something in place. What would make you question whether it's the best fit?\""
+      - "\"Happy to send something over — can I ask what you'd want me to include so it's worth your time?\""
+    coaching_prompts:
+      - "What are the top three objections you hear on cold calls, and what is your go-to move for each?"
+      - "When the prospect said [objection], what were you thinking, and what other options did you have?"
+
+  - id: booking_the_meeting
+    name: Booking the Meeting
+    weight: 2
+    intent: >
+      The only outcome that matters on a cold call is a calendared next step;
+      a vague 'let's talk soon' is a failed call.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep makes a direct, specific ask for a meeting with a suggested time."
+      - "Offers two time options to keep the prospect in a 'choose' not 'decide' frame."
+      - "Meeting is booked live on the call or a calendar invite is sent and confirmed before hang-up."
+      - "Rep confirms the right attendees for the follow-up meeting."
+    what_poor_looks_like:
+      - "Ends with 'I'll send you some info' and no calendared step."
+      - "Ask is hedged: 'would you ever be open to...'"
+      - "Rep accepts 'reach out next quarter' without pinning a date."
+    evidence_cues:
+      - "\"I have Tuesday at 10 or Thursday at 2 — which works better?\""
+      - "\"Let me send the invite right now while we're on the line.\""
+    coaching_prompts:
+      - "Was the next step calendared before the call ended? If not, what stopped you from asking?"
+      - "How did you make sure the ask felt like a natural progression rather than a push?"
+
+  - id: tone_energy_confidence
+    name: Tone, Energy & Confidence
+    weight: 1
+    intent: >
+      Buyers unconsciously mirror the rep's energy; calm confidence increases
+      perceived credibility and makes the prospect more willing to engage.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep sounds warm and unhurried, not scripted or rushed."
+      - "Pace is controlled; rep does not speed up under pressure."
+      - "Tone stays positive and professional even when the prospect is terse."
+    what_poor_looks_like:
+      - "Rep sounds apologetic or nervous, eroding credibility from the start."
+      - "Speaks very fast — a sign of anxiety or a script being read."
+      - "Tone shifts negatively when the prospect objects."
+    evidence_cues:
+      - "Natural pauses and varied intonation throughout the call."
+      - "Rep laughs or adds warmth without being unprofessional."
+    coaching_prompts:
+      - "Listen back to your first 30 seconds — how do you sound to someone who has never met you?"
+      - "Where did your energy dip, and what triggered it?"
+
+  - id: listening_adaptability
+    name: Listening & Adaptability
+    weight: 1
+    intent: >
+      A rep who listens and adapts mid-call turns a transactional cold call into
+      the beginning of a real conversation.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep picks up on something the prospect says and builds on it."
+      - "If the prospect raises an unexpected topic, rep explores it rather than returning to the script."
+      - "Questions feel responsive to what was just said, not pre-planned."
+    what_poor_looks_like:
+      - "Rep plows through a script regardless of what the prospect says."
+      - "Misses obvious buying signals or questions the prospect raises."
+      - "Ends the call without acknowledging something personal or specific the prospect shared."
+    evidence_cues:
+      - "\"You mentioned [X] — that's interesting. Can you tell me more about that?\""
+      - "Rep references something said earlier in the call to connect ideas."
+    coaching_prompts:
+      - "What did you learn about this prospect that you did not know before the call?"
+      - "Was there a moment where the prospect gave you a signal you could have followed more?"

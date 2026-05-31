@@ -1,0 +1,159 @@
+# Generic Conversation scorecard — a light universal rubric for non-sales calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# Applies to internal team calls, partner conversations, and vendor calls where
+# the organisation is the buyer. This rubric evaluates communication quality,
+# not sales motion. Weights are intentionally modest.
+id: generic-conversation
+name: Generic Conversation
+version: "1.0"
+description: >
+  A lightweight, universal rubric for conversations that fall outside the core
+  sales coaching motion — internal team calls, partner syncs, and vendor
+  evaluations. Evaluates clarity of purpose, listening quality, structure,
+  outcomes, and professionalism rather than deal progression.
+applies_to: [internal, partner, vendor]
+frameworks: [next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: clarity_of_purpose
+    name: Clarity of Purpose
+    weight: 1.5
+    intent: >
+      Calls without a stated purpose tend to meander; naming the goal upfront
+      keeps the conversation efficient for all participants.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "The purpose of the call is stated clearly at the start, ideally with a question confirming the other party agrees."
+      - "Participants understand why they are on the call before any substantive discussion begins."
+      - "If the agenda has evolved since the invite was sent, the change is flagged and agreed."
+    what_poor_looks_like:
+      - "The call starts without any framing of purpose or desired outcome."
+      - "Participants seem unclear on why they are meeting or what is expected of them."
+      - "The conversation drifts from topic to topic without a connecting thread."
+    evidence_cues:
+      - "\"The reason I wanted us to connect today is [goal] — does that still make sense as the focus?\""
+      - "\"I have us down for [timeframe] — what I was hoping to cover is...\""
+    coaching_prompts:
+      - "Did you state the purpose of the call explicitly? When?"
+      - "Did all participants seem clear on why they were there?"
+
+  - id: active_listening
+    name: Active Listening
+    weight: 1.5
+    intent: >
+      Active listening builds trust and surfaces information that would
+      otherwise remain unsaid; it is the foundation of productive working
+      relationships across any function.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "The speaker paraphrases or reflects back what the other party said before responding."
+      - "Follow-up questions show genuine engagement with what was shared."
+      - "The speaker does not interrupt or complete sentences for the other party."
+    what_poor_looks_like:
+      - "Speaker talks over or interrupts the other party regularly."
+      - "Responses suggest the speaker was not paying attention to what was just said."
+      - "Follow-up questions are generic rather than responsive to the specific content shared."
+    evidence_cues:
+      - "\"So if I'm understanding correctly, what you're saying is [paraphrase] — is that right?\""
+      - "\"That's interesting — can you tell me more about [specific thing just said]?\""
+    coaching_prompts:
+      - "What did you learn on this call that you did not know before it started?"
+      - "Was there a moment where you could have listened more and spoken less?"
+
+  - id: structure_and_flow
+    name: Structure & Flow
+    weight: 1
+    intent: >
+      A well-structured call respects everyone's time and makes it easy to
+      reach a decision or outcome before the clock runs out.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Topics are sequenced logically and time is allocated proportionally to their importance."
+      - "Speaker gently redirects off-topic tangents without dismissing the contributor."
+      - "Enough time is left at the end to confirm outcomes and next steps."
+    what_poor_looks_like:
+      - "Call runs over time because structure was not enforced."
+      - "The most important topic is rushed or skipped because earlier items took too long."
+      - "No one manages the clock; the conversation ends abruptly or without resolution."
+    evidence_cues:
+      - "\"We have about [X] minutes left — let's make sure we cover [priority item].\""
+      - "\"That's a great point and I want to come back to it — let me just finish [current topic] first.\""
+    coaching_prompts:
+      - "Did the call stay on track? What caused any drift, and how did you manage it?"
+      - "Were the most important topics given enough time?"
+
+  - id: clear_outcomes
+    name: Clear Outcomes
+    weight: 1.5
+    intent: >
+      A call that produces no agreed outcome is a missed opportunity; even
+      an internal sync should end with clarity on decisions made and actions taken.
+    framework_refs: [next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Decisions made on the call are explicitly stated and confirmed by all parties."
+      - "Actions are named with a single owner and a completion date."
+      - "Any open items that could not be resolved are logged and assigned for follow-up."
+    what_poor_looks_like:
+      - "Call ends without a summary of what was decided or agreed."
+      - "Actions are vague ('the team will look into it') with no single owner."
+      - "Participants leave with different interpretations of what was decided."
+    evidence_cues:
+      - "\"Before we wrap, let me confirm what we've decided: [decision], and the action is [X] owned by [person] by [date].\""
+      - "\"Is everyone aligned on [decision] — any objections before we move on?\""
+    coaching_prompts:
+      - "What decisions were made on this call, and did all participants leave knowing what they are?"
+      - "Were any actions assigned without a named owner or deadline?"
+
+  - id: professionalism
+    name: Professionalism & Tone
+    weight: 1
+    intent: >
+      Tone and conduct signal respect for the other party's time and
+      reinforce the organisation's reputation in every interaction,
+      whether internal or external.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Speaker is punctual, prepared, and engaged throughout the call."
+      - "Tone is respectful even when disagreement arises."
+      - "Speaker follows up on any promises made on the call promptly."
+    what_poor_looks_like:
+      - "Speaker is visibly distracted (multitasking, late joining, unmuted noise)."
+      - "Tone becomes dismissive or impatient when challenged."
+      - "Commitments made on the call are not followed through."
+    evidence_cues:
+      - "Speaker is on time, has a relevant agenda, and thanks participants for their time."
+      - "When disagreement arises, speaker asks a question before defending their position."
+    coaching_prompts:
+      - "How did you show the other party that their time and perspective were valued?"
+      - "Was there a moment where the tone became tense? How was it handled?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      Even non-sales conversations benefit from a defined next action; without
+      it, follow-through is left to chance and momentum is lost.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner]
+    what_great_looks_like:
+      - "At least one concrete next action is agreed before the call ends, with an owner and a date."
+      - "If a follow-up meeting is needed, it is scheduled on the call rather than after."
+      - "The next step is confirmed verbally and followed up in writing within 24 hours."
+    what_poor_looks_like:
+      - "Call ends with no agreed next step; participants rely on memory or email threads."
+      - "Follow-up actions are implied but not explicitly assigned."
+      - "A follow-up meeting is discussed but not scheduled, leaving it to drift."
+    evidence_cues:
+      - "\"To close us out: the next step is [action] and [name] will handle it by [date].\""
+      - "\"Should we find time to reconnect on this — can we book 30 minutes now?\""
+    coaching_prompts:
+      - "What is the one thing that must happen after this call, and does the right person know they own it?"
+      - "Was the next step agreed on the call or left open? What is the risk if it was left open?"

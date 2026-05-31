@@ -1,0 +1,240 @@
+# Call-type taxonomy — the menu the classifier chooses from.
+# Conforms to schemas/call_type.schema.json
+#
+# Design notes:
+# - Types are mutually exclusive. The classifier picks exactly one primary type
+#   (plus ranked alternatives) so downstream scoring is unambiguous.
+# - `phase` separates the deal motion: pre-sales (win it), post-sales (keep/grow
+#   it), or neither (internal/partner/investor/interview — coached differently or
+#   skipped entirely).
+# - `often_confused_with` + `negative_signals` are the disambiguation backbone.
+#   Most classifier errors are Discovery-vs-Demo and Check-in-vs-Renewal; we make
+#   the boundaries explicit.
+schema_version: "1.0"
+
+call_types:
+  # ---------------------------------------------------------------- PRE-SALES
+  - id: cold-call
+    name: Cold Call / Prospecting
+    phase: pre-sales
+    definition: >
+      An unscheduled or first-touch outbound call where the rep has no prior
+      relationship. The rep introduces themselves, earns permission to continue,
+      delivers a hook, and tries to book a meeting. The goal is the next meeting,
+      not a sale.
+    positive_signals:
+      - "Rep asks for a few seconds / permission to continue at the top."
+      - "Prospect has little or no context on who the rep is."
+      - "The 'ask' is a follow-up meeting, not a purchase decision."
+    negative_signals:
+      - "A meeting was clearly pre-booked with a shared agenda."
+      - "Screen share / product walkthrough occurs."
+    often_confused_with: [discovery]
+    scorecards: [cold-call]
+    default_outcomes: [book-next-meeting, earn-permission, create-curiosity]
+
+  - id: discovery
+    name: Discovery
+    phase: pre-sales
+    definition: >
+      A scheduled first substantive conversation where the rep uncovers the
+      buyer's current state, priorities, pain, impact, and decision process —
+      and earns the right to a next step. Minimal pitching.
+    positive_signals:
+      - "Rep asks open questions about goals, problems, and impact."
+      - "Talk-time skews toward the prospect."
+      - "Decision process / stakeholders / timeline get explored."
+    negative_signals:
+      - "The bulk of the call is a feature walkthrough or screen share (Demo)."
+      - "Pricing and contract terms dominate (Negotiation)."
+    often_confused_with: [cold-call, demo, technical-validation]
+    scorecards: [discovery]
+    default_outcomes: [quantify-priority, map-decision-process, secure-next-step]
+
+  - id: demo
+    name: Demo / Solution Walkthrough
+    phase: pre-sales
+    definition: >
+      A call centered on showing the product — usually a screen share — and
+      mapping features to the buyer's stated priorities. Best demos are
+      discovery-led and interactive, not a feature tour.
+    positive_signals:
+      - "Screen share or product walkthrough."
+      - "Rep ties features back to previously stated problems."
+      - "Prospect reacts to what they see ('can it do X?')."
+    negative_signals:
+      - "No product is shown; it is all questioning (Discovery)."
+      - "Focus is hands-on buyer testing against success criteria (Technical Validation)."
+    often_confused_with: [discovery, technical-validation]
+    scorecards: [demo]
+    default_outcomes: [tie-value-to-priority, advance-to-validation, generate-next-step]
+
+  - id: technical-validation
+    name: Technical Validation / POV / POC
+    phase: pre-sales
+    definition: >
+      A proof-of-value or technical evaluation where the buyer (often with
+      technical stakeholders) tests the product against explicit success
+      criteria. The goal is to prove the solution works for their use case.
+    positive_signals:
+      - "Explicit success criteria / exit criteria are referenced."
+      - "Technical stakeholders (engineers, IT, security) are present."
+      - "Discussion of data, integrations, environments, or test plans."
+    negative_signals:
+      - "First-time pitch with no eval underway (Demo/Discovery)."
+      - "Commercial terms dominate (Negotiation)."
+    often_confused_with: [demo, go-no-go]
+    scorecards: [technical-validation]
+    default_outcomes: [confirm-success-criteria, secure-stakeholder-buyin, define-validation-plan]
+
+  - id: go-no-go
+    name: Go / No-Go / Mutual Decision
+    phase: pre-sales
+    definition: >
+      A checkpoint where buyer and seller decide whether to proceed, often after
+      an eval or internal review. Surfaces remaining risks, decision criteria,
+      and the path to a decision.
+    positive_signals:
+      - "Explicit discussion of whether to move forward."
+      - "Decision criteria and remaining blockers are reviewed."
+      - "References to internal approval / business case."
+    negative_signals:
+      - "Pure pricing/terms haggling (Negotiation)."
+      - "Early-stage problem exploration (Discovery)."
+    often_confused_with: [technical-validation, negotiation, closing]
+    scorecards: [go-no-go]
+    default_outcomes: [surface-remaining-risks, confirm-decision-criteria, agree-decision-date]
+
+  - id: negotiation
+    name: Negotiation / Pricing
+    phase: pre-sales
+    definition: >
+      A late-stage commercial conversation about price, terms, packaging, and
+      procurement. The rep defends value, handles concessions deliberately, and
+      keeps control of the close path.
+    positive_signals:
+      - "Discussion of price, discounts, contract length, terms, procurement."
+      - "Trade-offs and concessions are negotiated."
+    negative_signals:
+      - "No commercial terms discussed."
+      - "Product is being shown for the first time (Demo)."
+    often_confused_with: [closing, go-no-go]
+    scorecards: [negotiation]
+    default_outcomes: [defend-value, trade-not-give-concessions, lock-close-plan]
+
+  - id: closing
+    name: Closing / Commit
+    phase: pre-sales
+    definition: >
+      A late-stage conversation where the rep navigates the final steps to
+      signature: confirming the mutual plan, removing last blockers, and securing
+      commitment.
+    positive_signals:
+      - "Mutual action / close plan is reviewed."
+      - "Signature logistics, start dates, or onboarding handoff discussed."
+    negative_signals:
+      - "Heavy price haggling still open (Negotiation)."
+      - "Problem still being discovered (Discovery)."
+    often_confused_with: [negotiation, go-no-go]
+    scorecards: [closing]
+    default_outcomes: [confirm-mutual-plan, remove-final-blockers, secure-commitment]
+
+  # --------------------------------------------------------------- POST-SALES
+  - id: onboarding-kickoff
+    name: Onboarding / Kickoff
+    phase: post-sales
+    definition: >
+      The first post-sale working session. Aligns on goals, success metrics,
+      timeline, roles, and the path to first value. Sets the relationship's tone.
+    positive_signals:
+      - "Goals, success metrics, and timeline for the rollout are set."
+      - "Roles / RACI and a project plan are discussed."
+    negative_signals:
+      - "Still selling the initial deal (pre-sales)."
+    often_confused_with: [customer-check-in, technical-validation]
+    scorecards: [onboarding-kickoff]
+    default_outcomes: [align-success-metrics, set-rollout-plan, identify-champions]
+
+  - id: customer-check-in
+    name: Customer Check-in / Success
+    phase: post-sales
+    definition: >
+      An ongoing relationship call with an existing customer to drive adoption,
+      surface value realized, catch risk early, and find expansion.
+    positive_signals:
+      - "Existing customer; usage / adoption / outcomes are discussed."
+      - "No imminent renewal or contract event."
+    negative_signals:
+      - "Renewal date / contract terms are the focus (Renewal)."
+      - "First-ever working session (Onboarding)."
+    often_confused_with: [renewal, onboarding-kickoff]
+    scorecards: [customer-check-in]
+    default_outcomes: [confirm-value-realized, surface-churn-risk, identify-expansion]
+
+  - id: renewal
+    name: Renewal / Expansion
+    phase: post-sales
+    definition: >
+      A call focused on renewing and ideally expanding an existing contract.
+      Reconfirms value, addresses risk, and frames the commercial conversation.
+    positive_signals:
+      - "Renewal date, contract terms, or expansion are explicitly discussed."
+      - "ROI / value recap tied to the upcoming decision."
+    negative_signals:
+      - "General adoption chat with no contract event (Check-in)."
+    often_confused_with: [customer-check-in, negotiation]
+    scorecards: [renewal]
+    default_outcomes: [recap-value, secure-renewal-commitment, expand-footprint]
+
+  - id: qbr
+    name: Quarterly Business Review (QBR)
+    phase: post-sales
+    definition: >
+      A structured strategic review with a customer: results to date, alignment
+      to their goals, roadmap, and the joint plan for the next period.
+    positive_signals:
+      - "Review of results/metrics over a period; forward-looking joint plan."
+      - "Senior stakeholders; strategic (not tactical) framing."
+    negative_signals:
+      - "Tactical support / single-issue troubleshooting."
+    often_confused_with: [customer-check-in, renewal]
+    scorecards: [qbr]
+    default_outcomes: [demonstrate-roi, align-on-goals, set-joint-plan]
+
+  # ------------------------------------------------------------------- NEITHER
+  - id: internal
+    name: Internal
+    phase: neither
+    definition: >
+      A call between teammates (or contractors) to progress work. Not coached on
+      a sales rubric by default.
+    positive_signals: ["All participants are from the same organization."]
+    negative_signals: ["An external buyer/customer is present."]
+    often_confused_with: []
+    scorecards: [generic-conversation]
+    default_outcomes: []
+
+  - id: partner
+    name: Partner / Channel
+    phase: neither
+    definition: >
+      A conversation with a partner about collaboration, enablement, or
+      co-selling rather than a direct sale.
+    positive_signals: ["Counterparty is a partner; topic is collaboration/enablement."]
+    negative_signals: ["Counterparty is an end buyer evaluating for themselves."]
+    often_confused_with: [discovery]
+    scorecards: [generic-conversation]
+    default_outcomes: []
+
+  - id: vendor
+    name: Vendor (we are the buyer)
+    phase: neither
+    definition: >
+      A call where OUR team member is the buyer evaluating someone else's product —
+      asking for pricing/timelines rather than providing them. Coaching as a seller
+      does not apply.
+    positive_signals: ["Our team member asks for pricing, timeline, terms."]
+    negative_signals: ["Our team member is selling."]
+    often_confused_with: [discovery, negotiation]
+    scorecards: [generic-conversation]
+    default_outcomes: []

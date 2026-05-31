@@ -1,0 +1,37 @@
+# HubSpot mapping. HubSpot uses lowercase, underscored property internal names and
+# objects: deals, companies, and engagements (notes). Create these custom properties
+# (or rename to existing ones). Conforms to schemas/crm_mapping.schema.json
+crm: hubspot
+description: >
+  Writes call coaching to notes and opportunity/account health to deal and company
+  properties. Pair with the hubspot writer (needs a private-app token).
+
+objects:
+  - source: coaching_report
+    object: notes
+    id_field: metadata.hubspot_note_id
+    fields:
+      - { crm_field: hs_note_body, from: "GTM Superintelligence {{classification.call_type}} ({{overall_score}}): {{summary}}" }
+      - { crm_field: gtmsi_call_type, from: classification.call_type, transform: title_case }
+      - { crm_field: gtmsi_call_score, from: overall_score, transform: round }
+
+  - source: deal_report
+    object: deals
+    id_field: subject.id
+    fields:
+      - { crm_field: gtmsi_deal_health, from: overall_score, transform: round }
+      - { crm_field: gtmsi_deal_band, from: band, transform: title_case }
+      - { crm_field: gtmsi_deal_risk, from: risk, transform: title_case }
+      - { crm_field: gtmsi_deal_summary, from: summary }
+      - { crm_field: gtmsi_top_risks, from: risks, transform: join_lines }
+      - { crm_field: gtmsi_next_actions, from: recommended_actions, transform: join_lines }
+
+  - source: account_report
+    object: companies
+    id_field: subject.id
+    fields:
+      - { crm_field: gtmsi_account_health, from: overall_score, transform: round }
+      - { crm_field: gtmsi_account_band, from: band, transform: title_case }
+      - { crm_field: gtmsi_churn_risk, from: risk, transform: title_case }
+      - { crm_field: gtmsi_account_summary, from: summary }
+      - { crm_field: gtmsi_open_risks, from: risks, transform: join_lines }

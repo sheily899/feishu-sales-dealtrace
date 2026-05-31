@@ -1,0 +1,147 @@
+# Next Steps / Mutual Action Plan — deal momentum framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: next-steps
+name: Next Steps / Mutual Action Plan
+acronym: MAP
+origin: >
+  A widely codified enterprise sales best practice, popularized through Mutual Action
+  Plans (MAPs) in methodologies including Winning by Design, Force Management, and
+  general enterprise sales curricula. Not attributed to a single originator.
+summary: >
+  A discipline framework that evaluates whether every agreed next step in a deal is
+  concrete, owned, dated, and brings the right people to the table. Weak next steps
+  are the single most common cause of pipeline stall — a meeting without a clear
+  next step is a meeting that resets the deal clock. A Mutual Action Plan applies
+  this discipline across the full buyer journey, creating a shared roadmap both
+  sides commit to.
+best_for: [discovery, demo, technical-validation, go-no-go, negotiation, closing]
+
+elements:
+  - id: clear_owner
+    name: Clear Owner
+    question: Does the next step have a single, named person on the buyer side who is responsible for it?
+    why_it_matters: >
+      Shared ownership means no ownership. Every action item must have one buyer-side
+      name attached to it. If the rep cannot name who on the buyer's team will execute
+      the next step, the step doesn't exist yet.
+    good_signals:
+      - "A named individual (not 'the team' or 'we') is on the hook for the action."
+      - "Rep confirmed ownership verbally and followed up in writing."
+      - "Buyer-side owner has the authority and bandwidth to deliver."
+    missing_signals:
+      - "Next step is assigned to a group ('your team will review') with no single DRI."
+      - "Rep accepted a vague commitment without nailing down who will actually do it."
+    example_questions:
+      - "Who specifically on your side is going to own this step — is that you, or should we loop someone else in?"
+      - "Are you the right person to drive this internally, or should we get [name] on the next call to confirm?"
+      - "Can you put your name on this action item so we know who to follow up with?"
+      - "Who will be accountable if this step doesn't happen by [date]?"
+
+  - id: specific_action
+    name: Specific Action
+    question: Is the next step a concrete, unambiguous action — not a vague intention?
+    why_it_matters: >
+      'We'll circle back' and 'they'll take a look' are not next steps — they are
+      polite deferrals. A specific action has a clear deliverable: a document reviewed,
+      a stakeholder introduced, a demo scheduled, a security questionnaire returned.
+    good_signals:
+      - "The action is defined in one sentence with a clear output ('send the security questionnaire by Friday')."
+      - "Both parties can independently describe what success looks like for this step."
+      - "The action is small enough to complete before the next touchpoint."
+    missing_signals:
+      - "Next step is defined as a feeling or intent ('they'll think about it')."
+      - "Action requires so many internal dependencies that it won't happen before the next call."
+    example_questions:
+      - "To make sure we're aligned, what exactly are you going to do before we talk again?"
+      - "How will we both know this step is done — what's the output?"
+      - "Is that action something you can realistically finish before [date], or should we scope it differently?"
+      - "What does 'reviewing it internally' actually mean — who reviews it, and what are they looking for?"
+
+  - id: committed_date
+    name: Committed Date
+    question: Is there a specific, agreed-upon date for the next step — not an approximation?
+    why_it_matters: >
+      A next step without a date is a wish. Committed dates create accountability and
+      expose whether the buyer is genuinely engaged or politely stalling. The rep's job
+      is to get a real date, not accept 'sometime next week.'
+    good_signals:
+      - "A calendar invite is sent and accepted before the call ends."
+      - "Both parties agree on a specific date and time, not a range."
+      - "Date is realistic given known conflicts (holidays, board meetings, sprints)."
+    missing_signals:
+      - "Next meeting is described as 'end of the month' or 'after the holiday' with no date confirmed."
+      - "Rep ends the call intending to 'send over a few times' rather than booking on the spot."
+    example_questions:
+      - "Can we get the next meeting on the calendar right now? What does [specific date] look like for you?"
+      - "Is [date] realistic given what else is on your plate, or should we plan for [alternate date]?"
+      - "Let me send the invite while we're on the call — does [day/time] work?"
+      - "If I send you a calendar invite for [date], will that hold, or is that likely to move?"
+
+  - id: right_people
+    name: Right People
+    question: Will the right stakeholders be in the next meeting to make the step meaningful?
+    why_it_matters: >
+      A next step with the wrong attendees resets the deal. A technical deep-dive
+      without the architect wastes the demo. A negotiation call without the economic
+      buyer produces a non-decision. Every next step needs to include everyone required
+      to actually advance the deal.
+    good_signals:
+      - "Rep has confirmed who will attend the next meeting and verified their relevance."
+      - "Rep has proactively requested access to stakeholders who are currently missing."
+      - "Buyer-side attendees match the purpose of the next step."
+    missing_signals:
+      - "Rep is repeatedly meeting with the same contact without expanding the stakeholder map."
+      - "Key decision-makers have not been invited to any call, despite being named."
+    example_questions:
+      - "Who from your side needs to be in the room for this next conversation to actually move things forward?"
+      - "Is [economic buyer / technical evaluator / security team] going to be on this call, or do we need a separate touchpoint with them?"
+      - "Would it make sense to include your [VP / CFO / CISO] so they can ask their questions directly?"
+      - "Who else is going to weigh in on the evaluation that we haven't spoken to yet?"
+
+  - id: mutual_value
+    name: Mutual Value
+    question: Is the next step valuable for the buyer, not just for the rep's pipeline hygiene?
+    why_it_matters: >
+      Buyers don't show up to steps they didn't ask for and don't see value in. A next
+      step framed entirely around the rep's process ('I'd like to present our proposal')
+      generates no-shows. Framing the value for the buyer creates pull.
+    good_signals:
+      - "Next step is framed in terms of what the buyer will get out of it."
+      - "Buyer proactively suggests the step or reacts positively when it's proposed."
+      - "The step solves a problem the buyer raised, not just a checkpoint the rep needs."
+    missing_signals:
+      - "Rep is scheduling calls to 'check in' with no buyer-specific agenda."
+      - "Buyer appears unenthusiastic about the next step but agreed to be polite."
+    example_questions:
+      - "What would make the next conversation genuinely useful for you — what question do you want answered?"
+      - "If we get [relevant stakeholder] in the room, what would you want them to hear or evaluate?"
+      - "Is there something you're trying to get clarity on before your next internal decision point that this call should address?"
+      - "What would need to be true after our next meeting for you to feel like you're making real progress on this?"
+
+  - id: written_confirmation
+    name: Written Confirmation
+    question: Has the agreed next step been documented and sent to the buyer in writing?
+    why_it_matters: >
+      Verbal agreements decay. A follow-up email or shared Mutual Action Plan document
+      creates a record that survives personnel changes, memory gaps, and competing
+      priorities. It also signals professionalism and gives the buyer a reference point
+      if they need to brief internal stakeholders.
+    good_signals:
+      - "A follow-up email summarizing next steps is sent within 24 hours of every call."
+      - "A shared MAP document is used and kept current throughout the deal."
+      - "Rep references the written plan in future calls to hold both sides accountable."
+    missing_signals:
+      - "Rep relies on memory and verbal agreement with no written record."
+      - "Buyer has asked 'where are we in the process' more than once, indicating the plan isn't shared."
+    example_questions:
+      - "I'll send a recap email after this call with what we agreed on — does that work for you?"
+      - "Would it be helpful if I put together a shared document with all the steps between now and a decision, so your team can reference it?"
+      - "Is there a shared project tracker or workspace your team uses that I should add the action items to?"
+      - "When you brief your manager on this evaluation, what's the best way for me to make sure they have the full picture in writing?"
+
+further_reading:
+  - title: "Winning by Design — Mutual Action Plans"
+    url: "https://winningbydesign.com/resources/mutual-action-plans/"
+  - title: "Force Management — Mutual Close Plans"
+    url: "https://www.forcemanagement.com/blog/how-to-use-a-mutual-close-plan-to-win-more-deals"

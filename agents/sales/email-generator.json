@@ -1,0 +1,95 @@
+{
+  "id": "AGTEmailGen01",
+  "created": "2025-10-21T17:14:24.221Z",
+  "updated": "2025-10-21T17:14:24.221Z",
+  "name": "Email Generator",
+  "description": "Generates personalized follow-up emails based on conversation content and action items.",
+  "type": "AGENT",
+  "tags": [
+    "Sales"
+  ],
+  "signals": [
+    "follow-up email",
+    "email draft",
+    "generate email",
+    "post-call email",
+    "meeting follow-up",
+    "email summary",
+    "write email",
+    "recap email"
+  ],
+  "detectorPrompt": "Trigger if the user wants to automatically generate personalized follow-up emails after customer calls or meetings.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Email Generator",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_direct_message": {
+            "displayName": "Send Direct Message",
+            "generic_action": "send_direct_message"
+          },
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "search_calls": {
+            "displayName": "Search Calls",
+            "generic_action": "search_calls"
+          },
+          "ask_attention": {
+            "description": "Extract key insights, action items, and discussion points from the conversation",
+            "displayName": "Ask Attention",
+            "generic_action": "analyze_calls"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "webhookTrigger": {
+            "connection": {
+              "externalId": "call recorder connection"
+            },
+            "displayName": "Conversation Analyzed",
+            "detailedTranscript": false,
+            "includeImportMetadata": false
+          }
+        }
+      },
+      "description": "Automatically generates personalized follow-up messages after customer conversations and sends them via your team communication tool",
+      "instructions": "After a conversation is analyzed:\n1. Use `search_calls` to retrieve the analyzed conversation, then use `ask_attention` to analyze and extract: key discussion points, action items, commitments made, next steps, and any pain points mentioned\n2. Generate a professional follow-up message that summarizes the conversation and outlines agreed actions\n3. Customize tone based on the relationship context (discovery call vs established customer)\n4. Include specific references from the call to personalize\n5. Send the summary via direct message to the rep or to a designated channel\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "conversation_analyzed",
+    "summary": "Once per analyzed call (call recorder 'Conversation Analyzed' webhook)."
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

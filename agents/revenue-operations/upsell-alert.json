@@ -1,0 +1,87 @@
+{
+  "id": "AGTUpsellAlert01",
+  "created": "2025-10-21T16:21:11.344Z",
+  "updated": "2025-10-21T16:21:11.344Z",
+  "name": "Upsell Alert",
+  "description": "Identifies upsell and expansion opportunities by analyzing customer conversations for budget availability signals and growth intent.",
+  "type": "AGENT",
+  "tags": [
+    "Revenue Operations"
+  ],
+  "signals": [
+    "upsell",
+    "expansion",
+    "budget increase",
+    "upgrade",
+    "grow account",
+    "upsell opportunity",
+    "expand contract",
+    "increase deal size"
+  ],
+  "detectorPrompt": "Trigger if the user wants to identify upsell or expansion opportunities based on budget availability signals and customer growth intent.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Upsell Alert",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        },
+        "crm": {
+          "run_query": {
+            "displayName": "Run Query (Advanced)",
+            "generic_action": "query_records"
+          },
+          "displayName": "CRM"
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "webhookTrigger": {
+            "connection": {
+              "externalId": "call recorder connection"
+            },
+            "displayName": "Conversation Analyzed",
+            "detailedTranscript": false,
+            "includeImportMetadata": false
+          }
+        }
+      },
+      "description": "",
+      "instructions": "# Upsell Alert\n**Detects and reports when a prospect indicates available or increased budget.**\n\n### Behavior\nMonitors analyzed sales conversations for budget-expansion cues...\n\n### Procedure\n**Trigger:** conversation_analyzed\n**Condition:** Detected budget-expansion language...\n\n**Data Sources:** call analytics, your CRM\n\n**Analysis Steps:**\n1. Detect and extract budget-related statement\n2. Confirm prospect identity\n3. Generate team alert with details\n\n### Tasks\n- Parse conversations for budget-expansion signals\n- Cross-reference speaker and account info\n- Post team message to #upsell-alerts\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "conversation_analyzed",
+    "summary": "Once per analyzed call (call recorder 'Conversation Analyzed' webhook)."
+  },
+  "integrations": [
+    "call_recorder",
+    "communication",
+    "crm"
+  ]
+}

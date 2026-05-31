@@ -1,0 +1,177 @@
+# Go / No-Go scorecard — coaching rubric for mutual decision checkpoint calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (MEDDPICC, Next-Steps). Fork it and tune the criteria/weights for your business.
+id: go-no-go
+name: Go / No-Go / Mutual Decision
+version: "1.0"
+description: >
+  Evaluates how well the rep reconfirmed decision criteria, surfaced remaining
+  risks, stress-tested the business case, confirmed stakeholder alignment,
+  addressed competition, agreed a decision date, and closed on a clear next step.
+applies_to: [go-no-go]
+frameworks: [meddpicc, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: decision_criteria_reconfirmed
+    name: Decision Criteria Reconfirmed
+    weight: 2
+    intent: >
+      Decision criteria shift between discovery and this call; reconfirming them
+      prevents the rep from fighting the last war and surfaces new priorities in time to address them.
+    framework_refs: [meddpicc.decision_criteria, meddpicc.metrics]
+    what_great_looks_like:
+      - "Rep explicitly revisits the criteria used to evaluate options and asks whether they have changed."
+      - "Rep walks through how the product maps to each criterion, using the buyer's language."
+      - "Any new criteria introduced since the last meeting are surfaced and addressed."
+    what_poor_looks_like:
+      - "Rep assumes criteria from discovery are still the same without checking."
+      - "Rep defends the product against criteria the buyer no longer prioritises."
+      - "Criteria mapping is done by the rep alone, not confirmed by the buyer."
+    evidence_cues:
+      - "\"When we started, you told me the most important things were X, Y, and Z — is that still the right list?\""
+      - "\"Has anything changed internally since we last spoke that would shift what matters most?\""
+    coaching_prompts:
+      - "How confident are you that you know the full decision criteria — and when did the buyer last confirm them?"
+      - "Were there any criteria on the buyer's list that surprised you, and how did you handle them?"
+
+  - id: remaining_risks_surfaced
+    name: Remaining Risks Surfaced
+    weight: 2
+    intent: >
+      Unaddressed risks surfaced at this checkpoint are recoverable; the same
+      risks surfaced at legal review or after a verbal yes are not.
+    framework_refs: [meddpicc.identify_pain, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep opens a direct conversation about what could still prevent a decision."
+      - "Each risk is documented with an owner and a resolution plan."
+      - "Rep does not minimise risks to maintain momentum — honest transparency builds trust."
+    what_poor_looks_like:
+      - "Rep never asks about blockers, assuming a smooth path to close."
+      - "Buyer raises a risk mid-call and the rep is visibly caught off guard."
+      - "Risks are acknowledged but no action or owner is assigned."
+    evidence_cues:
+      - "\"What would need to be true for you to feel fully confident moving forward?\""
+      - "\"Is there anything that could still block this, even if everything else goes well?\""
+    coaching_prompts:
+      - "What are the top two risks that could still kill this deal, and what are you doing about them?"
+      - "Did the buyer surface any risks you hadn't anticipated? What does that tell you?"
+
+  - id: business_case_strength
+    name: Business Case Strength
+    weight: 2
+    intent: >
+      The champion needs a strong business case to get sign-off from the
+      economic buyer; if the rep hasn't built it, the champion has to invent it — and they usually can't.
+    framework_refs: [meddpicc.metrics, meddpicc.identify_pain]
+    what_great_looks_like:
+      - "A written or structured ROI/business case exists and has been reviewed with the champion."
+      - "Business case includes quantified impact, cost of inaction, and a payback timeline."
+      - "Rep has rehearsed the champion on how to present the case internally."
+    what_poor_looks_like:
+      - "No business case has been built; rep relies on the buyer to justify the investment internally."
+      - "Business case is vague ('it will save time and improve quality') with no numbers."
+      - "Champion has not been briefed on how to handle internal objections."
+    evidence_cues:
+      - "\"Let's walk through the business case together — I want to make sure it holds up in front of your CFO.\""
+      - "\"Here's how I'd frame the ROI based on what you've told me — does this resonate?\""
+    coaching_prompts:
+      - "Can the champion present this business case without you in the room? Have you tested that?"
+      - "What number is at the centre of the business case, and where did it come from?"
+
+  - id: stakeholder_alignment
+    name: Stakeholder Alignment
+    weight: 1.5
+    intent: >
+      Deals that appear aligned at one level often fall apart because a
+      stakeholder who was never engaged vetoes at the last moment.
+    framework_refs: [meddpicc.economic_buyer, meddpicc.champion, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep has confirmed the position of every key stakeholder: supporters, neutrals, and detractors."
+      - "Economic buyer has been engaged directly, not just briefed second-hand."
+      - "Rep has a plan for any stakeholder who is not yet supportive."
+    what_poor_looks_like:
+      - "Rep assumes all stakeholders are aligned because the champion says so."
+      - "Economic buyer has not been met or called since the start of the process."
+      - "Rep cannot name a single detractor or neutral stakeholder."
+    evidence_cues:
+      - "\"Walk me through where each of your key stakeholders stands right now.\""
+      - "\"Who in the room hasn't fully bought in, and what would change their view?\""
+    coaching_prompts:
+      - "Who are the three most important stakeholders for this deal, and where does each one stand?"
+      - "When did you last speak directly to the economic buyer — what did they say?"
+
+  - id: competition_addressed
+    name: Competition Addressed
+    weight: 1
+    intent: >
+      A go/no-go conversation where competition is not addressed is naive;
+      knowing the competitive standing and the buyer's perception of alternatives is essential intelligence.
+    framework_refs: [meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Rep directly asks which alternatives the buyer is still seriously considering."
+      - "Rep understands the buyer's perception of the competitive differences."
+      - "Rep positions the product's strengths relative to the specific alternatives without disparaging them."
+    what_poor_looks_like:
+      - "Rep does not ask about competition, assuming the deal is uncontested."
+      - "Rep dismisses competitors generically rather than addressing specific concerns."
+      - "Buyer's preference for an alternative surfaces for the first time on this call."
+    evidence_cues:
+      - "\"Are you still evaluating other options alongside us? What's your current read?\""
+      - "\"Compared to [alternative], what are the one or two things that still give you pause about us?\""
+    coaching_prompts:
+      - "Who is the competition and what does the buyer think of them? Be specific."
+      - "What did you say or do on this call to address the competitive concern, and did it land?"
+
+  - id: decision_date_agreed
+    name: Decision Date Agreed
+    weight: 1.5
+    intent: >
+      A deal without a committed decision date will drift; an agreed date creates
+      mutual accountability and surfaces whether the buyer's urgency is real.
+    framework_refs: [meddpicc.decision_process, next-steps.committed_date]
+    what_great_looks_like:
+      - "A specific decision date is confirmed and tied to a compelling event or internal deadline."
+      - "Rep tests the date by asking what would happen if it slipped."
+      - "Rep and buyer agree on the milestones between now and the decision date."
+    what_poor_looks_like:
+      - "Buyer says 'we'll let you know' without committing to a date."
+      - "Rep accepts a vague timeframe ('next few weeks') without pushing for precision."
+      - "Decision date is not connected to any forcing function; it exists only on the rep's forecast."
+    evidence_cues:
+      - "\"What is your target date to have this decided — and what's driving that?\""
+      - "\"If [internal deadline] is the driver, we need to have the paperwork sorted by [date]. Does that work?\""
+    coaching_prompts:
+      - "Is the decision date on your forecast tied to a real event, or is it your best guess?"
+      - "What happens to this buyer if they miss their own decision deadline?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A go/no-go conversation must end with a concrete step toward a decision,
+      not an open-ended 'we'll think about it'.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Next step is agreed, calendared, and has a named owner on both sides."
+      - "Step moves the deal forward — either toward signature or to a named decision milestone."
+      - "Rep confirms what needs to happen before the next meeting for it to be productive."
+    what_poor_looks_like:
+      - "Call ends with 'we'll regroup once we've had a chance to discuss internally' and no date set."
+      - "Rep sends a follow-up email to request the next step rather than booking it on the call."
+      - "Next step is another status check with no defined progression."
+    evidence_cues:
+      - "\"Let's calendar [specific meeting] right now so we have it locked.\""
+      - "\"Before we speak again, the things that need to happen are X on your side and Y on mine — agreed?\""
+    coaching_prompts:
+      - "What is the exact next step, who owns it, and what is the date?"
+      - "Does the next step you booked actually move this deal forward, or does it just maintain contact?"

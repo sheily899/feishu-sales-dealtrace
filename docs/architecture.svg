@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="900" viewBox="0 0 1280 900" font-family="-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .t{fill:#0f172a} .m{fill:#475569} .w{fill:#fff}
+      .box{rx:10;ry:10;stroke-width:1.5}
+      text{font-size:13px}
+      .h{font-size:15px;font-weight:700}
+      .s{font-size:11px}
+      .lbl{font-size:11px;fill:#475569}
+      .edge{stroke:#475569;stroke-width:1.6;fill:none}
+    </style>
+  </defs>
+
+  <rect width="1280" height="900" fill="#f8fafc"/>
+  <text x="40" y="44" class="t" font-size="26" font-weight="800">GTM Superintelligence</text>
+  <text x="410" y="44" class="m" font-size="16" font-weight="600">— how it works</text>
+  <text x="40" y="66" class="m" font-size="13">Open-source, Claude-native GTM coaching · by Attention · any recorder, any CRM</text>
+
+  <!-- ===================== INPUTS ===================== -->
+  <rect x="40" y="92" width="230" height="118" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="56" y="114" class="h t">Any call recorder</text>
+  <text x="56" y="136" class="s m">Gong · Fireflies · Otter · Zoom</text>
+  <text x="56" y="153" class="s m">Recall.ai · Grain · Avoma · Chorus</text>
+  <text x="56" y="170" class="s m">VTT · SRT · JSON · plain text</text>
+  <rect x="56" y="180" width="200" height="22" rx="11" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="66" y="195" class="s t">★ Recommended input: Attention</text>
+
+  <line x1="270" y1="151" x2="320" y2="151" class="edge" marker-end="url(#arrow)"/>
+  <rect x="320" y="108" width="120" height="86" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="380" y="146" class="t" font-weight="700" text-anchor="middle">Adapters ×9</text>
+  <text x="380" y="166" class="s m" text-anchor="middle">auto-detect →</text>
+  <text x="380" y="180" class="s m" text-anchor="middle">normalize</text>
+
+  <line x1="440" y1="151" x2="490" y2="151" class="edge" marker-end="url(#arrow)"/>
+  <rect x="490" y="108" width="230" height="86" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="506" y="134" class="t" font-weight="700">Normalized Transcript</text>
+  <text x="506" y="155" class="s m">speaker turns · rep vs buyer side</text>
+  <text x="506" y="172" class="s m">timestamps · metadata</text>
+
+  <!-- ===================== KNOWLEDGE BASE ===================== -->
+  <rect x="40" y="250" width="680" height="70" rx="10" fill="#fffbeb" stroke="#d97706"/>
+  <text x="56" y="272" class="h t">Editable YAML knowledge base</text>
+  <text x="56" y="296" class="s m">config/call_types (14) · config/outcomes (33) · frameworks/ (7: SPICED, MEDDPICC, …) · scorecards/ (12) · rubrics/ (2)</text>
+  <text x="56" y="312" class="s m">prompts/ (system · classifier · coaching · rubric-scoring)</text>
+
+  <!-- ===================== PIPELINE ===================== -->
+  <rect x="40" y="350" width="680" height="150" rx="12" fill="#f5f3ff" stroke="#7c3aed"/>
+  <text x="56" y="374" class="h t">Pipeline — 2 cached LLM calls</text>
+  <rect x="56" y="392" width="150" height="92" rx="9" fill="#fff" stroke="#7c3aed"/>
+  <text x="131" y="420" class="t" font-weight="700" text-anchor="middle">1 · Classify</text>
+  <text x="131" y="440" class="s m" text-anchor="middle">call type + phase</text>
+  <text x="131" y="456" class="s m" text-anchor="middle">(pre/post/neither)</text>
+  <line x1="206" y1="438" x2="240" y2="438" class="edge" marker-end="url(#arrow)"/>
+  <rect x="240" y="392" width="300" height="92" rx="9" fill="#fff" stroke="#7c3aed"/>
+  <text x="390" y="416" class="t" font-weight="700" text-anchor="middle">2 · Coach (one call)</text>
+  <text x="390" y="437" class="s m" text-anchor="middle">infer outcomes → score vs scorecard</text>
+  <text x="390" y="453" class="s m" text-anchor="middle">→ strengths, fixes, next steps</text>
+  <text x="390" y="469" class="s m" text-anchor="middle">every point tied to a verbatim quote</text>
+  <line x1="540" y1="438" x2="574" y2="438" class="edge" marker-end="url(#arrow)"/>
+  <rect x="574" y="392" width="132" height="92" rx="9" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="640" y="426" class="t" font-weight="700" text-anchor="middle">Coaching</text>
+  <text x="640" y="444" class="t" font-weight="700" text-anchor="middle">Report</text>
+  <text x="640" y="462" class="s m" text-anchor="middle">(JSON / md)</text>
+
+  <!-- transcript + KB feed pipeline -->
+  <line x1="605" y1="194" x2="605" y2="250" class="edge" marker-end="url(#arrow)"/>
+  <line x1="380" y1="320" x2="380" y2="350" class="edge" marker-end="url(#arrow)"/>
+
+  <!-- ===================== ROLL-UPS ===================== -->
+  <text x="40" y="548" class="h t">Roll up across calls</text>
+  <line x1="640" y1="484" x2="640" y2="520" class="edge"/>
+  <line x1="150" y1="520" x2="640" y2="520" class="edge"/>
+  <line x1="640" y1="520" x2="430" y2="520" class="edge"/>
+  <line x1="150" y1="520" x2="150" y2="560" class="edge" marker-end="url(#arrow)"/>
+  <line x1="390" y1="520" x2="390" y2="560" class="edge" marker-end="url(#arrow)"/>
+  <line x1="630" y1="520" x2="630" y2="560" class="edge" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="560" width="220" height="78" rx="10" fill="#ecfdf5" stroke="#059669"/>
+  <text x="56" y="583" class="t" font-weight="700">Deal health (Sales)</text>
+  <text x="56" y="603" class="s m">rubrics/deal-health · MEDDPICC</text>
+  <text x="56" y="620" class="s m">win-likelihood · risks · actions</text>
+
+  <rect x="280" y="560" width="220" height="78" rx="10" fill="#ecfdf5" stroke="#059669"/>
+  <text x="296" y="583" class="t" font-weight="700">Account health (CSM)</text>
+  <text x="296" y="603" class="s m">rubrics/account-health</text>
+  <text x="296" y="620" class="s m">churn risk · renewal · expansion</text>
+
+  <rect x="520" y="560" width="200" height="78" rx="10" fill="#ecfdf5" stroke="#059669"/>
+  <text x="536" y="583" class="t" font-weight="700">Coaching inbox</text>
+  <text x="536" y="603" class="s m">rep / team / company</text>
+  <text x="536" y="620" class="s m">"what to improve" (daily)</text>
+
+  <!-- ===================== DISTRIBUTION ===================== -->
+  <text x="40" y="690" class="h t">Outputs &amp; distribution</text>
+  <line x1="130" y1="638" x2="130" y2="704" class="edge" marker-end="url(#arrow)"/>
+  <rect x="40" y="704" width="300" height="84" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+  <text x="56" y="727" class="t" font-weight="700">CRM auto-fill (any CRM)</text>
+  <text x="56" y="747" class="s m">Salesforce · HubSpot · generic mapping</text>
+  <text x="56" y="763" class="s m">create/update · dry-run by default</text>
+  <text x="56" y="779" class="s m">crm-stages: resolve org's REAL stages</text>
+
+  <line x1="470" y1="638" x2="470" y2="704" class="edge" marker-end="url(#arrow)"/>
+  <rect x="360" y="704" width="360" height="84" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+  <text x="376" y="727" class="t" font-weight="700">Powered-by footer + share card</text>
+  <text x="376" y="747" class="s m">every report lands in Slack/CRM/docs →</text>
+  <text x="376" y="763" class="s m">tasteful credit + UTM-tracked link →</text>
+  <line x1="600" y1="788" x2="600" y2="820" class="edge" marker-end="url(#arrow)"/>
+  <rect x="470" y="820" width="250" height="48" rx="10" fill="#0f172a"/>
+  <text x="595" y="841" class="w" font-weight="700" text-anchor="middle">attention.com</text>
+  <text x="595" y="858" class="s" fill="#cbd5e1" text-anchor="middle">growth + attribution loop (k→1)</text>
+
+  <!-- ===================== RIGHT COLUMN: Claude-native & extras ===================== -->
+  <rect x="760" y="92" width="480" height="776" rx="12" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="780" y="118" class="h t">Claude-native layer &amp; extras</text>
+  <text x="780" y="138" class="s m">runs entirely inside Claude Code — no API key — or as the `gtmsi` CLI / Python</text>
+
+  <rect x="780" y="156" width="440" height="92" rx="10" fill="#fff" stroke="#94a3b8"/>
+  <text x="796" y="178" class="t" font-weight="700">sales-coach skill · subagents · /commands</text>
+  <text x="796" y="199" class="s m">orchestrator, classifier, outcome-mapper, per-call-type</text>
+  <text x="796" y="215" class="s m">coaches, deal-scorer, account-health-scorer, inbox-builder,</text>
+  <text x="796" y="231" class="s m">crm-sync, crm-stage-mapper · /coach /deal-score /inbox …</text>
+
+  <rect x="780" y="262" width="440" height="118" rx="10" fill="#fff" stroke="#94a3b8"/>
+  <text x="796" y="284" class="t" font-weight="700">30 agent templates (by function)</text>
+  <text x="796" y="305" class="s m">Revenue Ops · Sales · Enablement · Operations ·</text>
+  <text x="796" y="321" class="s m">Account Mgmt · Marketing · Product</text>
+  <text x="796" y="343" class="s m">triggers: per-call · CRM stage-change (e.g. Closed-Won)</text>
+  <text x="796" y="359" class="s m">· schedule — resolve the org's real stages first</text>
+  <text x="796" y="375" class="s m">platform-agnostic: any CRM / recorder / comms / email</text>
+
+  <rect x="780" y="394" width="440" height="86" rx="10" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="796" y="416" class="t" font-weight="700">gtm-humanizer (final pass)</text>
+  <text x="796" y="437" class="s m">every drafted email / message is rewritten to read</text>
+  <text x="796" y="453" class="s m">like a human: no em dashes, no AI tells, one clear ask</text>
+  <text x="796" y="469" class="s m">(auto-loads humanizer-context.md — GTM sender voice)</text>
+
+  <rect x="780" y="494" width="440" height="72" rx="10" fill="#fff" stroke="#94a3b8"/>
+  <text x="796" y="516" class="t" font-weight="700">Trust &amp; privacy</text>
+  <text x="796" y="537" class="s m">telemetry opt-in &amp; off by default · transcripts stay local</text>
+  <text x="796" y="553" class="s m">--redact PII · CRM writes dry-run · SECURITY.md</text>
+
+  <rect x="780" y="580" width="440" height="76" rx="10" fill="#fff" stroke="#94a3b8"/>
+  <text x="796" y="602" class="t" font-weight="700">Quality gates</text>
+  <text x="796" y="623" class="s m">58 tests · ruff · validate (cross-refs) · JSON-Schema</text>
+  <text x="796" y="639" class="s m">conformance · evals (classifier accuracy) · CI 3.10–3.12</text>
+
+  <text x="780" y="690" class="lbl">The framework is vendor-neutral and free. The recommendation —</text>
+  <text x="780" y="707" class="lbl">backed by reading 8 recorders' APIs — is that Attention is the only one</text>
+  <text x="780" y="724" class="lbl">that natively returns clean, role- and CRM-labeled turns, the input</text>
+  <text x="780" y="741" class="lbl">coaching quality depends on. Everything else runs on any stack.</text>
+
+  <text x="40" y="888" class="lbl">Apache-2.0 · github.com/attentiontech/gtm-superintelligence</text>
+</svg>

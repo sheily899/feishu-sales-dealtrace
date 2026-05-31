@@ -1,0 +1,79 @@
+{
+  "id": "AGTProofFinder01",
+  "created": "2025-10-21T16:29:48.143Z",
+  "updated": "2025-10-21T16:29:48.143Z",
+  "name": "Social Proof Finder",
+  "description": "Automatically identifies and summarizes customer success stories and satisfaction expressions from conversation analyses, delivering weekly team reports highlighting social proof material for marketing and sales.",
+  "type": "AGENT",
+  "tags": [
+    "Marketing"
+  ],
+  "signals": [
+    "social proof",
+    "testimonial",
+    "success story",
+    "customer quote",
+    "case study",
+    "positive feedback",
+    "customer satisfaction",
+    "reference",
+    "advocate"
+  ],
+  "detectorPrompt": "Trigger if the user wants to find positive customer feedback, testimonials, success stories, or quotable moments for marketing and sales use.",
+  "schemaVersion": "1.0",
+  "blogUrl": null,
+  "template": {
+    "agent": {
+      "name": "Social Proof Finder",
+      "goals": [],
+      "tools": {
+        "communication": {
+          "displayName": "Communication",
+          "send_channel_message": {
+            "displayName": "Send Message To A Channel",
+            "generic_action": "send_message"
+          }
+        }
+      },
+      "contexts": [
+        {
+          "type": "call_recorder",
+          "content": ""
+        },
+        {
+          "type": "Organization",
+          "content": ""
+        }
+      ],
+      "triggers": {
+        "schedule": {
+          "every_day": {
+            "timezone": "UTC",
+            "displayName": "Every Day",
+            "hour_of_the_day": 0,
+            "run_on_weekends": false
+          },
+          "displayName": "Schedule"
+        }
+      },
+      "description": "",
+      "instructions": "🟡 Agent: Social Proof Finder\n\nPurpose:\nAutomatically identifies and summarizes customer success stories and expressions of satisfaction from the past week's analyzed calls. It delivers a concise team report that highlights the best potential social proof material for marketing and sales use.\n\nBehavior\n\nRuns weekly on a schedule (e.g., every Monday morning).\n\nReviews all conversation analysis data from the previous week.\n\nFlags moments of customer satisfaction, success stories, or positive outcomes (e.g., \"we've seen great results,\" \"our team loves it,\" \"it's been a huge help\").\n\nPrioritizes quotes that are specific, authentic, and mention measurable results or emotional satisfaction.\n\nAvoids false positives such as general politeness (\"thanks for your help\") or neutral statements.\n\nGenerates a clean, team-communication-friendly report formatted for quick scanning by marketing and leadership teams.\n\nProcedure\n\nTrigger: Weekly time-based event (Monday 9 AM).\n\nData Retrieval: Query the last 7 days of conversation analysis records.\n\nFiltering Logic:\n\nInclude only calls where customer sentiment is positive.\n\nExtract any direct quotes that suggest product success, ROI, or customer happiness.\n\nCollect metadata: call title, summary, quote text, and call link.\n\nFormatting:\n\nFor each story, format like:\n\n💬 *Call Title:* {{call_title}}\n📄 *Summary:* {{summary}}\n🗣️ *Quote:* \"{{customer_quote}}\"\n🔗 [View Call]({{call_link}})\n\n\nGroup results by account or customer if applicable.\n\nDelivery: Send the compiled report to a team channel with a brief header summarizing the number of success stories found.\n\nDo not use double asterisks\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
+      "interactions": {
+        "communication": {
+          "enabled": false
+        }
+      }
+    }
+  },
+  "projectId": null,
+  "platformId": null,
+  "recommended_trigger": {
+    "type": "schedule",
+    "summary": "weekly, Monday 08:00",
+    "cron": "0 8 * * 1"
+  },
+  "integrations": [
+    "call_recorder",
+    "communication"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/crm_mapping.schema.json",
+  "title": "CRMMapping",
+  "description": "Declarative mapping from GTM Superintelligence report fields to a CRM's field API names, so coaching/deal/account results can auto-fill any CRM. The mapping is data; the writer (Salesforce/HubSpot/generic/HTTP) is pluggable. This makes CRM writeback vendor-neutral.",
+  "type": "object",
+  "required": ["crm", "objects"],
+  "additionalProperties": false,
+  "properties": {
+    "crm": { "type": "string", "description": "e.g. 'salesforce', 'hubspot', 'generic'." },
+    "description": { "type": "string" },
+    "objects": {
+      "type": "array",
+      "description": "One entry per CRM object you want to write to.",
+      "items": {
+        "type": "object",
+        "required": ["source", "object", "fields"],
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["coaching_report", "deal_report", "account_report"],
+            "description": "Which GTM Superintelligence report this object's fields are drawn from."
+          },
+          "object": { "type": "string", "description": "CRM object/API name, e.g. 'Opportunity', 'Account', 'Task', 'deals', 'companies'." },
+          "id_field": { "type": "string", "description": "Field on the report subject/metadata holding the CRM record id to update (e.g. 'subject.id' or 'metadata.opportunity_id')." },
+          "fields": {
+            "type": "array",
+            "description": "Field mappings. Each maps a CRM field to a value pulled from the report via a dotted path or template.",
+            "items": {
+              "type": "object",
+              "required": ["crm_field", "from"],
+              "additionalProperties": false,
+              "properties": {
+                "crm_field": { "type": "string", "description": "CRM field API name, e.g. 'GTMSI_Score__c' or 'meddpicc_metrics'." },
+                "from": {
+                  "type": "string",
+                  "description": "Dotted path into the report (e.g. 'overall_score', 'classification.call_type', 'risk') OR a {{template}} string referencing such paths."
+                },
+                "transform": {
+                  "type": "string",
+                  "enum": ["none", "round", "join_lines", "first", "title_case", "percent"],
+                  "default": "none",
+                  "description": "Optional value transform applied before writing."
+                },
+                "when_empty": {
+                  "type": "string",
+                  "enum": ["skip", "blank", "null"],
+                  "default": "skip",
+                  "description": "What to do if the source value is missing."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

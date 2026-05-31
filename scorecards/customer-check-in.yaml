@@ -1,0 +1,182 @@
+# Customer Check-in scorecard — coaching rubric for ongoing customer success calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Command of the Message, Next-Steps). Fork it and tune the criteria/weights
+# for your business.
+id: customer-check-in
+name: Customer Check-in / Success
+version: "1.0"
+description: >
+  Evaluates how well the CSM reviewed adoption and usage health, surfaced
+  value realised, identified and addressed churn risk, multi-threaded
+  the relationship, spotted expansion signals, and provided proactive
+  guidance beyond reactive support.
+applies_to: [customer-check-in]
+frameworks: [command-of-the-message, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: adoption_and_usage
+    name: Adoption & Usage Review
+    weight: 1.5
+    intent: >
+      Adoption data is the earliest available signal of churn risk and expansion
+      potential; reviewing it on every check-in makes the conversation grounded in reality.
+    framework_refs: [command-of-the-message.before_scenario]
+    what_great_looks_like:
+      - "CSM comes prepared with current usage data and references it early in the call."
+      - "Rep distinguishes which features or workflows are well adopted versus underused."
+      - "Rep asks the customer to explain any gaps between expected and actual usage."
+    what_poor_looks_like:
+      - "Check-in proceeds without any reference to usage data."
+      - "Rep relies solely on the customer's self-report without validating against product analytics."
+      - "Usage gaps are acknowledged but not investigated or addressed."
+    evidence_cues:
+      - "\"I pulled up your usage stats before we spoke — I noticed [feature/module] isn't being used much. What's the story there?\""
+      - "\"Your team's activity is up [X]% from last month — what changed?\""
+    coaching_prompts:
+      - "What did the usage data tell you before this call that shaped the agenda?"
+      - "How did you explain a usage gap to the customer without making them feel criticised?"
+
+  - id: value_realized
+    name: Value Realised
+    weight: 2
+    intent: >
+      Customers renew and expand when they can articulate the value they have
+      received; the CSM's job is to help them see and quantify that value.
+    framework_refs: [command-of-the-message.differentiated_value, command-of-the-message.proof_points]
+    what_great_looks_like:
+      - "Rep explicitly asks what outcomes the customer has seen since the last conversation."
+      - "Outcomes are quantified where possible (time saved, errors reduced, revenue influenced)."
+      - "Rep connects the outcomes to the success metrics agreed at kickoff."
+    what_poor_looks_like:
+      - "Call stays at the feature level with no discussion of business outcomes."
+      - "Rep assumes the customer is getting value rather than asking and confirming."
+      - "No reference to the success metrics agreed at the start of the relationship."
+    evidence_cues:
+      - "\"Since we last spoke, what's actually gotten better for your team?\""
+      - "\"You told me at kickoff you wanted to [metric] — where does that stand today?\""
+    coaching_prompts:
+      - "How did you help the customer quantify the value they've gotten? What number came up?"
+      - "If the customer couldn't name any value realised, how did you respond?"
+
+  - id: churn_risk_surfacing
+    name: Churn Risk Surfacing
+    weight: 2
+    intent: >
+      Churn is almost always predictable from leading indicators; the CSM who
+      surfaces risk early has time to intervene — the one who waits for a
+      cancellation request does not.
+    framework_refs: [command-of-the-message.before_scenario]
+    what_great_looks_like:
+      - "Rep proactively asks about satisfaction, obstacles, and whether the product is meeting expectations."
+      - "Rep reads between the lines for low-engagement signals (short answers, distracted tone, skipped meetings)."
+      - "When risk is identified, rep has an escalation or recovery plan ready."
+    what_poor_looks_like:
+      - "Rep runs a routine check-in with no proactive risk questions."
+      - "Risk signals (low usage, missed milestones, stakeholder changes) are visible but not raised."
+      - "Rep waits for the customer to raise dissatisfaction rather than creating the conditions for honesty."
+    evidence_cues:
+      - "\"Is there anything that's not working the way you hoped? I'd rather hear it now than later.\""
+      - "\"I noticed [usage/engagement signal] — is everything OK on your end?\""
+    coaching_prompts:
+      - "What is the churn risk score for this account, and what drove it to that level?"
+      - "Did the customer say anything that concerned you? What are you doing about it?"
+
+  - id: relationship_multithreading
+    name: Relationship Multithreading
+    weight: 1.5
+    intent: >
+      A customer relationship that lives in one contact is fragile; CSMs who
+      build relationships across the organisation protect the account from
+      individual turnover and broaden the product's internal footprint.
+    framework_refs: [command-of-the-message.required_capabilities, next-steps.clear_owner]
+    what_great_looks_like:
+      - "Rep knows at least two or three stakeholders at the account and speaks to more than one regularly."
+      - "Rep asks about new joiners or team changes that could affect the relationship."
+      - "Rep uses the check-in to be introduced to a new stakeholder or expand contact coverage."
+    what_poor_looks_like:
+      - "Rep speaks only to one contact and has no visibility into other users or stakeholders."
+      - "A key stakeholder change (champion leaves, new executive joins) catches the rep by surprise."
+      - "Rep has never met the economic buyer or anyone in leadership at the account."
+    evidence_cues:
+      - "\"Are there any new people on your team who should be involved in how you use this?\""
+      - "\"I'd love to connect with [other stakeholder] at some point — can you make an introduction?\""
+    coaching_prompts:
+      - "How many people at this account do you know by name? When did you last speak to each of them?"
+      - "What would happen to this account if your main contact left tomorrow?"
+
+  - id: expansion_signals
+    name: Expansion Signals
+    weight: 1.5
+    intent: >
+      Expansion revenue starts with the CSM noticing signals — new teams, growing
+      usage, unmet needs — before the customer thinks to ask for more.
+    framework_refs: [command-of-the-message.differentiated_value, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep actively listens for mentions of adjacent teams, new use cases, or growing pain points."
+      - "Rep asks questions that naturally surface expansion opportunities without feeling sales-y."
+      - "When a signal is identified, rep documents it and loops in the account executive."
+    what_poor_looks_like:
+      - "Rep treats the check-in as a support call only, never exploring growth opportunities."
+      - "Customer mentions a new team or use case and the rep does not follow up."
+      - "Expansion opportunity is noticed too late — only when the customer asks the rep about it."
+    evidence_cues:
+      - "\"You mentioned your [other team] is running into something similar — is that an area worth exploring?\""
+      - "\"Are there other parts of the business that could benefit from what your team is doing?\""
+    coaching_prompts:
+      - "Did any expansion signal come up on this call? What did you do with it?"
+      - "How do you balance being a trusted advisor with spotting growth opportunities?"
+
+  - id: proactive_guidance
+    name: Proactive Guidance
+    weight: 1.5
+    intent: >
+      A CSM who only responds to questions is a help-desk; one who brings
+      insights and best practices to every call is a strategic partner who is
+      hard to churn.
+    framework_refs: [command-of-the-message.proof_points]
+    what_great_looks_like:
+      - "Rep shares at least one insight, best practice, or recommendation the customer did not ask for."
+      - "Guidance is specific to the customer's situation, not a generic tip applicable to everyone."
+      - "Rep references how similar customers handle a challenge the customer is currently facing."
+    what_poor_looks_like:
+      - "Rep only responds to questions and raises nothing unprompted."
+      - "Guidance is generic ('make sure your team logs in regularly') with no personalisation."
+      - "Rep has no knowledge of what similar customers are doing or what works best."
+    evidence_cues:
+      - "\"I wanted to share something before we wrap — I've seen teams like yours get a lot of value from [practice].\""
+      - "\"One thing a similar customer did that made a big difference was...\""
+    coaching_prompts:
+      - "What did you bring to this customer that they didn't ask for? How did they react?"
+      - "If this customer said 'we can do this ourselves now,' would they have learned enough from you to do that?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A check-in without a next step is a maintenance call; every interaction
+      should advance the customer's success or the relationship in a specific way.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep closes the call by summarising what each side will do before the next interaction."
+      - "Next check-in or milestone review is calendared before the call ends."
+      - "Action items are specific, owned, and time-bound — not vague follow-ups."
+    what_poor_looks_like:
+      - "Call ends without a specific next step on either side."
+      - "Rep sends a follow-up email to confirm actions that should have been agreed live."
+      - "Next check-in is not booked; rep relies on the customer to schedule."
+    evidence_cues:
+      - "\"Before we hang up, on your side the action is [X] by [date], and on my side I'll [Y] by [date].\""
+      - "\"Let's lock in our next call now — does [date] work?\""
+    coaching_prompts:
+      - "What are the specific next steps coming out of this call, and are they in writing?"
+      - "When is the next interaction with this customer, and who is responsible for scheduling it?"

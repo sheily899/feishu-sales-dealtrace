@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/rubric.schema.json",
+  "title": "Rubric",
+  "description": "A weighted, signal-based rubric for scoring something that spans MANY calls: a deal/opportunity (sales) or an account (CSM). Unlike a per-call scorecard, a rubric is evaluated over an aggregate of call coaching reports plus optional CRM/usage signals. Same editable-YAML philosophy as scorecards.",
+  "type": "object",
+  "required": ["id", "name", "version", "kind", "dimensions"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "kind": {
+      "type": "string",
+      "enum": ["deal-health", "account-health"],
+      "description": "deal-health = sales opportunity scoring; account-health = CSM account scoring."
+    },
+    "description": { "type": "string" },
+    "frameworks": { "type": "array", "items": { "type": "string" } },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scale_max": { "type": "number", "default": 100 },
+        "bands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "min"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "min": { "type": "number" },
+              "meaning": { "type": "string" }
+            }
+          }
+        },
+        "risk_bands": {
+          "type": "array",
+          "description": "Maps the overall score to a risk label (e.g. low/medium/high churn risk, or strong/at-risk/long-shot deal). Highest matching min wins.",
+          "items": {
+            "type": "object",
+            "required": ["label", "max"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "max": { "type": "number", "description": "Inclusive upper bound: scores <= max get this risk label (evaluate ascending)." },
+              "meaning": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "weight", "strong_signals"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "name": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0 },
+          "intent": { "type": "string" },
+          "framework_refs": { "type": "array", "items": { "type": "string" } },
+          "strong_signals": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "weak_signals": { "type": "array", "items": { "type": "string" } },
+          "risk_flags": {
+            "type": "array",
+            "description": "Signals that, if present, are explicit red flags worth surfacing regardless of the dimension score.",
+            "items": { "type": "string" }
+          },
+          "evidence_cues": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,181 @@
+WEBVTT
+
+00:00:03.000 --> 00:00:09.500
+<v Riley>Alright, I think everyone's on. Pat, Casey, great to have you both. Thanks for making time.
+
+00:00:09.600 --> 00:00:15.200
+<v Pat>Yeah, looking forward to it. Casey cleared the calendar for this one, which is rare.
+
+00:00:15.400 --> 00:00:19.100
+<v Casey>Let's just say I have some questions.
+
+00:00:19.300 --> 00:00:31.000
+<v Riley>I love that. Okay — so here's what I was thinking for today. I want to start by recapping what I heard from you last week, Pat, just to make sure I've got it right. Then I'll walk you through how we'd approach the specific problems you mentioned. And Casey, I want to make sure there's plenty of time for the technical deep dive because I know that matters.
+
+00:00:31.200 --> 00:00:35.400
+<v Pat>That sounds right.
+
+00:00:35.600 --> 00:00:37.200
+<v Casey>Works for me.
+
+00:00:37.500 --> 00:00:58.000
+<v Riley>Great. So from our last call — Pat, you told me that Globex has three separate BI tools across three departments, none of them talk to each other, and your ops team is running a manual reconciliation every Monday morning that takes about four hours. And the trigger for looking at this now is the Q4 board presentation where you need consolidated metrics across all three divisions. Did I capture that right?
+
+00:00:58.300 --> 00:01:06.700
+<v Pat>That's basically it. I'd add that the Monday process is becoming a bottleneck because our ops lead is about to take parental leave and no one else really knows how to do it.
+
+00:01:06.900 --> 00:01:17.500
+<v Riley>Ohh, that's a real fragility. So it's not just inefficient — if that person is out, the whole process stops?
+
+00:01:17.700 --> 00:01:23.200
+<v Pat>Yeah. We've tried to document it but honestly the documentation is six months out of date.
+
+00:01:23.500 --> 00:01:36.000
+<v Riley>That's actually one of the clearest cases for automation I've heard. And Casey, from a technical standpoint — you're the one who'd have to live with whatever we build here. What's your biggest concern going in?
+
+00:01:36.200 --> 00:01:52.800
+<v Casey>Honestly, we've been burned before. We brought in a platform two years ago — I won't name names — and it required us to basically rewrite our data pipeline to fit their schema. It was six months of pain. So my question is: how much do we have to change to fit Northstar, versus how much does Northstar adapt to us?
+
+00:01:53.000 --> 00:02:08.500
+<v Riley>That's exactly the right question and I'm glad you asked it up front. So let me show you specifically how we connect to your existing sources — because this is actually where Northstar is different. Can you pull up the screen share, actually let me share mine.
+
+00:02:08.800 --> 00:02:12.200
+<v Casey>Go ahead.
+
+00:02:12.500 --> 00:02:29.000
+<v Riley>Okay — so what you're looking at here is the connector library. We have native connectors to about two hundred and forty data sources. The key design principle is that Northstar reads from your systems in their native schema. We don't ask you to transform anything before it comes in. The transformation happens inside Northstar.
+
+00:02:29.200 --> 00:02:38.700
+<v Casey>What does "native schema" mean practically? If our Salesforce has twenty custom fields and a bunch of formula fields, what happens?
+
+00:02:38.900 --> 00:02:55.500
+<v Riley>Great — let me show you the Salesforce connector specifically. So when you authenticate, Northstar does a schema discovery — it reads all your objects, all your standard and custom fields. You can see them right here in the field browser. Formula fields show up as read-only derived fields. Nothing is lost.
+
+00:02:55.800 --> 00:03:04.200
+<v Casey>And what's the sync frequency?
+
+00:03:04.400 --> 00:03:14.800
+<v Riley>Configurable. We can do real-time event streaming via webhooks for sources that support it, or scheduled pulls — minimum every fifteen minutes. Most teams run hourly for their core sources and real-time for transactional data.
+
+00:03:15.000 --> 00:03:22.500
+<v Casey>Okay. What about our internal Postgres database? It's on-prem, not in the cloud.
+
+00:03:22.800 --> 00:03:38.000
+<v Riley>Yep — we have an on-prem agent. It's a lightweight Docker container that runs inside your network, reads from Postgres, and pushes encrypted payloads outbound only. No inbound connections to your database. I'll show you the architecture diagram in a second. But first — let me actually walk you through the metric definition layer because this is where Pat's problem specifically gets solved.
+
+00:03:38.300 --> 00:03:42.100
+<v Pat>Yes, please.
+
+00:03:42.400 --> 00:04:01.000
+<v Riley>So here's the metric library. This is where you define what "revenue" means, what "active user" means — one time. Every dashboard in the entire system pulls from these definitions. So when Finance's dashboard says revenue and Operations' dashboard says revenue, they're reading the same number. The VP argument problem just... goes away structurally.
+
+00:04:01.200 --> 00:04:09.800
+<v Pat>That's the dream. How does versioning work? Like if we need to change the definition of a metric?
+
+00:04:10.000 --> 00:04:25.500
+<v Riley>Good question. Every metric definition is versioned. When you make a change, you can see the historical definition and exactly when it changed. Old dashboards keep working against the old version, or you can migrate them. It's auditable. And I'll just also quickly show you — we have a prebuilt template library here for B2B SaaS companies, which I think would map well to Globex.
+
+00:04:25.800 --> 00:04:32.500
+<v Riley>So these are the OKR tracking templates, pipeline templates, revenue breakdown — about forty templates out of the box.
+
+00:04:32.800 --> 00:04:40.000
+<v Riley>And over here is the alert system — you can set threshold alerts, anomaly detection alerts, and route them to Slack or email.
+
+00:04:40.200 --> 00:04:48.000
+<v Riley>This is the collaboration layer — every chart has an annotation feature so your team can leave comments directly on data points, great for the Monday sync replacement.
+
+00:04:48.200 --> 00:04:56.500
+<v Riley>And these are the access controls — role-based permissions so Finance sees Finance data, Ops sees Ops data, execs get the consolidated view.
+
+00:04:56.800 --> 00:05:02.000
+<v Riley>We also have a mobile app — here's what the exec view looks like on mobile.
+
+00:05:02.200 --> 00:05:10.000
+<v Riley>And there's an embedded analytics option if you ever want to put dashboards inside another product.
+
+00:05:10.300 --> 00:05:14.800
+<v Pat>That's a lot of features. Can we go back to the metric versioning?
+
+00:05:15.000 --> 00:05:28.500
+<v Riley>Of course — sorry, I got a bit carried away there. Let me go back. So the versioning — you can see right here each version has a timestamp, the author, and a diff of exactly what changed in the definition.
+
+00:05:28.800 --> 00:05:36.200
+<v Pat>And this is logged for audit purposes?
+
+00:05:36.400 --> 00:05:44.000
+<v Riley>Yes, fully logged. Export to CSV or API access for your compliance team. Casey, any questions on the on-prem agent while we're here?
+
+00:05:44.200 --> 00:05:58.500
+<v Casey>Yeah — what are the computational requirements? We're not going to dedicate a high-spec server to this.
+
+00:05:58.800 --> 00:06:10.000
+<v Riley>Minimal — the agent is basically just a relay, all the heavy computation happens on our side. Two CPUs, four gigs of RAM is enough. Most customers run it on a VM they already have.
+
+00:06:10.200 --> 00:06:17.800
+<v Casey>Okay. Do you have SOC 2?
+
+00:06:18.000 --> 00:06:26.500
+<v Riley>Yes — SOC 2 Type II. I'll send the report after the call. GDPR compliant as well. Data residency options if you need EU hosting.
+
+00:06:26.800 --> 00:06:35.200
+<v Casey>We're US-only so that's fine. What about Sigma? We evaluated them about a year ago.
+
+00:06:35.500 --> 00:06:56.000
+<v Riley>Yeah, Sigma's a solid product. The main difference is — Sigma is a great BI layer but it's primarily designed for analysts who want to write SQL. Northstar is built for operational teams where you don't want everyone writing SQL — the metric library is the control point, so you get governed data without requiring SQL literacy across the org. If your use case is analyst-driven exploration, Sigma might be better. If it's operational standardization across non-technical teams, that's where Northstar wins.
+
+00:06:56.300 --> 00:07:05.800
+<v Casey>Mm. We do have some analysts who'd want the SQL access though.
+
+00:07:06.000 --> 00:07:18.500
+<v Riley>Fair — and we do have a SQL mode. It's not the primary interface but it's there. It's just not the main pitch. I'd be honest that if raw SQL exploration is the primary use case, there are tools better optimized for that. But given what Pat described — the multi-team standardization, the board reporting, the Monday process automation — that's squarely our wheelhouse.
+
+00:07:18.800 --> 00:07:27.200
+<v Pat>Yeah, the SQL thing is secondary for us. The standardization is the core problem.
+
+00:07:27.500 --> 00:07:41.000
+<v Riley>Good to align on that. Okay — so given what you've both heard, what's your gut reaction? Pat, does this feel like it maps to what you were hoping to see?
+
+00:07:41.200 --> 00:07:52.500
+<v Pat>Honestly yes. The metric library is exactly what I wanted to see. Casey, thoughts?
+
+00:07:52.800 --> 00:08:08.000
+<v Casey>I have fewer concerns than I expected. The on-prem agent architecture is sensible. I'd want to do a proof-of-concept with our actual data before I'd commit to anything.
+
+00:08:08.200 --> 00:08:22.500
+<v Riley>That's completely reasonable. We do offer a thirty-day pilot — we'd connect to two or three of your real data sources, build out three to five dashboards against your actual data. That's usually how technical teams get comfortable. Would that make sense as a next step?
+
+00:08:22.800 --> 00:08:30.200
+<v Casey>That would be the right way to do it, yeah.
+
+00:08:30.400 --> 00:08:42.000
+<v Pat>Let's talk logistics. What does the pilot require from our side?
+
+00:08:42.200 --> 00:08:58.500
+<v Riley>On your side — mainly Casey or someone from the data team to help with the connector setup, maybe two to three hours total. Our implementation engineer does the heavy lifting. We'd scope it together in a kickoff call. Typical pilot kicks off within a week of agreeing to proceed.
+
+00:08:58.800 --> 00:09:08.200
+<v Pat>That timeline works. Casey, you okay with a pilot?
+
+00:09:08.400 --> 00:09:14.800
+<v Casey>Yeah. Let's see it with real data.
+
+00:09:15.000 --> 00:09:30.500
+<v Riley>Perfect. I'll send a pilot proposal today — it'll outline the scope, what we'd connect, what we'd build, and the success criteria. Does Thursday work for a quick call to align on the details before we kick it off?
+
+00:09:30.800 --> 00:09:38.200
+<v Pat>Thursday afternoon works for me.
+
+00:09:38.400 --> 00:09:43.000
+<v Casey>I can do Thursday after two.
+
+00:09:43.200 --> 00:09:52.500
+<v Riley>Great — I'll send a two o'clock invite. Really appreciate the time today, both of you. Casey, genuinely good questions — that's the kind of scrutiny that makes for a good implementation.
+
+00:09:52.800 --> 00:09:56.500
+<v Casey>We'll see how the pilot goes.
+
+00:09:56.700 --> 00:10:00.000
+<v Pat>Thanks Riley. Talk Thursday.
+
+00:10:00.200 --> 00:10:03.500
+<v Riley>Talk Thursday. Take care.

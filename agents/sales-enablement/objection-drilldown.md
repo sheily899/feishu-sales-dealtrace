@@ -1,0 +1,34 @@
+# Objection Drilldown
+
+**Function:** Sales Enablement  ·  **Integrations:** call_recorder, communication  ·  **Template id:** `AGTObjectionDrill01`
+
+> Provides deep analysis of objection types including frequency, context, and resolution strategies.
+
+## When it fires
+
+**Detector:** Trigger if the user wants deep analysis of objection types, frequency trends, resolution patterns, and their impact on deal outcomes.
+
+**Signal keywords:** `objection analysis`, `objection trends`, `objection patterns`, `objection intelligence`, `objection report`, `objection deep dive`, `objection categories`
+
+## What it does
+
+Perform deep analysis on objection types: frequency trends, context triggers, response effectiveness, deal impact, and successful resolution patterns. Send monthly objection intelligence reports.
+
+## Tools / actions
+- **Call Recorder** — Search Calls, Ask Attention
+- **Communication** — Send Message
+
+## Tooling
+
+Attention-native: this agent uses `ask_attention` (natural-language query/analysis over calls + CRM) plus `search_calls`/`get_call_details` where it needs specific calls. **On Attention** — import it into the agent builder, or run it here with Attention's MCP, and it works as written. **On any other recorder** — run it as a managed Claude agent with [`/run-agent`](../../.claude/commands/run-agent.md): Claude reads your CRM and pulls transcripts via your recorder or the [gtmsi adapters](../../docs/adapters.md), then does the same analysis. See [Tooling & portability](../README.md#tooling--portability).
+
+## Before sending: humanize
+
+This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
+
+## Trigger
+
+**Type:** Schedule — runs weekly, Monday 08:00 (cron `0 8 * * 1`, set the timezone to the team's).
+
+---
+_From GTM Superintelligence agent templates. Raw definition: [`objection-drilldown.json`](./objection-drilldown.json)._

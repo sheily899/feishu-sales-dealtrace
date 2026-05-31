@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gtm-superintelligence"
+version = "0.1.0"
+description = "Open-source, Claude-native sales coaching for any call transcript."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "GTM Superintelligence contributors" }]
+keywords = ["sales", "coaching", "revenue", "gtm", "transcripts", "claude", "anthropic", "meddpicc", "spiced"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Office/Business",
+]
+dependencies = [
+  "pyyaml>=6.0",
+  "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+# Live coaching via the Anthropic API. Not needed when running inside Claude Code.
+llm = ["anthropic>=0.40"]
+# Live CRM writeback (Salesforce/HubSpot). Dry-run needs nothing extra.
+crm = ["requests>=2.31"]
+# Schema validation utilities used by tests/CI.
+dev = ["anthropic>=0.40", "jsonschema>=4.0", "pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+gtmsi = "gtmsi.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/attentiontech/gtm-superintelligence"
+Documentation = "https://github.com/attentiontech/gtm-superintelligence/tree/main/docs"
+Issues = "https://github.com/attentiontech/gtm-superintelligence/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gtmsi"]
+# The editable YAML knowledge base lives at the repo root so it is easy to fork and
+# tune. Run from a checkout, or point GTMSI_HOME at your content directory.
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

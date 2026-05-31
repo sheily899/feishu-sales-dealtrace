@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Coaching output
+**/coaching/
+examples/transcripts/coaching/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Internal launch/growth playbook — not for publication
+launch/

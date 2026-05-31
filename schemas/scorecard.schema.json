@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/scorecard.schema.json",
+  "title": "Scorecard",
+  "description": "A reusable coaching rubric for one call type. A scorecard is a weighted list of criteria; each criterion is scored 0-100 and bucketed into a band (e.g. poor/developing/good/great). Scorecards are plain YAML so anyone can fork and modify them per business.",
+  "type": "object",
+  "required": ["id", "name", "version", "applies_to", "criteria"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Stable slug, e.g. 'discovery'." },
+    "name": { "type": "string" },
+    "version": { "type": "string", "description": "Semver-ish, e.g. '1.0'. Bump when criteria change." },
+    "description": { "type": "string" },
+    "applies_to": {
+      "type": "array",
+      "description": "Call-type ids this scorecard is valid for (see config/call_types.yaml).",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "frameworks": {
+      "type": "array",
+      "description": "Framework ids this scorecard draws on (see frameworks/). Lets the coach cite a shared vocabulary.",
+      "items": { "type": "string" }
+    },
+    "scoring": {
+      "type": "object",
+      "description": "How numeric scores map to human bands. Defaults are applied if omitted.",
+      "additionalProperties": false,
+      "properties": {
+        "scale_max": { "type": "number", "default": 100 },
+        "bands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "min"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string", "description": "e.g. 'great', 'good', 'developing', 'poor'." },
+              "min": { "type": "number", "description": "Inclusive lower bound of this band on the 0..scale_max scale." },
+              "meaning": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "weight", "what_great_looks_like"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "name": { "type": "string" },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Relative weight. The engine normalizes weights to sum to 1.0 across criteria."
+          },
+          "intent": {
+            "type": "string",
+            "description": "One sentence: why this criterion matters to deal outcomes."
+          },
+          "framework_refs": {
+            "type": "array",
+            "description": "Links to framework elements, e.g. 'spiced.pain' or 'meddpicc.economic_buyer'.",
+            "items": { "type": "string" }
+          },
+          "what_great_looks_like": {
+            "type": "array",
+            "description": "Observable behaviors that earn a top score. The coach uses these as the gold standard.",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "what_poor_looks_like": {
+            "type": "array",
+            "description": "Common failure modes / anti-patterns.",
+            "items": { "type": "string" }
+          },
+          "evidence_cues": {
+            "type": "array",
+            "description": "Phrases or moves to look for in the transcript as evidence (positive or negative).",
+            "items": { "type": "string" }
+          },
+          "coaching_prompts": {
+            "type": "array",
+            "description": "Reflective questions the coach can pose back to the rep.",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
