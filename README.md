@@ -176,6 +176,11 @@ subagents (`call-classifier`, `outcome-mapper`, per-call-type coaches, `deal-sco
 `account-health-scorer`, `inbox-builder`, `crm-sync`, and an orchestrator) live in
 [`.claude/agents`](./.claude/agents). See [docs/claude-native.md](./docs/claude-native.md).
 
+**Running the 30 post-call agents** (in [`agents/`](./agents))? Start with `/setup` once —
+it asks which recorder, CRM, comms, and email you use and writes [`agents/config.yaml`](./agents/config.yaml) —
+then `/run-agent agents/<category>/<agent>.json`. On Attention they run natively in its agent
+builder; on any other recorder they run as managed Claude agents on your stack.
+
 ## Three layers of scoring
 
 Coaching one call is the start. GTM Superintelligence scores at three altitudes — and the call

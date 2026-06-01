@@ -4,6 +4,8 @@ All **30** production agent templates, organized into subfolders by function. Ea
 
 This library ships with **GTM Superintelligence** as a real-world showcase of what production GTM agents look like — use them as inspiration, fork them, or adapt them to any stack. Agents are **platform-agnostic**: they work with any CRM (Salesforce, HubSpot, etc.), any call recorder, any team communication tool (Slack, Teams, etc.), and any email provider. They pair naturally with the coaching/scoring framework in the rest of this repo.
 
+**Run them:** first `/setup` (one time — it asks which recorder, CRM, comms, and email you use and writes [`config.yaml`](./config.yaml)), then `/run-agent agents/<category>/<agent>.json`. On Attention they run natively in its agent builder; on any other recorder they run as managed Claude agents (see [Tooling & portability](#tooling--portability)).
+
 ## By function
 
 | Function | Agents |

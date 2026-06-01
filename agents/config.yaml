@@ -4,7 +4,13 @@
 # recorder, the /run-agent runner translates those calls to your CRM + transcripts
 # (via the gtmsi adapters), so every agent works with any CRM and any call recorder.
 #
-# After editing, run any agent with:  /run-agent agents/<category>/<agent>.json
+# Easiest way to fill this in: run /setup (it asks 5 quick questions, detects what it
+# can from your connected tools, and writes this file). Or edit by hand below.
+# Until `configured` is true, /run-agent confirms your stack before it runs anything,
+# instead of assuming the defaults below.
+configured: false
+
+# After setup, run any agent with:  /run-agent agents/<category>/<agent>.json
 
 # CRM — where your pipeline and account data lives
 crm: salesforce

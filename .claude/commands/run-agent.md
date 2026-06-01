@@ -17,7 +17,16 @@ Target: $ARGUMENTS
    - `template.agent.triggers` — what event fires this agent
    - `recommended_trigger` — trigger metadata (type, cron, crm_event)
 
-2. **Resolve integrations — branch on the call recorder.** Read `agents/config.yaml`. The agent's instructions are written Attention-native (`ask_attention`, `search_calls`, `get_call_details`). How you run them depends on `call_recorder`:
+2. **Confirm the stack, then resolve integrations.** Read `agents/config.yaml`.
+   - **If `configured` is not `true`**, the user hasn't set up their stack yet. Pause and run
+     `/setup` — or ask inline which call recorder, CRM, communication tool, and email they use —
+     confirm, and write the answers back to `agents/config.yaml`. **Do not run on the shipped
+     defaults silently**; the `call_recorder` value decides which path below you take.
+   - **If `configured: true`**, briefly echo the stack you're about to use (recorder, CRM,
+     comms) so the user can catch a wrong setting before anything runs.
+
+   Once the stack is confirmed, the agent's instructions are written Attention-native
+   (`ask_attention`, `search_calls`, `get_call_details`); how you run them depends on `call_recorder`:
 
    **A) `call_recorder: attention` → native path.** The instructions already speak Attention's language. Two ways to run:
    - **Attention's agent builder (best):** these JSON specs are Attention agent-builder templates — import the spec into Attention and it runs natively with `ask_attention` + subtools, no translation. Tell the user this is the recommended way.
