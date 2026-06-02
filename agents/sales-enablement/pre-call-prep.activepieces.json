@@ -2,7 +2,7 @@
   "created": "",
   "updated": "",
   "name": "Pre-Call Prep",
-  "description": "Daily morning pre-call briefing, as an Attention agent-builder flow: schedule -> askAttention (read today's calendar, match meetings to CRM accounts/opportunities, reconstruct each deal from prior calls, write a per-meeting briefing) -> DM the rep. CONFIRM against your builder before import: the schema this was modeled on is a per-call agent, so three things here are best-effort and flagged in pre-call-prep.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a calendar/CRM/cross-call query, (3) the Slack direct-message action name. Set connections and the placeholder ids (<...>) on import.",
+  "description": "Daily morning pre-call briefing, as an Attention agent-builder flow: schedule -> askAttention (read today's calendar, match meetings to CRM accounts/opportunities, reconstruct each deal from prior calls, write a per-meeting briefing) -> DM the rep. The @activepieces/piece-schedule cron trigger is verified against Activepieces. Confirm the askAttention context scope for a non-conversation query (contextType 'user') and the output action against your own export. Set connections and the placeholder ids (<...>) on import.",
   "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
   "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
   "signals": [],
@@ -15,7 +15,7 @@
       "type": "PIECE_TRIGGER",
       "settings": {
         "pieceName": "@activepieces/piece-schedule",
-        "pieceVersion": "0.1.5",
+        "pieceVersion": "0.1.17",
         "pieceType": "OFFICIAL",
         "packageType": "REGISTRY",
         "input": { "cronExpression": "0 7 * * 1-5", "timezone": "UTC" },

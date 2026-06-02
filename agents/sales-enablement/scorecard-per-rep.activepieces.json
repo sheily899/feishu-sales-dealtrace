@@ -2,7 +2,7 @@
   "created": "",
   "updated": "",
   "name": "Scorecard per Rep",
-  "description": "Weekly per-rep performance scorecard, as an Attention agent-builder flow: schedule -> askAttention (pull the week's calls per rep, score six dimensions 1-5, compare to last week, pick top-3 coaching priorities) -> post to a channel. CONFIRM against your builder before import: the schema this was modeled on is a per-call agent, so three things here are best-effort and flagged in scorecard-per-rep.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "description": "Weekly per-rep performance scorecard, as an Attention agent-builder flow: schedule -> askAttention (pull the week's calls per rep, score six dimensions 1-5, compare to last week, pick top-3 coaching priorities) -> post to a channel. The @activepieces/piece-schedule cron trigger is verified against Activepieces. Confirm the askAttention context scope for a non-conversation query (contextType 'user') and the output action against your own export. Set connections and the placeholder ids (<...>) on import.",
   "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
   "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
   "signals": [],
@@ -15,7 +15,7 @@
       "type": "PIECE_TRIGGER",
       "settings": {
         "pieceName": "@activepieces/piece-schedule",
-        "pieceVersion": "0.1.5",
+        "pieceVersion": "0.1.17",
         "pieceType": "OFFICIAL",
         "packageType": "REGISTRY",
         "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },

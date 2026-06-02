@@ -2,7 +2,7 @@
   "created": "",
   "updated": "",
   "name": "Objection Catcher",
-  "description": "Weekly objection-handling digest, as an Attention agent-builder flow: schedule -> askAttention (analyze the week's calls, cluster objections, score rebuttals, write the digest) -> email the digest. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent that posts to Slack, so four things here are best-effort and flagged in objection-catcher.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call weekly query, (3) the email piece + send_email action name/version, and (4) the optional CRM outcome lookup. Set connections and the placeholder ids (<...>) on import.",
+  "description": "Weekly objection-handling digest, as an Attention agent-builder flow: schedule -> askAttention (analyze the week's calls, cluster objections, score rebuttals, write the digest) -> email the digest. The @activepieces/piece-schedule cron trigger is verified against Activepieces. Confirm the askAttention context scope for a non-conversation query (contextType 'user'), the email piece's send_email action, and the optional CRM lookup against your own export. Set connections and the placeholder ids (<...>) on import.",
   "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
   "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-gmail"],
   "signals": [],
@@ -15,7 +15,7 @@
       "type": "PIECE_TRIGGER",
       "settings": {
         "pieceName": "@activepieces/piece-schedule",
-        "pieceVersion": "0.1.5",
+        "pieceVersion": "0.1.17",
         "pieceType": "OFFICIAL",
         "packageType": "REGISTRY",
         "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },

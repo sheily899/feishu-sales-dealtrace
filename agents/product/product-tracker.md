@@ -88,7 +88,7 @@ Trends vs last week -> brief comparison
 
 **Attention (Activepieces-based builder):** import [`product-tracker.activepieces.json`](./product-tracker.activepieces.json). It follows Attention's export schema: a `@activepieces/piece-schedule` trigger -> an `askAttention` step (scans the week's calls, extracts and prioritizes the signals, writes the digest) -> a Slack `send_channel_message`. On import, connect Attention and Slack and fill `<YOUR_SLACK_CHANNEL_ID>`.
 
-**Build notes (confirm against your own export):** because the schema sample we modeled on was a per-call agent, confirm three things against a flow you export from your own workspace: (1) the schedule piece name/version, (2) the `askAttention` context scope for a cross-call query (we use `contextType: "user"`), and (3) the Slack channel-post action name. The fully-managed alternative is to import the agent template [`product-tracker.json`](./product-tracker.json).
+**Build notes (confirm against your own export):** The `@activepieces/piece-schedule` `cron_expression` trigger (v0.1.17) is verified against Activepieces. Confirm the rest against a flow you export from your own workspace: the `askAttention` context scope for a non-conversation query (we use `contextType: "user"`) and your output piece's action name. The fully-managed alternative is to import the agent template [`product-tracker.json`](./product-tracker.json).
 
 **Any other builder — pre-built for you** in [`product-tracker.builds/`](./product-tracker.builds/):
 
