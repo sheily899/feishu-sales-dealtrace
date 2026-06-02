@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Lost-Deal Intel",
+  "description": "Weekly lost-deal post-mortem, as an Attention agent-builder flow: schedule -> askAttention (query lost deals, analyze their calls, write the report) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in lost-deal-intel.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-deal/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Lost-Deal Intel",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every weekday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1-5", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_lost_deals",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Query lost deals, analyze their calls, write the report",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Lost-Deal Intel agent. (1) List every deal marked Closed-Lost in the last 7 days with name, account, owner, amount, stage-at-loss, and the CRM loss reason if present. If none, output exactly: 'Lost-Deal Intel ran for this period. No deals were marked lost. Pipeline health is stable.' and stop. (2) For each lost deal, pull all associated calls and reconstruct the timeline. (3) Classify each loss into one primary reason plus up to two contributing, with evidence, from: PRICING, COMPETITION, PRODUCT-GAP, TIMING, SALES-EXECUTION, CHAMPION-LOSS, NO-DECISION, LEGAL-SECURITY. (4) Write a per-deal post-mortem (timeline + turning-point call, customer perspective + key quote, competitive intel if relevant, sales-execution rating STRONG/ADEQUATE/WEAK, product-fit signal). (5) If 3+ losses, add cross-deal patterns. End with 2-3 org-level recommendations for this week. Output the exact report format in lost-deal-intel.md -> Output. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the report to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":bar_chart: *Lost-Deal Intel -- weekly loss analysis*\n\n{{analyze_lost_deals.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

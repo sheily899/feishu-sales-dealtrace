@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Sentiment Watch",
+  "description": "Per-call sentiment monitor, as an Attention agent-builder flow. Fires once per analyzed call, reads the sentiment, and DMs the account owner only when the call hit a positive or negative extreme (with the proving quote). On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use sentiment-watch.md.",
+  "tags": ["gtm-superintelligence", "account-management", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Sentiment Watch",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "read_sentiment",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Read the call's sentiment and decide if it is an extreme",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Sentiment Watch agent, reading THIS call (title: {{trigger.attributes.title}}). Read the overall sentiment, the customer's sentiment specifically, the top emotion tags, attendees and roles (customer vs rep), and the single most revealing quote that drives the sentiment, verbatim. Then classify: HIGHLY POSITIVE (strong satisfaction, delight, advocacy, specific praise tied to a result), HIGHLY NEGATIVE (strong frustration, churn risk, escalation, threats to cancel), or NEUTRAL (routine working tone, polite thanks, logistics, status talk). Routine politeness does NOT count. If NEUTRAL, output exactly: 'NEUTRAL - no alert' and nothing else. If POSITIVE or NEGATIVE, return plain text EXACTLY as: 'Sentiment: <POSITIVE|NEGATIVE>' then 'Account: <account> - Owner: <rep>' then 'Why: <1-2 sentences tied to the call>' then 'Quote: \"<verbatim customer quote>\"' then 'Suggested next step: <one concrete action>'. Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives, one clear ask. Only flag when the evidence is unambiguous; when in doubt, output 'NEUTRAL - no alert'.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "alert_owner",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "DM the account owner when sentiment is extreme",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":rotating_light: *Sentiment Watch* on {{trigger.attributes.title}}:\n\n{{read_sentiment.output}}",
+              "userId": "<REP_SLACK_USER_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_direct_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Revenue Sentry",
+  "description": "Daily pipeline risk monitor, as an Attention agent-builder flow: schedule -> askAttention (scan open deals, analyze their calls, score risk, write the alert) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in revenue-sentry.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-deal/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Revenue Sentry",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every weekday at 07:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 7 * * 1-5", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "scan_pipeline_risk",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scan open deals, analyze their calls, score risk, write the alert",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Revenue Sentry agent. (1) List every open deal in the pipeline with stage, amount, expected close date, owner, and last conversation date. (2) For each deal, pull the calls from the last 14 days and group them by deal. (3) Score each deal 0-3 on five risk dimensions (higher = riskier): Engagement Cadence, Sentiment Trajectory, Unresolved Objections, Competitive Pressure, Timeline Slippage. Total Risk = sum out of 15. Back every score with call evidence. (4) Classify each deal: RED ALERT (10-15), ORANGE WARNING (6-9), YELLOW WATCH (3-5), GREEN HEALTHY (0-2). Include only RED, ORANGE, and YELLOW in the alert; omit GREEN. If a deal's close date is today or past due, boost Timeline Slippage to 3. (5) For each RED and ORANGE deal, attach a specific recommended intervention. Output the exact alert format in revenue-sentry.md -> Output, including the per-dimension evidence table for RED deals, the condensed ORANGE list, the YELLOW watch list, and the pipeline health summary with total revenue at risk. If no at-risk deals, send a brief all-clear with total pipeline value and deal count. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the risk alert to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":rotating_light: *Revenue Sentry -- daily pipeline risk alert*\n\n{{scan_pipeline_risk.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

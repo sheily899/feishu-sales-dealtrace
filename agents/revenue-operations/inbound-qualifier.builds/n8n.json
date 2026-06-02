@@ -1,0 +1,44 @@
+{
+  "name": "Inbound Qualifier (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "inbound-qualifier", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your recorder's 'conversation analyzed' webhook here. The payload should carry the call id and company." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.callId }}",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the analyzed call (transcript + attendees). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "=SELECT Id, Name, Industry, NumberOfEmployees, Type FROM Account WHERE Name = '{{ $json.companyName }}'" } ] } },
+      "id": "node-crm", "name": "Salesforce - firmographics for ICP fit",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Read company size, industry, and existing-customer flag so the prompt can rate ICP fit. If unmatched, the prompt infers fit from the conversation and notes the assumption." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE INBOUND QUALIFIER OPERATING PROMPT (see inbound-qualifier.md)>>\\n\\nCALL:\\n{{ JSON.stringify($('Recorder - fetch call').item.json) }}\\n\\nFIRMOGRAPHICS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - score BANT + ICP fit",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post report",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0] }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "Salesforce - firmographics for ICP fit", "type": "main", "index": 0 }]] },
+    "Salesforce - firmographics for ICP fit": { "main": [[{ "node": "Claude - score BANT + ICP fit", "type": "main", "index": 0 }]] },
+    "Claude - score BANT + ICP fit": { "main": [[{ "node": "Slack - post report", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

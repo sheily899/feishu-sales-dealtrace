@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Content Gaps",
+  "description": "Weekly content-gap report, as an Attention agent-builder flow: schedule -> askAttention (scan the week's calls, cluster the questions reps struggle with, write the report) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in content-gaps.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call weekly query, and (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Content Gaps",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every Monday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_content_gaps",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scan the week's calls and write the content-gap report",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Content Gaps agent. (1) Look at every analyzed call from the last 7 days across all reps. If there are none, output exactly: 'Weekly Content Gap Report ran for this week. No analyzed calls were found, so there is nothing to summarize.' and stop. (2) From those calls extract every prospect/customer question or objection, the rep's answer, whether it fully resolved the question, and any rep uncertainty signal (filler language, deflection, hedging, 'I'll have to check', a promise to follow up). Quote the moment where possible. (3) Cluster the questions into recurring themes (pricing model, integrations, implementation timeline, security/compliance, competitor comparison, API capabilities, etc.), merging variants of the same question. (4) Score each theme by frequency (how many calls and distinct reps) and impact (whether it surfaced in stalled or negative-sentiment deals). Rank by frequency then impact. (5) For each top theme recommend one concrete enablement action (new one-pager, updated FAQ, demo clip, battlecard update, or short internal training), and separately call out broader training needs observed. If reps answered confidently across the board, say so and skip recommendations rather than inventing gaps. Keep a constructive, improvement-focused tone. Output the exact report format in content-gaps.md -> Output. Use single stars for emphasis, never double stars. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype adjectives, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the content-gap report to the enablement channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":books: *Weekly Content Gap Report*\n\n{{analyze_content_gaps.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Product Tracker",
+  "description": "Weekly product-feedback digest, as an Attention agent-builder flow: schedule -> askAttention (scan the week's calls for product signals, categorize, prioritize, write the digest) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in product-tracker.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "product", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Product Tracker",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every Monday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "extract_product_feedback",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scan the week's calls for product feedback, categorize and prioritize",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Product Tracker agent. Scan all customer-facing calls from the last 7 days. If there were no calls, output exactly: 'No customer calls recorded this week. No product feedback to report.' and stop. Otherwise, extract every product signal, each with the account, customer name and title, the exact quote, and the rep's response: FEATURE REQUESTS (capability that does not exist yet), BUG REPORTS (broken or erroring), WORKAROUND MENTIONS (manual hacks because the product does not support a workflow), COMPETITIVE FEATURE GAPS (a competitor feature we lack), PRAISE (a feature they love), USABILITY COMPLAINTS (confusing, too many steps). Categorize each into: UX / Usability, Performance, Integrations, Missing Features, Bugs, or Workflow Gaps. Prioritize by frequency (3+ customers = High, 2 = Medium, 1 = Low) and customer tier (enterprise/strategic outweigh SMB): P1 critical (high frequency AND an enterprise account, or a bug multiple customers hit), P2 important, P3 notable, P4 monitor. Group duplicate requests under one item with a count. Output the digest with sections: a header (calls analyzed, signals extracted, accounts represented), then P1 / P2 / P3 / P4 blocks (each item: label, category, mentions, accounts, representative quote, customer impact), then Positive Feedback, then Competitive Intel, then Trends vs last week. If one request dominates (5+ mentions) call it out as a Top Signal at the very top. Apply these humanizer rules: no em dashes, no AI throat-clearing, no hype adjectives, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_digest",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the digest to the product channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":bar_chart: *Product Feedback Digest -- this week*\n\n{{extract_product_feedback.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

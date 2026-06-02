@@ -1,75 +1,107 @@
 # Social Proof Finder
 
-**Function:** Marketing  ·  **Integrations:** communication  ·  **Template id:** `AGTProofFinder01`
+> Each week, scan the past week's calls for the strongest social proof (testimonials, success stories, quotable wins), pull the best verbatim quotes with their source links, and post a report for marketing and sales as a draft to mine. Quotes need customer approval before any public use.
 
-> Automatically identifies and summarizes customer success stories and satisfaction expressions from conversation analyses, delivering weekly reports highlighting social proof material for marketing and sales.
+**Function:** Marketing · **Trigger:** scheduled (weekly, Monday 08:00) · **Template id:** `AGTProofFinder01`
+**Files:** [`social-proof-finder.json`](./social-proof-finder.json) (Attention agent-builder template) · [`social-proof-finder.activepieces.json`](./social-proof-finder.activepieces.json) (Activepieces flow)
+
+This page is the build-ready spec. It is platform-agnostic: any agent builder (Attention/Activepieces, n8n, Zapier, Make, LangGraph, a custom GPT/Claude agent) can implement it from the sections below. See [Build it in your stack](#build-it-in-your-stack).
+
+---
+
+## Goal
+
+Each run, produce one report that:
+1. Surfaces the strongest social proof from the past week's calls: testimonials, success stories, quotable wins.
+2. Prioritizes quotes that are specific, authentic, and tied to a measurable result over generic praise.
+3. Grounds every item in a verbatim quote and a link back to the source call so marketing can verify and reuse it.
+4. Lands as a draft, with quotes flagged for customer approval before any public use.
 
 ## When it fires
 
-**Detector:** Trigger if the user wants to find positive customer feedback, testimonials, success stories, or quotable moments for marketing and sales use.
+- **Type:** schedule. **Default:** `0 8 * * 1` (Monday 08:00, workspace timezone). **Lookback:** trailing 7 days.
+- **Alternative trigger:** you can also run it per-call on the recorder's "conversation analyzed" webhook to capture quotes in real time, but the weekly digest is the default because it groups stories by account and gives marketing one place to mine, rather than a stream of one-offs.
 
-**Signal keywords:** `social proof`, `testimonial`, `success story`, `customer quote`, `case study`, `positive feedback`, `customer satisfaction`, `reference`, `advocate`
+## Inputs / data required
 
-## What it does
+| Data | Source | Generic capability |
+|---|---|---|
+| All customer-facing calls in the window (title, account, date, link) | Call recorder | `search_calls` |
+| Full call records where a quote needs context | Call recorder | `get_call_details` |
+| The satisfaction / success moments and verbatim quotes | Call recorder + LLM | `analyze_calls` |
 
-🟡 Agent: Social Proof Finder
+## Tools / capabilities
 
-Purpose:
-Automatically identifies and summarizes customer success stories and expressions of satisfaction from the past week's analyzed calls. It delivers a concise report that highlights the best potential social proof material for marketing and sales use.
+| Generic action | What it does here | On Attention | On any other stack |
+|---|---|---|---|
+| `search_calls` | Find the week's customer-facing calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `get_call_details` | Pull a full call record for context | Attention `get_call_details` | recorder API |
+| `analyze_calls` | Flag genuine social proof and pull the best quotes | `ask_attention` | an LLM step over the normalized transcripts |
+| `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 
-Behavior
+This agent is **read-only on your data**. Its only side effect is posting one report.
 
-Runs weekly on a schedule (e.g., every Monday morning).
+## How it works (step by step)
 
-Reviews all conversation analysis data from the previous week.
+1. **Retrieve the week's conversations.** `search_calls` for all customer-facing calls in the last 7 days; `get_call_details` where a quote needs context.
+2. **Flag genuine social proof.** `analyze_calls` to find moments of satisfaction, success, or positive outcomes. PRIORITIZE quotes that are specific, authentic, and mention a measurable result. AVOID false positives: routine politeness ("thanks for your help"), neutral status talk, or anything lukewarm does not count. Capture account, speaker + title, verbatim quote, one-line context, and the call link.
+3. **Compose the report.** Group by account, lead with a one-line header (count of stories), then one entry per story (call title, summary, quote, account/speaker, view-call link). Sort the strongest, results-backed quotes first.
+4. **Humanize (mandatory):** run the report through the **[gtm-humanizer](../../.claude/skills/gtm-humanizer/SKILL.md)** skill as the final pass.
+5. **Deliver** to the marketing / sales channel, noting clearly that quotes are unverified draft material and need customer approval before public use.
 
-Flags moments of customer satisfaction, success stories, or positive outcomes (e.g., "we've seen great results," "our team loves it," "it's been a huge help").
+> The verbatim operating prompt is the single source of truth in [`social-proof-finder.json`](./social-proof-finder.json) under `template.agent.instructions`. This section is its readable summary.
 
-Prioritizes quotes that are specific, authentic, and mention measurable results or emotional satisfaction.
+## Output
 
-Avoids false positives such as general politeness ("thanks for your help") or neutral statements.
+A single message:
 
-Generates a clean, team-friendly report formatted for quick scanning by marketing and leadership teams.
+```
+Social Proof Finder -- weekly success stories  (N stories found)
 
-Procedure
+Call Title: <title>
+Summary: <one-line context>
+Quote: "<verbatim customer quote>"
+Account / Speaker: <account> -- <name, title>
+View Call: <link>
 
-Trigger: Weekly time-based event (Monday 9 AM).
+(grouped by account; strongest, results-backed quotes first)
 
-Data Retrieval: Query the last 7 days of conversation analysis records.
+Note: draft material, get customer approval before any public use.
+```
 
-Filtering Logic:
+## Edge cases
 
-Include only calls where customer sentiment is positive.
+- **No calls this week:** post "Social Proof Finder ran for [range]. No customer calls recorded this week, so no social proof to report." (confirms the agent is alive).
+- **Calls but no genuine social proof:** post "Analyzed [X] calls. No specific, quotable success moments surfaced. Mostly neutral or in-progress conversations."
+- **Borderline quotes:** leave mildly-positive lines out rather than padding the report.
+- **Sensitive accounts:** summarize the sentiment without naming a confidential account and note the quote needs clearance.
+- **Same customer, multiple strong quotes:** group under one account entry; do not double-count as separate stories.
 
-Extract any direct quotes that suggest product success, ROI, or customer happiness.
+## Guardrails
 
-Collect metadata: call title, summary, quote text, and call link.
+- Read-only on the recorder. The only write is the one report.
+- Every quote is verbatim and linked to its source call. No paraphrased or invented testimonials.
+- Quotes are draft material and need customer approval before any public use.
+- Final **humanizer** pass: no em dashes, no AI throat-clearing, no hype, one clear ask.
 
-Formatting:
+## Build it in your stack
 
-For each story, format like:
+**Attention (Activepieces-based builder):** import [`social-proof-finder.activepieces.json`](./social-proof-finder.activepieces.json). It follows Attention's export schema: a `@activepieces/piece-schedule` trigger -> an `askAttention` step (scans the week's calls, flags social proof, writes the report) -> a Slack `send_channel_message`. On import, connect Attention and Slack and fill `<YOUR_SLACK_CHANNEL_ID>`.
 
-💬 *Call Title:* {{call_title}}
-📄 *Summary:* {{summary}}
-🗣️ *Quote:* "{{customer_quote}}"
-🔗 [View Call]({{call_link}})
+**Build notes (confirm against your own export):** because the schema sample we modeled on was a per-call agent, confirm three things against a flow you export from your own workspace: (1) the schedule piece name/version, (2) the `askAttention` context scope for a cross-call query (we use `contextType: "user"`), and (3) the Slack channel-post action name. The fully-managed alternative is to import the agent template [`social-proof-finder.json`](./social-proof-finder.json).
 
-Group results by account or customer if applicable.
+**Any other builder — pre-built for you** in [`social-proof-finder.builds/`](./social-proof-finder.builds/):
 
-Delivery: Send the compiled report to a team channel with a brief header summarizing the number of success stories found.
+| Builder | Build | Form |
+|---|---|---|
+| Claude Managed Agents (Agent SDK) | [`claude-agent.py`](./social-proof-finder.builds/claude-agent.py) | runnable Python (custom tools + system prompt) |
+| Claude Code subagent | [`claude-code-subagent.md`](./social-proof-finder.builds/claude-code-subagent.md) | drop into `.claude/agents/` |
+| n8n | [`n8n.json`](./social-proof-finder.builds/n8n.json) | importable workflow |
+| LangGraph / code | [`langgraph.py`](./social-proof-finder.builds/langgraph.py) | runnable graph |
+| Zapier | [`zapier.md`](./social-proof-finder.builds/zapier.md) | step-by-step Zap |
+| Make | [`make.md`](./social-proof-finder.builds/make.md) | step-by-step scenario (blueprint JSON pending a sample export) |
 
-Do not use double asterisks
-
-## Tools / actions
-- **Communication** — Send Message
-
-## Before sending: humanize
-
-This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
-
-## Trigger
-
-**Type:** Schedule — runs weekly, Monday 08:00 (cron `0 8 * * 1`, set the timezone to the team's).
+On a builder not listed, run [`/build-agent`](../../.claude/commands/build-agent.md) `agents/marketing/social-proof-finder.md` and it generates the implementation from this spec. The agent logic does not change between platforms; only the bound connectors do.
 
 ---
-_From GTM Superintelligence agent templates. Raw definition: [`social-proof-finder.json`](./social-proof-finder.json)._
+_From GTM Superintelligence agent templates. Native: [`social-proof-finder.json`](./social-proof-finder.json) · [`social-proof-finder.activepieces.json`](./social-proof-finder.activepieces.json) (Attention). Other builders: [`social-proof-finder.builds/`](./social-proof-finder.builds/)._

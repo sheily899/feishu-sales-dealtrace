@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Case Builder",
+  "description": "Per-call business-case writer, as an Attention agent-builder flow. Fires once per analyzed call, assembles a structured business case from the call (and the deal's prior calls), and posts it to the team channel for the rep to review and share. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use case-builder.md.",
+  "tags": ["gtm-superintelligence", "sales", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Case Builder",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "build_business_case",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Build the business case from this call",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Case Builder agent, working from THIS analyzed call (title: {{trigger.attributes.title}}) and any prior calls on the same deal. First check eligibility: only proceed if the call contains business challenges/pain, a demo or solution walkthrough, a pricing/investment discussion, or an ROI/value conversation. If it is just intro, scheduling, or small talk (or under ~5 minutes), output exactly: 'No business case generated - call had no substantive business discussion.' and stop. If the prospect said they are not interested or the deal is lost, do the same. Otherwise extract six sections from transcript evidence: (1) Current State and Pain - problems described and their quantified impact (hours, dollars, risk); if not quantified, mark 'Needs quantification - follow up to confirm'. (2) Desired Future State - outcomes, success criteria, KPIs they care about. (3) Solution Mapping - map each product capability discussed to the specific pain it addresses, with prospect interest High/Medium/Low. (4) Investment - pricing/packaging discussed, or 'Investment TBD - not yet discussed'. (5) ROI and Payback Estimate - ROI = ((annual value of pain resolved - annual investment) / annual investment) x 100%; payback = annual investment / monthly value of pain resolved; if pain is not quantified, give the framework 'If this problem costs you $X per year, and the investment is $Y, your ROI would be Z% with an N-month payback'. (6) Risks and Mitigations - concerns raised and the mitigation offered, flag unaddressed ones as 'Open risk - recommend addressing in follow-up'. Label any section the call did not cover as 'Not yet discussed - follow up to fill this in'. Never invent numbers the prospect did not state. Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives, one clear ask, keep the rep's real voice. Use single stars for emphasis, never double stars. Output the exact business case format in case-builder.md -> Output. This is a draft for the rep to refine and share; never address or send it to the customer.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_business_case",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the business case to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":page_facing_up: *Business Case* for {{trigger.attributes.title}} -- review, fill any TBD sections, and share:\n\n{{build_business_case.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

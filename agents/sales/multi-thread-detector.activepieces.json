@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Multi Thread Detector",
+  "description": "Per-call threading watchdog, as an Attention agent-builder flow. Fires once per analyzed call, builds a cumulative MEDDPICC stakeholder map across the deal's calls, scores single-thread risk, and posts a targeted alert with multi-threading actions to the team channel when risk is Medium or higher. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use multi-thread-detector.md.",
+  "tags": ["gtm-superintelligence", "sales", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Multi Thread Detector",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "assess_threading",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Build the stakeholder map and score threading risk",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Multi Thread Detector agent, working from THIS analyzed call (title: {{trigger.attributes.title}}) and every prior call on the same deal/account. (1) Build a cumulative stakeholder map: list every person from the prospect side who has participated, their title/role where stated, and which MEDDPICC role they most likely fill - Champion (coaches the rep, sets up meetings, shows urgency), Economic Buyer (budget authority, ROI/pricing, final sign-off), Technical Evaluator (integrations, security, architecture, API, implementation), Coach (shares org/process intel but does not advocate), End User (workflows, UI, training, daily use). (2) Score threading risk: Critical/single-threaded = only 1 stakeholder OR 1 role covered; High = 2 stakeholders but no Economic Buyer or no Champion; Medium = 3+ stakeholders but 2+ roles uncovered; Low = 4+ stakeholders covering at least Champion, Economic Buyer, and Technical Evaluator. If this is the first call on a new deal, set risk to 'Early Stage - monitor' instead of Critical and remind the rep to multi-thread early; if the only call was an inbound/intro call, do not alert and note 'First call - threading assessment will begin after additional calls.' (3) For each missing role, give a specific action tied to the pain discussed (e.g. missing Economic Buyer: 'Ask your contact who approves investments of this size, and propose a 20-minute executive briefing on ROI'). If titles were not stated, note 'Roles inferred - confirm titles with the rep'. Output the exact alert format in multi-thread-detector.md -> Output, including the Deal Threading Score (roles covered out of 5). Apply humanizer rules: no em dashes, no AI throat-clearing, no hype adjectives, one clear ask, keep a teammate's real voice. Use single stars for emphasis, never double stars. Only emit an alert when risk is Medium or higher; for Low Risk output exactly: 'Threading healthy - no alert needed.'",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the threading alert to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":thread: *Multi-Threading Alert* from {{trigger.attributes.title}}:\n\n{{assess_threading.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

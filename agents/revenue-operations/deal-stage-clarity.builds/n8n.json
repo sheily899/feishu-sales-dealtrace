@@ -1,0 +1,44 @@
+{
+  "name": "Deal Stage Clarity (weekday audit)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "days", "triggerAtHour": 7 } ] } },
+      "id": "node-schedule", "name": "Weekdays - 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0] },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, Amount, Owner.Name, CloseDate, StageName, LastActivityDate FROM Opportunity WHERE IsClosed = false" } ] } },
+      "id": "node-crm", "name": "Salesforce - Open deals + stages",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Resolve the org's real pipeline stages rather than assuming labels. No Salesforce? Swap for your CRM's API." },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 14 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - fetch calls (14d)",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Group calls by deal/account. For many deals, precede with a Split In Batches loop. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE DEAL STAGE CLARITY OPERATING PROMPT (see deal-stage-clarity.md)>>\\n\\nOPEN DEALS:\\n{{ JSON.stringify($('Salesforce - Open deals + stages').item.json.records) }}\\n\\nCALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - stage audit",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post report",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0] }
+  ],
+  "connections": {
+    "Weekdays - 07:00": { "main": [[{ "node": "Salesforce - Open deals + stages", "type": "main", "index": 0 }]] },
+    "Salesforce - Open deals + stages": { "main": [[{ "node": "Recorder - fetch calls (14d)", "type": "main", "index": 0 }]] },
+    "Recorder - fetch calls (14d)": { "main": [[{ "node": "Claude - stage audit", "type": "main", "index": 0 }]] },
+    "Claude - stage audit": { "main": [[{ "node": "Slack - post report", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

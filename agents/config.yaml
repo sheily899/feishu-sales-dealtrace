@@ -10,7 +10,13 @@
 # instead of assuming the defaults below.
 configured: false
 
-# After setup, run any agent with:  /run-agent agents/<category>/<agent>.json
+# Agent builder — where you assemble/run these agents. Drives the two build paths:
+#   attention  -> import the native agent-builder flow (agents/<fn>/<agent>.activepieces.json)
+#   anything else -> /build-agent reads the spec and generates the implementation for your builder
+agent_builder: attention
+# Options: attention, n8n, make, zapier, langgraph, claude, other
+
+# After setup: import on Attention, or run /build-agent agents/<category>/<agent>.md on any other builder.
 
 # CRM — where your pipeline and account data lives
 crm: salesforce

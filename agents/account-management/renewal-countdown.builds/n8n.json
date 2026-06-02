@@ -1,0 +1,46 @@
+{
+  "name": "Renewal Countdown (weekly)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "days", "triggerAtHour": 7 } ] } },
+      "id": "node-schedule", "name": "Daily - 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0],
+      "notes": "Default daily at 07:00 (cron 0 7 * * *). Adjust to weekly if you prefer a weekly digest." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, Owner.Name, Renewal_Date__c, ARR__c FROM Account WHERE Renewal_Date__c >= TODAY AND Renewal_Date__c <= NEXT_N_DAYS:90" } ] } },
+      "id": "node-crm", "name": "CRM - renewals next 90d",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Resolve the real renewal-date field (do not hardcode a label). Read-only. Bucket the rows into 30/60/90-day horizons downstream." },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 90 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - account calls (90d)",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Join calls to each renewing account. For many accounts, precede with a Split In Batches loop. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE RENEWAL COUNTDOWN OPERATING PROMPT (see renewal-countdown.md)>>\\n\\nRENEWALS (next 90d):\\n{{ JSON.stringify($('CRM - renewals next 90d').item.json.records) }}\\n\\nCALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - grade health, build digest",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post renewal digest",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0],
+      "notes": "Post to the renewals / account-management channel." }
+  ],
+  "connections": {
+    "Daily - 07:00": { "main": [[{ "node": "CRM - renewals next 90d", "type": "main", "index": 0 }]] },
+    "CRM - renewals next 90d": { "main": [[{ "node": "Recorder - account calls (90d)", "type": "main", "index": 0 }]] },
+    "Recorder - account calls (90d)": { "main": [[{ "node": "Claude - grade health, build digest", "type": "main", "index": 0 }]] },
+    "Claude - grade health, build digest": { "main": [[{ "node": "Slack - post renewal digest", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

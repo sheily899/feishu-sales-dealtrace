@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Cross Team Handoff",
+  "description": "Cross-team handoff writer, as an Attention agent-builder flow: schedule -> askAttention (find transitioned accounts, reconstruct each from its calls, write the handoff) -> post to the receiving team's channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in cross-team-handoff.md -> Build it in your stack: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-account/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "operations", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Cross Team Handoff",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every hour",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 * * * *", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "build_handoff",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Find transitioned accounts, reconstruct each from its calls, write the handoff",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Cross-Team Handoff agent. (1) List every account where the opportunity stage changed or the account owner changed in the last 2 hours. For each, capture: account name, previous stage, new stage, previous owner, new owner, and deal value. Also scan calls from the last 2 hours for transition signals ('handoff', 'transition', 'kickoff', 'onboarding', 'passing to', 'your new point of contact', 'introducing you to'). Combine both into the list of accounts needing a handoff. If none, output exactly: 'Cross-Team Handoff ran for this period. No transitions detected.' and stop. (2) For each transitioned account, reconstruct it from its calls in the last 90 days: a chronological call history (date, participants, topics, decisions, action items), a stakeholder map (name, title, role in deal, disposition: supportive/neutral/skeptical/decision-maker/influencer/blocker), and every commitment our team made with who made it, when, and whether it is fulfilled or outstanding. (3) Write the handoff in this exact format: ':arrow_right: Account Handoff Summary - [Account]'; Transition ([prev owner/team] -> [new owner/team]), deal value, stage change, handoff date; '1. Deal Context' (2-3 sentences); '2. Stakeholder Map' as a table (Name | Title | Role | Disposition | Notes) plus the primary contact going forward; '3. Conversation History Highlights' (5-10 most important calls); '4. Commitments and Promises Made' (:white_check_mark: fulfilled, :hourglass: outstanding, flag overdue); '5. Open Items and Risks'; '6. Recommended Next Steps for the receiving team' (numbered, tied to account context). Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_handoff",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the handoff to the receiving team's channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":arrow_right: *Account handoff summary*\n\n{{build_handoff.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

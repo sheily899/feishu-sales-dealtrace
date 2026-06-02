@@ -1,0 +1,45 @@
+{
+  "name": "Cross Seller Radar (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "cross-seller-radar", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your recorder's 'conversation analyzed' webhook here. The payload should carry the call id and account." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.callId }}",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the analyzed call (transcript + attendees). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "=SELECT Id, Name, AnnualRevenue, (SELECT Product2.Name FROM OpportunityLineItems) FROM Account WHERE Name = '{{ $json.accountName }}'" } ] } },
+      "id": "node-crm", "name": "Salesforce - account products + ACV + renewal",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Read what the account already owns (current products, ACV, renewal date) so the prompt only pitches what they lack." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE CROSS SELLER RADAR OPERATING PROMPT (see cross-seller-radar.md)>>\\n\\nCALL:\\n{{ JSON.stringify($('Recorder - fetch call').item.json) }}\\n\\nACCOUNT OWNS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - score cross-sell signals",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post alert",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0],
+      "notes": "Add an IF before this node to post only for HIGH/MEDIUM opportunities (the prompt sends nothing below threshold)." }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "Salesforce - account products + ACV + renewal", "type": "main", "index": 0 }]] },
+    "Salesforce - account products + ACV + renewal": { "main": [[{ "node": "Claude - score cross-sell signals", "type": "main", "index": 0 }]] },
+    "Claude - score cross-sell signals": { "main": [[{ "node": "Slack - post alert", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

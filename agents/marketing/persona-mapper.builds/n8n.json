@@ -1,0 +1,35 @@
+{
+  "name": "Persona Mapper (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "conversation-analyzed", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - Conversation Analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your call recorder's 'conversation analyzed' webhook here. Payload carries the call id." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.call_id }}/transcript",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 1500,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE PERSONA MAPPER OPERATING PROMPT (see persona-mapper.md)>>\\n\\nCALL:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - map personas",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "=:busts_in_silhouette: Persona Mapper:\n\n{{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post the brief",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [660, 0] }
+  ],
+  "connections": {
+    "Recorder - Conversation Analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "Claude - map personas", "type": "main", "index": 0 }]] },
+    "Claude - map personas": { "main": [[{ "node": "Slack - post the brief", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

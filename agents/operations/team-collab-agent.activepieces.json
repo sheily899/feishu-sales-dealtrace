@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Team Collab Agent",
+  "description": "Per-call cross-team router, as an Attention agent-builder flow. Fires once per analyzed call, checks the transcript against routing rules for six internal teams, and posts a targeted alert to the relevant team channel only when a team is genuinely needed. The flow shows one channel-post step; in practice a call can route to multiple teams, so duplicate the post step per team channel (see team-collab-agent.md). On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use team-collab-agent.md.",
+  "tags": ["gtm-superintelligence", "operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Team Collab Agent",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "detect_routing",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Detect which teams need to be looped in",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Team Collaboration agent reviewing THIS call (title: {{trigger.attributes.title}}). If it is an internal call with no customer participants, output exactly 'NO_SIGNALS' and stop. Otherwise scan the transcript against these routing rules and flag every team that is genuinely needed (a call can need more than one): SALES ENGINEERING (unanswered technical questions, deep-dive/POC/architecture requests, complex integrations, technical blockers, custom technical demo); LEGAL (MSA/DPA/SLA changes, indemnification/liability/IP concerns, their legal must review, regulatory terms, jurisdiction-specific requirements); FINANCE/DEAL DESK (non-standard pricing, volume discounts, custom payment or multi-year terms, budget-driven creative pricing, PO/net-60-90 procurement); PROFESSIONAL SERVICES/IMPLEMENTATION (timeline/onboarding/migration questions, complex deployment, dedicated resources or named PM, change-management or adoption concerns, training/certification); PRODUCT (missing feature the rep confirms is unavailable, workflow gap blocking the use case, roadmap questions, a bug reported on the call, a competitor feature gap); EXECUTIVE (exec-sponsor or exec meeting request, their C-suite/VP wants in, strategic large deal, serious dissatisfaction, churn or escalation threat). Do NOT flag a team if the rep already fully resolved the question on the call. If nothing is unresolved, output exactly 'NO_SIGNALS'. Otherwise, for EACH flagged team, produce a separate alert block: ':handshake: Cross-Team Collaboration Needed - [Team]'; Account; Deal stage (or N/A); Call; Rep; 'Why [Team] is needed:' (1-2 sentences); 'Key quotes:' (customer quote, rep response if relevant); 'Suggested next step:' (specific); 'Urgency:' (High customer is blocked / Medium needed before next meeting / Low informational). Separate each team's block clearly. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the alert to the team channel (only when a team is needed)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": "{{detect_routing.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

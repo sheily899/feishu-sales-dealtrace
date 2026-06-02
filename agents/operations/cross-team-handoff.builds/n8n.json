@@ -1,0 +1,45 @@
+{
+  "name": "Cross Team Handoff (hourly)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "hours", "hoursInterval": 1 } ] } },
+      "id": "node-schedule", "name": "Hourly",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0],
+      "notes": "Better: replace with your CRM's stage/owner-change trigger so it fires per account." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, Account.Name, Amount, Owner.Name, StageName FROM Opportunity WHERE LastModifiedDate = LAST_N_DAYS:1 AND (IsStageChanged__c = true OR Owner_Changed__c = true)" } ] } },
+      "id": "node-crm", "name": "Salesforce - transitioned accounts",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Adapt to how your org records stage/owner changes (field-history, custom flags, or a report)." },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 90 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - fetch calls",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Join calls to each transitioned account. For many accounts, precede with a Split In Batches loop. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE CROSS-TEAM HANDOFF OPERATING PROMPT (see cross-team-handoff.md)>>\\n\\nTRANSITIONED ACCOUNTS:\\n{{ JSON.stringify($('Salesforce - transitioned accounts').item.json.records) }}\\n\\nCALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - write handoff",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post handoff",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0] }
+  ],
+  "connections": {
+    "Hourly": { "main": [[{ "node": "Salesforce - transitioned accounts", "type": "main", "index": 0 }]] },
+    "Salesforce - transitioned accounts": { "main": [[{ "node": "Recorder - fetch calls", "type": "main", "index": 0 }]] },
+    "Recorder - fetch calls": { "main": [[{ "node": "Claude - write handoff", "type": "main", "index": 0 }]] },
+    "Claude - write handoff": { "main": [[{ "node": "Slack - post handoff", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

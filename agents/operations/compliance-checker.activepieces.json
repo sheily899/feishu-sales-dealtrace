@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Compliance Checker",
+  "description": "Per-call compliance reviewer, as an Attention agent-builder flow. Fires once per analyzed call, scans the transcript against a five-category compliance checklist, and posts an evidence-backed alert to the compliance channel only when a violation is found. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use compliance-checker.md.",
+  "tags": ["gtm-superintelligence", "operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Compliance Checker",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "scan_compliance",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scan the call for compliance violations",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Compliance Checker agent reviewing THIS call (title: {{trigger.attributes.title}}). If it is an internal call with no customer participants, or under 30 seconds of dialogue, output exactly 'NO_VIOLATIONS' and stop. Otherwise scan the full transcript against these five categories: A) Unauthorized commercial commitments (off-sheet discounts, waived fees, unapproved SLAs or contract-term changes); B) Data handling and privacy (PII over wrong channels, unqualified GDPR/CCPA/HIPAA/SOC2 claims, data-residency or deletion promises that may not match the DPA, confidentiality breaks); C) Regulatory and legal claims (unqualified legal claims, legal/tax/financial advice, guaranteed audit outcomes, circumvention); D) Competitor disparagement (false or unverifiable negative claims, leaked competitor confidential info; factual public comparisons are NOT violations); E) Sales conduct (false urgency, product misrepresentation, discriminatory or unprofessional remarks, leaking internal info like margins or other customers). For each violation, assign a severity: CRITICAL (immediate legal/regulatory exposure), HIGH (financial or reputational harm), MEDIUM (correct but no immediate risk). If no violation, output exactly 'NO_VIOLATIONS'. Otherwise produce an alert: ':rotating_light: COMPLIANCE ALERT - [highest severity]'; Call, Rep, Account; then a numbered list of violations, each with '[Category]: [label]', 'Transcript evidence: \"[exact quote, max 2-3 sentences]\"', 'Risk: [one sentence]', 'Recommended action: [step]'; then 'Overall recommendation: [summary]'. For any CRITICAL, prepend ':warning: This alert is CRITICAL and may require immediate management review.' Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the alert to the compliance channel (only when a violation is found)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": "{{scan_compliance.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Objection Catcher (weekly)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "weeks", "triggerAtDay": [1], "triggerAtHour": 8 } ] } },
+      "id": "node-schedule", "name": "Weekly - Mon 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0] },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 7 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - week's calls",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Pull every call from the last 7 days that has a transcript. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, StageName, IsClosed, IsWon FROM Opportunity WHERE LastActivityDate = LAST_N_DAYS:7" } ] } },
+      "id": "node-crm", "name": "Salesforce - deal outcomes (optional)",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Optional - used to weight rebuttal scores by outcome. Skip this node if you have no CRM; the prompt handles missing outcome data." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE OBJECTION-CATCHER OPERATING PROMPT (see objection-catcher.md)>>\\n\\nCALLS:\\n{{ JSON.stringify($('Recorder - week\\u0027s calls').item.json) }}\\n\\nCRM OUTCOMES:\\n{{ JSON.stringify($json.records || []) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - objection analysis",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "sendTo": "enablement@yourco.com", "subject": "Objection Catcher - weekly objection-handling digest",
+        "emailType": "text", "message": "={{ $json.content[0].text }}" },
+      "id": "node-email", "name": "Gmail - email the digest",
+      "type": "n8n-nodes-base.gmail", "typeVersion": 2.1, "position": [880, 0],
+      "notes": "Swap for your email node (Outlook, SMTP). Set the real recipient(s)." }
+  ],
+  "connections": {
+    "Weekly - Mon 08:00": { "main": [[{ "node": "Recorder - week's calls", "type": "main", "index": 0 }]] },
+    "Recorder - week's calls": { "main": [[{ "node": "Salesforce - deal outcomes (optional)", "type": "main", "index": 0 }]] },
+    "Salesforce - deal outcomes (optional)": { "main": [[{ "node": "Claude - objection analysis", "type": "main", "index": 0 }]] },
+    "Claude - objection analysis": { "main": [[{ "node": "Gmail - email the digest", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

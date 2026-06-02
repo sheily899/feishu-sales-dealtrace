@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Persona Mapper",
+  "description": "Per-call persona mapper, as an Attention agent-builder flow. Fires once per analyzed call, maps the personas on it and their marketing-relevant priorities, and posts a concise persona brief to the marketing channel as a working draft. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use persona-mapper.md.",
+  "tags": ["gtm-superintelligence", "marketing", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Persona Mapper",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "map_personas",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Map the personas and marketing priorities on THIS call",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Persona Mapper agent, working from THIS call (title: {{trigger.attributes.title}}). Identify every persona mentioned or speaking: their job title, department, or inferred buyer role (economic buyer, champion, technical evaluator, end user, blocker). Extract each persona's goals, challenges, and priorities, especially anything relevant to marketing (messaging, demand gen, attribution, brand, enablement, GTM alignment). Then translate into concrete marketing opportunities (messaging angles, segments, content gaps, positioning language the customer used). Return plain text EXACTLY as: 'Persona Mapper - {{trigger.attributes.title}}' then 'Personas Identified:' (one bullet per persona: role and focus in one line) then 'Key Priorities:' (bullets) then 'Opportunities for Marketing:' (bullets) then 'Source: conversation analyzed'. Label any inferred role as inferred, not stated. Do not invent personas, titles, or priorities the call did not support. Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives. This is a working draft for the marketing team to refine.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_brief",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the persona brief to the marketing channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":busts_in_silhouette: *Persona Mapper* on {{trigger.attributes.title}}:\n\n{{map_personas.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

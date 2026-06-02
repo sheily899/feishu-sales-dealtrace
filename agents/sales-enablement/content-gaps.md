@@ -1,34 +1,106 @@
 # Content Gaps
 
-**Function:** Sales Enablement  ·  **Integrations:** call_recorder, communication  ·  **Template id:** `AGTContentGaps01`
+> Weekly report of the prospect questions and objections reps struggle to answer: clustered into themes, ranked by frequency and deal impact, with the specific content or training that would close each gap.
 
-> Identifies prospect questions and objections that reps struggle to answer, delivering weekly summaries highlighting content and training gaps for enablement teams.
+**Function:** Sales Enablement · **Trigger:** scheduled (weekly, Monday 08:00) · **Template id:** `AGTContentGaps01`
+**Files:** [`content-gaps.json`](./content-gaps.json) (Attention agent-builder template) · [`content-gaps.activepieces.json`](./content-gaps.activepieces.json) (Activepieces flow)
+
+This page is the build-ready spec. It is platform-agnostic: any agent builder (Attention/Activepieces, n8n, Zapier, Make, LangGraph, a custom GPT/Claude agent) can implement it from the sections below. See [Build it in your stack](#build-it-in-your-stack).
+
+---
+
+## Goal
+
+Each run, produce one report that:
+1. Surfaces the prospect questions and objections reps struggled to answer this week, grounded in real call evidence.
+2. Clusters those moments into recurring themes and ranks them by frequency and deal impact.
+3. Recommends the specific content or training that would close each gap (one-pager, FAQ, demo clip, micro-training).
+4. Keeps a constructive, improvement-focused tone, and reads like a real person wrote it.
 
 ## When it fires
 
-**Detector:** Trigger if the user wants to find questions that sales reps cannot answer, identify missing sales content, or discover training and enablement gaps.
+- **Type:** schedule. **Default:** `0 8 * * 1` (Monday 08:00, workspace timezone). **Lookback:** trailing 7 days.
+- **Alternative trigger:** you can also run it on demand after a big week of calls. The scheduled weekly digest is the default because the value is in the cross-call pattern (which gaps recur), which a single-call trigger cannot see.
 
-**Signal keywords:** `content gap`, `training gap`, `unanswered questions`, `rep struggles`, `enablement`, `FAQ`, `sales content`, `missing content`, `training needs`
+## Inputs / data required
 
-## What it does
+| Data | Source | Generic capability |
+|---|---|---|
+| Every analyzed call from the last 7 days (transcripts, Q&A, rep confidence signals) | Call recorder | `search_calls` |
+| Conversation metadata (account, product line, rep, sentiment) for clustering and weighting | Call recorder | `search_calls` |
+| The questions/objections, the rep's answers, and rep uncertainty signals | LLM over the transcripts | `analyze_calls` |
 
-Identify prospect questions and objections reps struggle to answer during calls. Cluster recurring topics by frequency and deal impact, then deliver a weekly team summary with recommended content and enablement actions (new FAQs, one-pagers, demo snippets, training) — framed constructively, not as performance criticism.
+## Tools / capabilities
 
-## Tools / actions
-- **Call Recorder** — Search Calls, Ask Attention
-- **Communication** — Send Message
+| Generic action | What it does here | On Attention | On any other stack |
+|---|---|---|---|
+| `search_calls` | Pull the week's analyzed calls | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `analyze_calls` | Extract questions, answers, and uncertainty signals; cluster themes | `ask_attention` | an LLM step over the transcripts |
+| `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 
-## Tooling
+This agent is **read-only on your data**. Its only side effect is posting one message.
 
-Attention-native: this agent uses `ask_attention` (natural-language query/analysis over calls + CRM) plus `search_calls`/`get_call_details` where it needs specific calls. **On Attention** — import it into the agent builder, or run it here with Attention's MCP, and it works as written. **On any other recorder** — run it as a managed Claude agent with [`/run-agent`](../../.claude/commands/run-agent.md): Claude reads your CRM and pulls transcripts via your recorder or the [gtmsi adapters](../../docs/adapters.md), then does the same analysis. See [Tooling & portability](../README.md#tooling--portability).
+## How it works (step by step)
 
-## Before sending: humanize
+1. **Pull the week's calls.** `search_calls` for every analyzed conversation in the last 7 days across all reps, with account / product line / rep / sentiment. If none, post the "no calls" confirmation (see Edge cases) and stop.
+2. **Extract questions and uncertainty signals.** `analyze_calls`: for each call, every prospect question or objection, the rep's answer and whether it resolved the question, and rep uncertainty signals (filler, deflection, hedging, "I'll have to check," a promise to follow up). Quote the moment where possible.
+3. **Cluster recurring topics.** Group questions/objections by semantic theme (pricing model, integrations, implementation timeline, security/compliance, competitor comparison, API capabilities), merging variants of the same question.
+4. **Score frequency and impact.** Per theme: how many calls and distinct reps it appeared in, and whether it tended to surface in stalled or negative-sentiment deals. Rank by frequency, then impact.
+5. **Recommend enablement actions.** Per top theme, one concrete action (one-pager, FAQ, demo clip, battlecard update, micro-training), plus broader training needs observed.
+6. **Compose and post** the report in the exact [Output](#output) format, then run it through the **[gtm-humanizer](../../.claude/skills/gtm-humanizer/SKILL.md)** as the final pass.
 
-This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
+> The verbatim operating prompt is the single source of truth in [`content-gaps.json`](./content-gaps.json) under `template.agent.instructions`. This section is its readable summary.
 
-## Trigger
+## Output
 
-**Type:** Schedule — runs weekly, Monday 08:00 (cron `0 8 * * 1`, set the timezone to the team's).
+A single message:
+
+```
+Weekly Content Gap Report - Week of [date range]
+
+Frequently Asked (Unanswered) Questions
+  1. "[question]" - mentioned [N]x, reps showed uncertainty
+     Recommendation: [concrete content action]
+  2. ...
+
+Training Needs Observed
+  - [theme reps were unsure on]
+
+Suggested Actions
+  - [enablement / content action for this week]
+
+Source: call analyses across all reps, [week range]
+```
+
+## Edge cases
+
+- **No calls in the period:** post "Weekly Content Gap Report ran for [range]. No analyzed calls were found this week, so there is nothing to summarize." (confirms the agent is alive).
+- **No clear gaps found:** if reps answered confidently across the board, say so plainly and skip recommendations rather than inventing gaps.
+- **A single dominant theme:** still produce the full report; rank the one theme first and note the concentration.
+
+## Guardrails
+
+- Read-only on the recorder. The only write is the one channel message.
+- Every gap ties to a real question or uncertainty signal from a call. No invented gaps.
+- Constructive tone, focused on improvement, not performance criticism. Single stars for emphasis, never double stars.
+- Final **humanizer** pass: no em dashes, no AI throat-clearing, no hype, one clear ask.
+
+## Build it in your stack
+
+**Attention (Activepieces-based builder):** import [`content-gaps.activepieces.json`](./content-gaps.activepieces.json). It follows Attention's export schema: a `@activepieces/piece-schedule` trigger → an `askAttention` step (scans the week's calls, clusters the gaps, writes the report) → a Slack `send_channel_message`. On import, connect Attention and Slack and fill `<YOUR_SLACK_CHANNEL_ID>`. Because the schema sample we modeled on was a per-call agent, confirm three things against a flow you export from your own workspace: (1) the schedule piece name/version, (2) the `askAttention` context scope for a cross-call weekly query (we use `contextType: "user"`), and (3) the Slack channel-post action name. The fully-managed alternative is to import the agent template [`content-gaps.json`](./content-gaps.json).
+
+**Any other builder - pre-built for you** in [`content-gaps.builds/`](./content-gaps.builds/):
+
+| Builder | Build | Form |
+|---|---|---|
+| Claude Managed Agents (Agent SDK) | [`claude-agent.py`](./content-gaps.builds/claude-agent.py) | runnable Python (custom tools + system prompt) |
+| Claude Code subagent | [`claude-code-subagent.md`](./content-gaps.builds/claude-code-subagent.md) | drop into `.claude/agents/` |
+| n8n | [`n8n.json`](./content-gaps.builds/n8n.json) | importable workflow |
+| LangGraph / code | [`langgraph.py`](./content-gaps.builds/langgraph.py) | runnable graph |
+| Zapier | [`zapier.md`](./content-gaps.builds/zapier.md) | step-by-step Zap |
+| Make | [`make.md`](./content-gaps.builds/make.md) | step-by-step scenario (blueprint JSON pending a sample export) |
+
+On a builder not listed, run [`/build-agent`](../../.claude/commands/build-agent.md) `agents/sales-enablement/content-gaps.md` and it generates the implementation from this spec. The agent logic does not change between platforms; only the bound connectors do.
 
 ---
-_From GTM Superintelligence agent templates. Raw definition: [`content-gaps.json`](./content-gaps.json)._
+_From GTM Superintelligence agent templates. Native: [`content-gaps.json`](./content-gaps.json) · [`content-gaps.activepieces.json`](./content-gaps.activepieces.json) (Attention). Other builders: [`content-gaps.builds/`](./content-gaps.builds/)._

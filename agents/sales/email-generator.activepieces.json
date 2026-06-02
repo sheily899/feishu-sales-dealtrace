@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Email Generator",
+  "description": "Per-call follow-up writer, as an Attention agent-builder flow. Fires once per analyzed call, drafts the follow-up in the rep's voice, and DMs it to the rep to review and send. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use email-generator.md.",
+  "tags": ["gtm-superintelligence", "sales", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Email Generator",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "draft_followup",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Draft the follow-up email (in the rep's voice)",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are drafting a post-call follow-up for the rep on THIS call (title: {{trigger.attributes.title}}). From this conversation, extract: attendees and roles (rep vs buyer), the buyer's stated pain and any number attached, commitments by either side, agreed action items with owner and due date, open questions, and the single most important next step. Then write a follow-up email in the rep's voice: a specific subject (reference the company and topic, not 'Great meeting you'); a one-line opening; 2-4 recap bullets each tied to something real from the call; agreed actions as 'owner - action - date'; one clear next step with a concrete proposed time; a sign-off. Keep the body under ~150 words and skimmable. Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives, one clear ask, keep the rep's real voice. Return plain text EXACTLY as: 'Subject: ...' then 'Body: ...' then '---' then 'Action items:' (one per line). This is a DRAFT for the rep to review and send. Never address or send it to the customer.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "send_draft_dm",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "DM the draft to the rep (never auto-send to the customer)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":email: *Draft follow-up* for {{trigger.attributes.title}} -- review, edit, and send:\n\n{{draft_followup.output}}",
+              "userId": "<REP_SLACK_USER_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_direct_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

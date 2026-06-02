@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Validate",
+  "description": "Per-call CRM data-hygiene agent, as an Attention agent-builder flow. Fires once per analyzed call, extracts the CRM-impacting fields with evidence, and DMs the call owner a before/after review card to approve before anything is written to the CRM. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use validate.md.",
+  "tags": ["gtm-superintelligence", "operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Validate",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "build_review_card",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Extract CRM fields and build the before/after review card",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Validate agent for THIS call (title: {{trigger.attributes.title}}). From this conversation, extract every CRM-impacting field that is actually present, each with a verbatim quote and a confidence score: participants and emails (to resolve the Contact and the call owner), the account/domain, deal stage movement, next steps with owner and date, budget or contract value, decision timeline, competitors named, and stated pain points. Normalize values (dates to ISO, currency to the org default, picklists to canonical labels); ignore null/empty keys. Then build a review card: a header 'Validate CRM Fields for <Account | Contact | Opportunity>' and a diff table with one row per field as 'Field | Current -> Proposed | Confidence% | Evidence (quote @ timecode)'. Leave the Current column as a placeholder for the rep to confirm against the live record. List the options the rep can take: Approve & Push, Edit Fields, Skip, Remind me later, with per-field selection. If no CRM-impacting fields are detected, return exactly: 'No CRM-impacting fields detected on this call.' Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives, one clear ask, keep the rep's real voice. This is a review card for the rep to approve. Never write to the CRM and never address the customer.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "dm_review_card",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "DM the review card to the call owner (approval required before any CRM write)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":mag: *Validate CRM fields* for {{trigger.attributes.title}} -- review and approve before anything is written:\n\n{{build_review_card.output}}",
+              "userId": "<REP_SLACK_USER_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_direct_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

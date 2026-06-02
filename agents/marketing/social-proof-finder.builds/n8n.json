@@ -1,0 +1,35 @@
+{
+  "name": "Social Proof Finder (weekly)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "weeks", "triggerAtDay": [1], "triggerAtHour": 8 } ] } },
+      "id": "node-schedule", "name": "Weekly - Mon 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0] },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 7 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - last 7 days of calls",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Pull customer-facing calls from the last 7 days. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2500,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE SOCIAL PROOF OPERATING PROMPT (see social-proof-finder.md)>>\\n\\nCALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - find social proof",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "=:speech_balloon: Social Proof Finder (draft, get customer approval before public use):\n\n{{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post report",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [660, 0] }
+  ],
+  "connections": {
+    "Weekly - Mon 08:00": { "main": [[{ "node": "Recorder - last 7 days of calls", "type": "main", "index": 0 }]] },
+    "Recorder - last 7 days of calls": { "main": [[{ "node": "Claude - find social proof", "type": "main", "index": 0 }]] },
+    "Claude - find social proof": { "main": [[{ "node": "Slack - post report", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

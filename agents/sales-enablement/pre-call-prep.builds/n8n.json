@@ -1,0 +1,52 @@
+{
+  "name": "Pre-Call Prep (weekday mornings)",
+  "nodes": [
+    { "parameters": { "rule": { "interval": [ { "field": "days", "triggerAtHour": 7 } ] } },
+      "id": "node-schedule", "name": "Weekday - 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0],
+      "notes": "Set to weekdays only in the node UI, or gate with an IF on the weekday." },
+
+    { "parameters": { "operation": "getAll", "calendar": { "__rl": true, "value": "primary", "mode": "list" },
+        "timeMin": "={{ $today.set({ hour: 7 }).toISO() }}", "timeMax": "={{ $today.set({ hour: 19 }).toISO() }}", "options": {} },
+      "id": "node-cal", "name": "Calendar - today's meetings",
+      "type": "n8n-nodes-base.googleCalendar", "typeVersion": 1.3, "position": [220, 0],
+      "notes": "Google Calendar shown. No Google? Swap for Microsoft Outlook Calendar, or an HTTP request to your calendar API." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, Account.Name, StageName, Amount, CloseDate, ForecastCategoryName FROM Opportunity WHERE Account.Website LIKE '%<<attendee domain>>%' AND IsClosed = false ORDER BY CloseDate ASC" } ] } },
+      "id": "node-crm", "name": "Salesforce - match account/opportunity",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Map the attendee email domains from the calendar node into the query. Prefer open opportunities; fall back to the most recent closed." },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 120 }).toISO() }}" } ] } },
+      "id": "node-calls", "name": "Recorder - prior conversations",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0],
+      "notes": "Join calls to the matched accounts/opportunities; take the most recent 3-5 summaries each. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE PRE-CALL PREP OPERATING PROMPT (see pre-call-prep.md)>>\\n\\nMEETINGS:\\n{{ JSON.stringify($('Calendar - today\\'s meetings').all()) }}\\n\\nCRM:\\n{{ JSON.stringify($('Salesforce - match account/opportunity').item.json.records) }}\\n\\nPRIOR CALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - build briefing",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [880, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "user",
+        "user": { "__rl": true, "value": "U0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - DM the rep",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [1100, 0] }
+  ],
+  "connections": {
+    "Weekday - 07:00": { "main": [[{ "node": "Calendar - today's meetings", "type": "main", "index": 0 }]] },
+    "Calendar - today's meetings": { "main": [[{ "node": "Salesforce - match account/opportunity", "type": "main", "index": 0 }]] },
+    "Salesforce - match account/opportunity": { "main": [[{ "node": "Recorder - prior conversations", "type": "main", "index": 0 }]] },
+    "Recorder - prior conversations": { "main": [[{ "node": "Claude - build briefing", "type": "main", "index": 0 }]] },
+    "Claude - build briefing": { "main": [[{ "node": "Slack - DM the rep", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

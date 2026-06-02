@@ -1,0 +1,44 @@
+{
+  "name": "Case Study Generator (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "conversation-analyzed", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - Conversation Analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your call recorder's 'conversation analyzed' webhook here. Payload carries the call id." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.call_id }}/transcript",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "=SELECT Id, Name, Account.Name, Account.Industry, Amount, CloseDate FROM Opportunity WHERE Account.Name = '{{ $json.account }}' AND IsWon = true LIMIT 1" } ] } },
+      "id": "node-crm", "name": "Salesforce - deal facts",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Pull account / industry / size / deal value / contacts / dates. Swap for HubSpot or your CRM." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE CASE STUDY OPERATING PROMPT (see case-study-generator.md)>>\\n\\nCALL:\\n{{ JSON.stringify($('Recorder - fetch call').item.json) }}\\n\\nCRM FACTS:\\n{{ JSON.stringify($json.records) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - draft case study",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "user",
+        "user": { "__rl": true, "value": "U0XXXXXXX", "mode": "id" },
+        "text": "=:memo: Draft case study (review, fact-check, get quote approval before publishing):\n\n{{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - DM the draft to marketing",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0] }
+  ],
+  "connections": {
+    "Recorder - Conversation Analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "Salesforce - deal facts", "type": "main", "index": 0 }]] },
+    "Salesforce - deal facts": { "main": [[{ "node": "Claude - draft case study", "type": "main", "index": 0 }]] },
+    "Claude - draft case study": { "main": [[{ "node": "Slack - DM the draft to marketing", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Case Builder (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "conversation-analyzed", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your call recorder's 'conversation analyzed' webhook here. The call id arrives in the body." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.call_id }}",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - get call details",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the triggering call's transcript + metadata. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 90 }).toISO() }}" } ] } },
+      "id": "node-prior", "name": "Recorder - prior deal calls",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Pull other calls on the same deal/account for cumulative context. Filter to this deal." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 3000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE CASE-BUILDER OPERATING PROMPT (see case-builder.md)>>\\n\\nCALL:\\n{{ JSON.stringify($('Recorder - get call details').item.json) }}\\n\\nPRIOR CALLS:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - build business case",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post business case",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0],
+      "notes": "Posts to the team channel for the rep to refine and share. Never wire a 'send to customer' action." }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - get call details", "type": "main", "index": 0 }]] },
+    "Recorder - get call details": { "main": [[{ "node": "Recorder - prior deal calls", "type": "main", "index": 0 }]] },
+    "Recorder - prior deal calls": { "main": [[{ "node": "Claude - build business case", "type": "main", "index": 0 }]] },
+    "Claude - build business case": { "main": [[{ "node": "Slack - post business case", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Renewal Countdown",
+  "description": "Weekly renewal digest, as an Attention agent-builder flow: schedule -> askAttention (find 30/60/90-day renewals, grade each account's health from its calls, write the tiered digest) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in renewal-countdown.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-account/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "account-management", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Renewal Countdown",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every day at 07:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 7 * * *", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_renewals",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Find upcoming renewals, grade health from calls, write the digest",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Renewal Countdown agent. (1) List all accounts with contract renewal dates in the next 30, 60, and 90 days. For each, include account name, renewal date, contract value (ARR/ACV), assigned CSM/owner, and the date of the most recent call. (2) For each account, pull its calls from the last ~90 days and report total calls, average sentiment, unresolved issues/open action items, competitor or alternative mentions, expansion signals, and any dissatisfaction. Grade health: HEALTHY (3+ calls in 90 days, mostly positive, no unresolved issues, no competitor mentions), AT RISK (1-2 calls, OR mixed sentiment, OR 1+ unresolved issues), CRITICAL (0 calls, OR negative trend, OR competitor mentions, OR explicit dissatisfaction). (3) Write the digest grouped by 30-DAY (Immediate Action Required), 60-DAY (Begin Preparation), and 90-DAY (On the Radar); per account show renewal date, value, owner, health with a colored circle, recent engagement, risk factors, and prep actions sized to the health tier; end with a summary count. Handle edge cases per renewal-countdown.md (no renewals, no calls -> CRITICAL, overdue, missing value). Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_digest",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the renewal digest to the renewals channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":calendar: *Renewal Countdown -- weekly digest*\n\n{{analyze_renewals.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

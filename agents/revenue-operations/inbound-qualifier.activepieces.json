@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Inbound Qualifier",
+  "description": "Per-call inbound qualifier, as an Attention agent-builder flow. Fires once per analyzed call, scores BANT and ICP fit, and posts a qualification report with a HOT/WARM/COOL/DISQUALIFIED disposition to the team channel. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use inbound-qualifier.md.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Inbound Qualifier",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "qualify_lead",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Score BANT and ICP fit for the inbound lead",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Inbound Qualifier agent, qualifying the lead on THIS analyzed call (title: {{trigger.attributes.title}}). Pull firmographics synced to the call from the CRM (company size, industry, employee count, whether they are an existing customer). Score each BANT dimension 0-3 with one line of transcript evidence: Budget (3 confirmed amount, 2 partial, 1 implied via paid competitor, 0 missing), Authority (3 decision-maker, 2 influencer who knows the process, 1 implied by title, 0 unclear), Need (3 specific quantified pain + urgency, 2 general problem, 1 implied, 0 none), Timeline (3 specific date, 2 directional, 1 triggering event, 0 none). Total out of 12. Rate ICP fit GOOD / PARTIAL / POOR on industry, size, use case, tech stack, geography. Combine into a disposition: HOT (10-12 + GOOD), WARM (7-9, or 10+ with PARTIAL), COOL (4-6), DISQUALIFIED (0-3, or POOR ICP regardless). If the call is an existing customer asking about a new product, flag as EXPANSION not inbound. Output the exact report format in inbound-qualifier.md -> Output: lead/company/date/rep/score/BANT/ICP header, the per-dimension BANT breakdown with evidence, ICP fit notes, recommended next steps, and key quotes. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the qualification report to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":mag: *Inbound Lead Qualification* for {{trigger.attributes.title}}\n\n{{qualify_lead.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

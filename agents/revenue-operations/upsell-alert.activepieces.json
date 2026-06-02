@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Upsell Alert",
+  "description": "Per-call expansion-signal detector, as an Attention agent-builder flow. Fires once per analyzed call, screens the transcript for budget/seat/usage/growth signals, classifies and confirms them, and posts an alert to the team channel. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use upsell-alert.md.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Upsell Alert",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "detect_expansion_signal",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Detect and classify the expansion signal on this call",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Upsell Alert agent screening THIS call (title: {{trigger.attributes.title}}). If the call is internal or non-customer, output exactly: 'Upsell Alert: internal/non-customer call, no expansion signal evaluated.' and stop. Otherwise read the conversation and detect any expansion signal: budget increase, seat or headcount growth, a new use case, interest in a higher tier or features, or multi-year/renewal intent. Back every finding with a verbatim quote and note which contact said it. Classify the primary signal (and any secondary) from: BUDGET-INCREASE, SEAT-GROWTH, NEW-USE-CASE, TIER-UPGRADE, MULTI-YEAR/RENEWAL-INTENT. Confirm the speaker and account so the alert routes to the right owner. If no genuine signal exists, output: 'Upsell Alert reviewed {{trigger.attributes.title}}. No expansion signal detected.' If a signal exists, output the exact alert format in upsell-alert.md -> Output: a header line, an account/owner line, a fields table (signal type, secondary signals, speaker, confidence HIGH/MEDIUM/LOW), the most revealing quote, why it matters, and a specific recommended next move. Do not inflate hypothetical language into commitment; mark it LOW confidence. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the upsell alert to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":moneybag: *Upsell Alert* from {{trigger.attributes.title}}:\n\n{{detect_expansion_signal.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

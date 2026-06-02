@@ -1,83 +1,101 @@
 # Persona Mapper
 
-**Function:** Marketing  ·  **Integrations:** communication  ·  **Template id:** `AGTPersonaMapper01`
+> After every analyzed call, map the personas on it (who they are, what they care about, where they sit in the buying group), translate that into concrete marketing opportunities, and post a concise persona brief for the marketing team to refine.
 
-> Listens for analyzed conversation events and generates concise summaries identifying key personas and their marketing-related priorities from each call transcript.
+**Function:** Marketing · **Trigger:** per call (conversation analyzed) · **Template id:** `AGTPersonaMapper01`
+**Files:** [`persona-mapper.json`](./persona-mapper.json) (Attention agent-builder template) · [`persona-mapper.activepieces.json`](./persona-mapper.activepieces.json) (Activepieces flow)
+
+This page is the build-ready spec. It is platform-agnostic: any agent builder (Attention/Activepieces, n8n, Zapier, Make, LangGraph, a custom GPT/Claude agent) can implement it from the sections below. See [Build it in your stack](#build-it-in-your-stack).
+
+---
+
+## Goal
+
+Turn each analyzed call into a usable read on the buying group:
+1. Map the personas on the call: their role (economic buyer, champion, technical evaluator, end user, blocker), grounded in what they actually said.
+2. Pull each persona's goals, challenges, and marketing-relevant priorities from their own words.
+3. Translate those into concrete marketing opportunities (messaging angles, segments, content gaps).
+4. Deliver a skimmable persona brief, drafted for the marketing team and humanized before posting.
 
 ## When it fires
 
-**Detector:** Trigger if the user wants to identify buyer personas, stakeholder roles, decision makers, or marketing priorities from customer conversations.
+- **Type:** per call. Fires once when a conversation finishes analyzing (the recorder's "conversation analyzed" webhook). The trigger payload carries the call id and basic metadata (account, owner).
+- Skip internal/non-customer calls (see Edge cases).
 
-**Signal keywords:** `persona`, `buyer persona`, `stakeholder mapping`, `audience`, `marketing personas`, `buyer roles`, `decision maker`, `stakeholder`
+## Inputs / data required
 
-## What it does
+| Data | Source | Generic capability |
+|---|---|---|
+| The just-analyzed call (transcript + who spoke, roles, departments) | Call recorder | `search_calls` / `get_call_details` |
+| Extracted personas, priorities, and marketing-relevant needs | LLM over the transcript | `analyze_calls` |
 
-Purpose
+## Tools / capabilities
 
-This agent listens for analyzed conversation events and generates a concise summary identifying key personas and their marketing-related priorities from each call transcript. The output is optimized for marketing teams to quickly understand customer focus areas and emerging opportunities.
+| Generic action | What it does here | On Attention | On any other stack |
+|---|---|---|---|
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Pull the full call record when needed | Attention `get_call_details` | recorder API |
+| `analyze_calls` | Identify personas + extract priorities and marketing needs | `ask_attention` | an LLM step over the transcript |
+| `send_message` | Post the persona brief to a channel | Slack/Teams tool | your chat tool's API/MCP |
 
-Behavior
+This agent is **read-only on your data**. Its only side effect is posting one brief.
 
-When triggered by a "conversation analyzed" event, review the conversation summary and transcript.
+## How it works (step by step)
 
-Identify all personas mentioned or speaking, such as job titles, departments, or inferred buyer roles.
+1. **Retrieve and read the call.** `search_calls` (or `get_call_details`) by the trigger's call id, then `analyze_calls` to identify every persona mentioned or speaking (title, department, inferred buyer role), pull each one's goals, challenges, and priorities, and map the buying-group shape (who influences, who decides, who uses the product). Back each read with evidence from the transcript.
+2. **Translate into marketing opportunities.** Identify messaging angles that would resonate, segments worth targeting, content or campaign gaps, and positioning language the customer used. Detect both explicit and implicit needs (demand gen, messaging, attribution, brand, sales enablement).
+3. **Compose the persona brief** in three sections (Personas Identified, Key Priorities, Opportunities for Marketing), neutral and insight-driven. Label inferred roles as inferred. Do not invent personas, titles, or priorities the call did not support.
+4. **Humanize (mandatory):** run the draft through the **[gtm-humanizer](../../.claude/skills/gtm-humanizer/SKILL.md)** skill. No em dashes, no throat-clearing, no hype, keep a real human voice.
+5. **Deliver** the brief to the marketing channel (default), or DM the marketing owner. This is a working draft for the team to refine, not a finished asset.
 
-Extract each persona's goals, challenges, and priorities—especially those relevant to marketing strategy, messaging, campaigns, or GTM alignment.
+> The verbatim operating prompt is the single source of truth in [`persona-mapper.json`](./persona-mapper.json) under `template.agent.instructions`. This section is its readable summary.
 
-Synthesize findings into a clear, structured message with three sections:
+## Output
 
-Personas Identified – concise role-based summaries
+```
+Persona Mapper -- <call title / link>
 
-Key Priorities – actionable themes derived from their dialogue
+Personas Identified:
+- <Persona 1>: <role and focus, one line>
+- <Persona 2>: <role and focus, one line>
 
-Opportunities for Marketing – concrete suggestions the marketing team could act on
+Key Priorities:
+- <Priority 1>
+- <Priority 2>
 
-Procedure
+Opportunities for Marketing:
+- <Opportunity 1>
+- <Opportunity 2>
 
-Input:
-Receive the full transcript and any existing conversation summary metadata.
+Source: conversation analyzed on <date>
+```
+Posted to the marketing channel as a working draft for the team to refine.
 
-Analysis Steps:
+## Edge cases
 
-Use semantic and contextual understanding to group speakers into personas.
+- **Internal / non-customer call:** skip; post a one-line note explaining why, no brief.
+- **Single persona on the call:** map the one persona and note the buying group was single-threaded (a signal in itself).
+- **Roles unclear:** infer carefully from context and label inferences as inferred, not stated.
+- **No marketing-relevant priorities:** still list the personas, and say plainly that no clear marketing opportunity surfaced.
+- **Large group call:** focus on the personas with real influence or airtime; do not list every attendee mechanically.
 
-Detect explicit and implicit marketing-related needs (e.g., demand gen, messaging, attribution, brand, sales enablement).
+## Guardrails
 
-Summarize insights in business language suitable for a marketing audience.
+- Read-only on the recorder. The only write is the one brief.
+- Every persona and priority ties to evidence from the call; inferences are labeled as inferred.
+- Final **humanizer** pass: no em dashes, no AI throat-clearing, no hype, one clear ask.
 
-Avoid repetition; focus on clarity and actionability.
+## Build it in your stack
 
-Ensure tone is professional, neutral, and insight-driven.
+**Attention (Activepieces-based builder):** import [`persona-mapper.activepieces.json`](./persona-mapper.activepieces.json). It matches Attention's export schema: the `@activepieces/piece-attention` `webhookTrigger` ("when one of my calls is analyzed") -> an `askAttention` step that maps the personas and marketing priorities from the call context -> a Slack `send_channel_message`. On import, connect your Attention and Slack accounts and fill the placeholders `<YOUR_ATTENTION_USER_ID>` and `<YOUR_SLACK_CHANNEL_ID>`.
 
-Output:
-Post a message via your team communication tool using this format:
+**Any other builder (n8n / Zapier / Make / LangGraph / custom):** wire it as:
+1. **Trigger:** your recorder's "conversation analyzed" webhook (or poll for newly analyzed calls).
+2. **Analyze step** (`analyze_calls`): identify personas and extract priorities + marketing needs from the transcript.
+3. **Compose step** (LLM with the operating prompt) then **humanizer**.
+4. **Deliver step** (`send_message`): post the brief to the marketing channel.
 
-📞 *Persona Mapper* — <{conversation_link}|Call Transcript>
-
-👤 *Personas Identified:*
-• *{Persona 1}* — {brief summary of role and focus}
-• *{Persona 2}* — {brief summary of role and focus}
-
-🎯 *Key Priorities:*
-• {Priority 1}
-• {Priority 2}
-
-💡 *Opportunities for Marketing:*
-• {Marketing opportunity 1}
-• {Marketing opportunity 2}
-
-🧩 *Source:* Conversation analyzed on {date}
-
-## Tools / actions
-- **Communication** — Send Message
-
-## Before sending: humanize
-
-This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
-
-## Trigger
-
-**Type:** Conversation analyzed — fires once per call, when your call recorder finishes analyzing it (the *Conversation Analyzed* webhook).
+On a builder not listed, run [`/build-agent`](../../.claude/commands/build-agent.md) `agents/marketing/persona-mapper.md` and it generates the implementation from this spec. The agent logic does not change between platforms; only the bound connectors do.
 
 ---
-_From GTM Superintelligence agent templates. Raw definition: [`persona-mapper.json`](./persona-mapper.json)._
+_From GTM Superintelligence agent templates. Machine-readable: [`persona-mapper.json`](./persona-mapper.json) · [`persona-mapper.activepieces.json`](./persona-mapper.activepieces.json) (Attention)._

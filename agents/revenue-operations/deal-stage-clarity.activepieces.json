@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Deal Stage Clarity",
+  "description": "Scheduled pipeline-hygiene audit, as an Attention agent-builder flow: schedule -> askAttention (pull active deals, compare call evidence to CRM stage, write the report) -> post to a channel. CONFIRM against your builder before import: the Attention sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in deal-stage-clarity.md -> Build it in your stack: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-deal/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Deal Stage Clarity",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every weekday at 07:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 7 * * 1-5", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "audit_stages",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Pull active deals, compare call evidence to CRM stage, write the audit",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Deal Stage Clarity agent. (1) List all active open deals with their current CRM stage, deal owner, amount, expected close date, and last conversation date. If none, output exactly: 'Deal Stage Clarity ran for this period. No active deals to audit.' and stop. (2) For each deal, pull its calls from the last 7-14 days and group them by deal/account. (3) Map evidence to the org's real pipeline stages (resolve the actual stage names first; the standard six-stage framework is only a default): Prospecting, Discovery/Qualification, Demo, Proposal/Evaluation, Negotiation/Legal, Verbal Commit. (4) Flag each deal as OVERSTAGED (stage ahead of the evidence, inflates forecast), UNDERSTAGED (evidence ahead of stage, revenue may arrive sooner), STALE (no call in 14+ days), or CORRECTLY-STAGED, with a confidence rating HIGH/MEDIUM/LOW and 2-3 cited conversation moments. Skip deals created in the last 3 days with no calls, and deals with email-only activity (recommend logging a call). (5) Estimate the forecast impact: dollars at risk of overstatement vs potentially understated, and a net adjustment. Output the exact report format in deal-stage-clarity.md -> Output: a period/deals-analyzed/mismatches/forecast-adjustment header, a flagged-deals table, per-deal detail with recommended stage move, a correctly-staged summary, and a forecast impact summary. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the audit report to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":compass: *Deal Stage Clarity -- weekly pipeline audit*\n\n{{audit_stages.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

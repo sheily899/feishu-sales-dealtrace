@@ -1,34 +1,107 @@
 # Product Tracker
 
-**Function:** Product  ·  **Integrations:** call_recorder, communication  ·  **Template id:** `AGTProductTrack01`
+> Each week, scan the past week's customer calls, extract every product signal (feature requests, bugs, workarounds, competitive gaps, praise, usability complaints), categorize and prioritize them, and post one structured digest to the product team.
 
-> Tracks product feature requests, feedback, and pain points from customer conversations for product teams.
+**Function:** Product · **Trigger:** scheduled (weekly, Monday 08:00) · **Template id:** `AGTProductTrack01`
+**Files:** [`product-tracker.json`](./product-tracker.json) (Attention agent-builder template) · [`product-tracker.activepieces.json`](./product-tracker.activepieces.json) (Activepieces flow)
+
+This page is the build-ready spec. It is platform-agnostic: any agent builder (Attention/Activepieces, n8n, Zapier, Make, LangGraph, a custom GPT/Claude agent) can implement it from the sections below. See [Build it in your stack](#build-it-in-your-stack).
+
+---
+
+## Goal
+
+Each run, produce one digest that:
+1. Turns the past week's customer calls into a single read on product feedback for the product team.
+2. Extracts every product signal and grounds each in a verbatim quote and the account it came from.
+3. Categorizes signals (UX, performance, integrations, missing features, bugs, workflow gaps) and prioritizes them P1-P4 by frequency and customer tier.
+4. Surfaces week-over-week trends and the loudest single signal, in one skimmable message.
 
 ## When it fires
 
-**Detector:** Trigger if the user wants to track product feedback, feature requests, or customer pain points and route them to product teams.
+- **Type:** schedule. **Default:** `0 8 * * 1` (Monday 08:00, workspace timezone). **Lookback:** trailing 7 days.
+- **Alternative trigger:** you can also run it per-call on the recorder's "conversation analyzed" webhook to file signals in real time, but the weekly digest is the default because frequency and trend analysis (how many customers asked for the same thing) only make sense across a set of calls.
 
-**Signal keywords:** `product feedback`, `feature request`, `product request`, `roadmap feedback`, `customer feedback`, `product insights`, `product suggestions`, `feature gap`
+## Inputs / data required
 
-## What it does
+| Data | Source | Generic capability |
+|---|---|---|
+| All customer-facing calls in the window (title, account, date, link) | Call recorder | `search_calls` |
+| Full call records where a signal needs context | Call recorder | `get_call_details` |
+| The product signals (requests, bugs, workarounds, gaps, praise, complaints) + quotes | Call recorder + LLM | `analyze_calls` |
 
-Capture and organize product feedback, feature requests, and pain points from customer conversations. Generate weekly insights for product teams with prioritized feedback.
+## Tools / capabilities
 
-## Tools / actions
-- **Call Recorder** — Search Calls, Ask Attention
-- **Communication** — Send Message
+| Generic action | What it does here | On Attention | On any other stack |
+|---|---|---|---|
+| `search_calls` | Find the week's customer-facing calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `get_call_details` | Pull a full call record for context | Attention `get_call_details` | recorder API |
+| `analyze_calls` | Extract, categorize, and prioritize the product signals | `ask_attention` | an LLM step over the normalized transcripts |
+| `send_message` | Post the digest to a channel | Slack/Teams tool | your chat tool's API/MCP |
 
-## Tooling
+This agent is **read-only on your data**. Its only side effect is posting one digest.
 
-Attention-native: this agent uses `ask_attention` (natural-language query/analysis over calls + CRM) plus `search_calls`/`get_call_details` where it needs specific calls. **On Attention** — import it into the agent builder, or run it here with Attention's MCP, and it works as written. **On any other recorder** — run it as a managed Claude agent with [`/run-agent`](../../.claude/commands/run-agent.md): Claude reads your CRM and pulls transcripts via your recorder or the [gtmsi adapters](../../docs/adapters.md), then does the same analysis. See [Tooling & portability](../README.md#tooling--portability).
+## How it works (step by step)
 
-## Before sending: humanize
+1. **Retrieve the week's conversations.** `search_calls` for all customer-facing calls in the last 7 days (batch with `analyze_calls`); `get_call_details` where a signal needs context.
+2. **Extract product signals.** For each call, pull every instance of: **FEATURE REQUESTS** (capability that does not exist yet), **BUG REPORTS** (broken or erroring), **WORKAROUND MENTIONS** (manual hacks because the product lacks a workflow), **COMPETITIVE FEATURE GAPS** (a competitor feature you lack), **PRAISE** (a feature they love), **USABILITY COMPLAINTS** (confusing, too many steps). Capture account, customer name + title, the exact quote, and the rep's response.
+3. **Categorize each signal** into one of: UX / Usability, Performance, Integrations, Missing Features, Bugs, Workflow Gaps.
+4. **Prioritize** by frequency (3+ customers = High, 2 = Medium, 1 = Low) and customer tier (enterprise/strategic outweigh SMB), combined into P1 (critical) -> P4 (monitor). Group duplicate requests under one item with a count.
+5. **Compose and post** the digest in the [Output](#output) format (header, P1-P4 blocks, Positive Feedback, Competitive Intel, Trends vs last week), then run it through the **[gtm-humanizer](../../.claude/skills/gtm-humanizer/SKILL.md)** as the final pass.
 
-This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
+> The verbatim operating prompt (with the full extraction query, categories, and priority rules) is the single source of truth in [`product-tracker.json`](./product-tracker.json) under `template.agent.instructions`. This section is its readable summary.
 
-## Trigger
+## Output
 
-**Type:** Schedule — runs weekly, Monday 08:00 (cron `0 8 * * 1`, set the timezone to the team's).
+A single message:
+
+```
+Product Feedback Digest -- this week
+Calls analyzed: [X] | Signals extracted: [Y] | Accounts represented: [Z]
+
+P1 -- Critical (act this sprint)   -> per item: label, category, mentions, accounts, representative quote, customer impact
+P2 -- Important (next sprint)
+P3 -- Notable (backlog)
+P4 -- Monitor (single mentions, one line each)
+
+Positive Feedback   -> what customers love, with quotes
+Competitive Intel   -> competitor mentions by feature/capability
+Trends vs last week -> brief comparison
+```
+(If one request dominates with 5+ mentions, it is called out as a "Top Signal" at the very top.)
+
+## Edge cases
+
+- **No calls this week:** post "No customer calls recorded this week. No product feedback to report. Next digest: [date]."
+- **Calls but no product signals:** post "Analyzed [X] calls. No explicit product feedback, requests, or bugs detected. Customers focused on [topic]."
+- **A single request dominates (5+ mentions):** call it out as a "Top Signal" before the priority breakdown.
+- **Customer tier undeterminable:** default to P3 for single mentions, P2 for multiple.
+- **Duplicate / near-duplicate requests:** group under one item with the count, not separate lines.
+
+## Guardrails
+
+- Read-only on the recorder. The only write is the one digest.
+- Every signal ties to a verbatim quote and a named account. No invented feedback or inflated counts.
+- Final **humanizer** pass: no em dashes, no AI throat-clearing, no hype, one clear ask.
+
+## Build it in your stack
+
+**Attention (Activepieces-based builder):** import [`product-tracker.activepieces.json`](./product-tracker.activepieces.json). It follows Attention's export schema: a `@activepieces/piece-schedule` trigger -> an `askAttention` step (scans the week's calls, extracts and prioritizes the signals, writes the digest) -> a Slack `send_channel_message`. On import, connect Attention and Slack and fill `<YOUR_SLACK_CHANNEL_ID>`.
+
+**Build notes (confirm against your own export):** because the schema sample we modeled on was a per-call agent, confirm three things against a flow you export from your own workspace: (1) the schedule piece name/version, (2) the `askAttention` context scope for a cross-call query (we use `contextType: "user"`), and (3) the Slack channel-post action name. The fully-managed alternative is to import the agent template [`product-tracker.json`](./product-tracker.json).
+
+**Any other builder — pre-built for you** in [`product-tracker.builds/`](./product-tracker.builds/):
+
+| Builder | Build | Form |
+|---|---|---|
+| Claude Managed Agents (Agent SDK) | [`claude-agent.py`](./product-tracker.builds/claude-agent.py) | runnable Python (custom tools + system prompt) |
+| Claude Code subagent | [`claude-code-subagent.md`](./product-tracker.builds/claude-code-subagent.md) | drop into `.claude/agents/` |
+| n8n | [`n8n.json`](./product-tracker.builds/n8n.json) | importable workflow |
+| LangGraph / code | [`langgraph.py`](./product-tracker.builds/langgraph.py) | runnable graph |
+| Zapier | [`zapier.md`](./product-tracker.builds/zapier.md) | step-by-step Zap |
+| Make | [`make.md`](./product-tracker.builds/make.md) | step-by-step scenario (blueprint JSON pending a sample export) |
+
+On a builder not listed, run [`/build-agent`](../../.claude/commands/build-agent.md) `agents/product/product-tracker.md` and it generates the implementation from this spec. The agent logic does not change between platforms; only the bound connectors do.
 
 ---
-_From GTM Superintelligence agent templates. Raw definition: [`product-tracker.json`](./product-tracker.json)._
+_From GTM Superintelligence agent templates. Native: [`product-tracker.json`](./product-tracker.json) · [`product-tracker.activepieces.json`](./product-tracker.activepieces.json) (Attention). Other builders: [`product-tracker.builds/`](./product-tracker.builds/)._

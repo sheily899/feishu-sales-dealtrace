@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Skill Coach",
+  "description": "Weekly per-rep skill coaching alerts, as an Attention agent-builder flow: schedule -> askAttention (pull the week's calls per rep, evaluate five selling skills, flag gaps with a call moment and a coaching exercise) -> post to a channel. CONFIRM against your builder before import: the schema this was modeled on is a per-call agent, so three things here are best-effort and flagged in skill-coach.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Skill Coach",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every Monday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "coach_reps",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Evaluate five skills per rep, flag gaps with a moment and an exercise",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Skill Coach agent. (1) Pull every team call from the last 7 days and group by rep. If a rep has fewer than 2 calls, note 'Limited data' and only flag high-confidence gaps. (2) For each rep, evaluate five skills and decide proficient (no alert) or gap (alert): Discovery Depth, Presentation Clarity, Objection Recovery, Rapport Building, Closing Technique. (3) For each gap, extract one specific call moment (call name/date, a paraphrase of what happened, and what the rep should have done instead). (4) Assign one concrete coaching exercise per gap (e.g. for Discovery Depth: role-play the 5-Whys to reach financial impact within 5 follow-ups; for Closing: end every call with a calendar invite before hanging up). (5) Send one alert per rep that has at least one gap, up to 3 gap blocks per rep. List reps with no gaps in a short 'No coaching gaps detected' summary. If no calls for any rep, output exactly: 'No calls recorded this week. Coaching alerts skipped.' and stop. Output the exact report format in skill-coach.md -> Output. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alerts",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the coaching alerts to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":mortar_board: *Skill Coach -- weekly coaching alerts*\n\n{{coach_reps.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

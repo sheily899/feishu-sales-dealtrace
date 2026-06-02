@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Case Study Generator",
+  "description": "Per-call case-study drafter, as an Attention agent-builder flow. Fires once per analyzed success call, drafts a structured case study from the call (and your CRM facts), and DMs it to the marketing owner as a DRAFT for review. It never publishes and never contacts the customer. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use case-study-generator.md.",
+  "tags": ["gtm-superintelligence", "marketing", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Case Study Generator",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "draft_case_study",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Draft the case study from THIS call (DRAFT for review)",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Case Study Generator agent, working from THIS call (title: {{trigger.attributes.title}}). First confirm this is a success story (strong positive outcome, measurable result, satisfied customer, or a closed-won deal). If it is NOT, output exactly: 'Not a success story - no case study drafted.' and stop. If it is, extract from the conversation: the customer's stated challenge, what they adopted and why, the results they reported with any metric, and the most quotable moments verbatim. Then draft a structured case study. Return plain text EXACTLY as: 'Title: ...' then 'Client Overview: ...' then 'Challenge: ...' then 'Solution: ...' then 'Results: ...' then 'Customer Quote: \"...\"' then 'Why it matters: ...' then '---' then 'Review checklist:' listing the source call, any quotes that need customer approval before publication, and any fact you could not verify from the call (e.g. deal value - confirm in CRM). Do not invent numbers, quotes, or outcomes the call did not support. Apply these humanizer rules: no em dashes, no 'I hope this finds you well' or 'I wanted to reach out', no hype adjectives. This is a DRAFT for the marketing team to review; never publish and never address the customer.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "send_draft_dm",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "DM the draft to the marketing owner (never publish, never the customer)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":memo: *Draft case study* from {{trigger.attributes.title}} -- review, fact-check, and get quote approval before publishing:\n\n{{draft_case_study.output}}",
+              "userId": "<REP_SLACK_USER_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_direct_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

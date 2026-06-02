@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Risk Watch",
+  "description": "Per-call account-risk monitor, as an Attention agent-builder flow. Fires once per analyzed call, evaluates it against the account's recent baseline for risk indicators, and posts a tiered alert to a channel only when a real risk is present. On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use risk-watch.md.",
+  "tags": ["gtm-superintelligence", "account-management", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Risk Watch",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "evaluate_risk",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Evaluate the call for account-risk indicators and rate severity",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Risk Watch agent for THIS call (title: {{trigger.attributes.title}}). Evaluate the conversation against the account's recent baseline for risk indicators: engagement drop (fewer calls than the prior period, or key stakeholders absent), negative sentiment ('not happy', 'frustrated', 'expected more', 'reconsider'), competitor mentions, escalation language (manager, executive sponsor, legal, cancellation, SLA), usage challenges (bugs, adoption struggles), and relationship risk (champion leaving or gone silent). Back each indicator with a verbatim quote. Then assign a severity tier: CRITICAL (explicit cancellation/non-renewal, actively evaluating a competitor, escalation to legal/exec, or 2+ indicators at once); HIGH (negative sentiment + an unresolved issue, a 50%+ engagement drop, a competitor mentioned in passing, or a champion/stakeholder change); MEDIUM (single mild frustration, a minor engagement dip, a usage challenge they will work through, or one carried-over action item). If NO risk indicator is present, return exactly: 'No risk indicators detected.' Otherwise write the alert for the detected tier: header with the account name and severity, the call/date and participants, the rep/CSM, the risk indicators with their quotes, a one-line account-context summary (calls this period vs prior, sentiment trend), and the recommended actions for that tier. Apply these humanizer rules: no em dashes, no AI throat-clearing, no hype adjectives, one clear ask, keep the CSM's real voice.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the risk alert to the CS-alerts channel (only when a risk is present)",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":rotating_light: *Risk Watch* on {{trigger.attributes.title}}:\n\n{{evaluate_risk.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

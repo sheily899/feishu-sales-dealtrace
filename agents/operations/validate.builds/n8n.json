@@ -1,0 +1,45 @@
+{
+  "name": "Validate (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "validate", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your recorder's 'conversation analyzed' webhook here. The payload should carry the call id, the call owner, and any known CRM record ids." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.callId }}",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the analyzed call (transcript + participants). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+
+    { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",
+        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "q",
+          "value": "SELECT Id, Name, StageName, Amount, CloseDate FROM Opportunity WHERE AccountId = '<RESOLVED_ACCOUNT_ID>'" } ] } },
+      "id": "node-crm-read", "name": "CRM - read current state",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
+      "notes": "Resolve Account/Contact/Opportunity by email/domain/id and read current field values to build the before/after diff." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE VALIDATE OPERATING PROMPT (see validate.md)>>\\n\\nCALL:\\n{{ JSON.stringify($('Recorder - fetch call').item.json) }}\\n\\nCURRENT CRM STATE:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - extract fields, build review card",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "user",
+        "user": { "__rl": true, "value": "U0XXXXXXX", "mode": "id" },
+        "text": "=:mag: *Validate CRM fields* -- review, edit per field, and approve before any CRM write:\n\n{{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - DM the review card to the call owner",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0],
+      "notes": "DM ONLY, to the call owner. The CRM write must be gated behind the rep's approval -- add the CRM write node AFTER an approval/interactive step, never auto-fire it. Map the owner's Slack user id from the trigger payload if you have it." }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "CRM - read current state", "type": "main", "index": 0 }]] },
+    "CRM - read current state": { "main": [[{ "node": "Claude - extract fields, build review card", "type": "main", "index": 0 }]] },
+    "Claude - extract fields, build review card": { "main": [[{ "node": "Slack - DM the review card to the call owner", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

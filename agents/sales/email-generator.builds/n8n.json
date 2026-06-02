@@ -1,0 +1,36 @@
+{
+  "name": "Email Generator (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "email-generator", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your recorder's 'conversation analyzed' webhook here. The payload should carry the call id and the deal owner (rep)." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.callId }}",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - fetch call",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the analyzed call (transcript + attendees). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 1500,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE EMAIL GENERATOR OPERATING PROMPT (see email-generator.md)>>\\n\\nCALL:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - draft follow-up (rep's voice, humanized)",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "user",
+        "user": { "__rl": true, "value": "U0XXXXXXX", "mode": "id" },
+        "text": "=:email: *Draft follow-up* -- review, edit, and send:\n\n{{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - DM the draft to the rep",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [660, 0],
+      "notes": "DM ONLY, to the rep (deal owner). Do not add a 'send to customer' action. Map the rep's Slack user id from the trigger payload if you have it." }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - fetch call", "type": "main", "index": 0 }]] },
+    "Recorder - fetch call": { "main": [[{ "node": "Claude - draft follow-up (rep's voice, humanized)", "type": "main", "index": 0 }]] },
+    "Claude - draft follow-up (rep's voice, humanized)": { "main": [[{ "node": "Slack - DM the draft to the rep", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

@@ -1,0 +1,78 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Objection Catcher",
+  "description": "Weekly objection-handling digest, as an Attention agent-builder flow: schedule -> askAttention (analyze the week's calls, cluster objections, score rebuttals, write the digest) -> email the digest. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent that posts to Slack, so four things here are best-effort and flagged in objection-catcher.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call weekly query, (3) the email piece + send_email action name/version, and (4) the optional CRM outcome lookup. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-gmail"],
+  "signals": [],
+  "template": {
+    "displayName": "Objection Catcher",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every Monday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_objections",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Analyze the week's calls and write the objection digest",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Objection Catcher agent. (1) Look at every call from the last 7 days that has a transcript. If there are none, output exactly: 'Objection Catcher ran for this week. No recorded calls with transcripts were found.' and stop. (2) For each call extract every objection: the objection quote, its moment timestamp (mm:ss), the category, the rep's response quote, and a short response-pattern label. (3) Cluster objections into this fixed taxonomy (merge variants, e.g. price/budget/too expensive -> Pricing): Pricing, Timing/Priority, Competitor, Feature Gap, Security/Legal, Integration, Authority, ROI/Proof, Contract/Procurement, Other. (4) Score each objection/response pair 0-100 on clarity, empathy, proof, and a clear next step; where deal-outcome data is available weight by meeting booked / stage advanced / opp won/lost. If an objection has no captured rep response, list it as unhandled and flag it as a coaching opportunity. (5) Rank categories by frequency and impact (won/lost delta, conversion uplift) and, per top category, select the 1-3 highest-scoring rebuttal snippets with a one-line note on why each worked. (6) Compute weekly stats: total objections, percent of calls with objections, week-over-week change, best-performing patterns, low-scoring coaching opportunities; and 2-4 concrete coaching tips per top category. Output the exact digest format in objection-catcher.md -> Output as plain text. Keep a constructive tone. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype adjectives, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "email_digest",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Email the objection-handling digest to enablement",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Gmail Connection']}}",
+              "receiver": ["<ENABLEMENT_RECIPIENT_EMAIL>"],
+              "subject": "Objection Catcher -- weekly objection-handling digest",
+              "body_text": "{{analyze_objections.output}}"
+            },
+            "pieceName": "@activepieces/piece-gmail",
+            "pieceType": "OFFICIAL",
+            "actionName": "send_email",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "REGISTRY",
+            "pieceVersion": "0.7.4",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

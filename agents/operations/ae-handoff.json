@@ -27,7 +27,12 @@
   "template": {
     "agent": {
       "name": "AE Handoff",
-      "goals": [],
+      "goals": [
+        "Produce a complete, structured handoff the moment a deal is marked Closed-Won, so the delivery or CS team starts with full context.",
+        "Reconstruct what was actually sold and promised from the CRM record and the deal's call history, not just the closing email.",
+        "Surface the stakeholders, commitments, scope, and risks the implementation team needs before the kickoff call.",
+        "Deliver 3-5 concrete next steps with owners so nothing the AE promised gets dropped in the transition."
+      ],
       "tools": {
         "communication": {
           "displayName": "Communication",
@@ -42,16 +47,27 @@
             "generic_action": "query_records"
           },
           "displayName": "CRM"
+        },
+        "call_recorder": {
+          "displayName": "Call Recorder",
+          "search_calls": {
+            "displayName": "Search Calls",
+            "generic_action": "search_calls"
+          },
+          "ask_attention": {
+            "displayName": "Ask Attention",
+            "generic_action": "analyze_calls"
+          }
         }
       },
       "contexts": [
         {
-          "type": "call_recorder",
-          "content": ""
+          "type": "crm",
+          "content": "Source of truth for which opportunities reached Closed-Won, when, and the deal facts: opportunity name, amount, term, close date, account, AE and CSM owner, primary contact and opportunity team, products or line items sold, and custom fields like implementation tier, region, and segment. The agent reads opportunities; it never writes to the CRM."
         },
         {
-          "type": "Organization",
-          "content": ""
+          "type": "call_recorder",
+          "content": "Source of the conversation history for the won account. Provides the transcripts the agent analyzes to extract participants and roles, customer goals and pain points, AE commitments, technical details and integrations discussed, and any timelines, blockers, or risk indicators the delivery team should know before kickoff."
         }
       ],
       "triggers": {
@@ -63,7 +79,7 @@
           }
         }
       },
-      "description": "",
+      "description": "Closed-Won handoff writer. When a deal reaches Closed-Won, it pulls the opportunity facts from the CRM, reconstructs the account's call history to recover the goals, stakeholders, commitments, scope, and risks, then posts one structured handoff to the delivery or CS channel and mentions the AE and CSM. Read-only on data; the only side effect is one message.",
       "instructions": "Closed-Won Handoff Summarizer\n\nWhen a CRM Opportunity stage changes to Closed Won, start the handoff process for the delivery or implementation team.\n\nIdentify the Closed Won Opportunity using the CRM event data. Capture the opportunity ID, then pull all relevant details from your CRM, including:\n\nOpportunity name, amount, term, close date, and account\n\nAccount Executive (AE) owner and assigned CSM owner\n\nPrimary contact and opportunity team members\n\nProducts or line items sold\n\nKey custom fields such as implementation tier, region, and segment\n\nUse the opportunity ID to find all associated conversations in your call recorder. If none are linked directly, look for conversations connected to the same account. From those conversations, extract:\n\nParticipants and their roles\n\nCustomer goals, needs, and pain points\n\nDecisions made and commitments promised by the AE\n\nTechnical details, integrations, or dependencies discussed\n\nTimelines, blockers, and any risk indicators\n\nCombine this information into a concise, structured summary that gives the delivery team full context on what was sold, who was involved, and what happens next. If conversation data is missing, include practical guidance such as \"review CRM notes\" or \"schedule a follow-up with AE.\"\n\nFormat the team message exactly as follows:\n\n:tada: NEW CLOSED WON HANDOFF\n:receipt: DEAL OVERVIEW\nSummarize the customer, what they purchased, and commercial details.\n\n:busts_in_silhouette: KEY STAKEHOLDERS\nList key roles: Champion, Decision Maker, Technical Contact, Account Executive, Implementation Lead. Include names and titles from your CRM or recorded conversations.\n\n:dart: GOALS AND SUCCESS CRITERIA\nSummarize the customer's objectives and desired business outcomes.\n\n:jigsaw: SCOPE AND INTEGRATIONS\nDescribe the products or services sold, systems or integrations involved, and any relevant timelines.\n\n:handshake: COMMITMENTS OR SPECIAL TERMS\nList key promises, delivery expectations, or non-standard agreements from the sales process.\n\n:warning: RISKS AND WATCHOUTS\nHighlight potential blockers, technical dependencies, or misalignments identified in conversations.\n\n:rocket: NEXT STEPS\nList 3–5 immediate actions needed for a successful kickoff, with owners and target dates if available.\n\n:paperclip: RESOURCES\nInclude direct links to the CRM Opportunity, linked recorded conversations, and any key attachments such as the proposal or SOW.\n\nAdd a footer line that reads:\nGenerated by GTM Superintelligence | Opportunity ID: [ID] | [Date and Time UTC]\n\nPost the message in the correct team communication handoff channel, such as #deal-handoffs or the account-specific channel. Mention the AE and CSM.\n\nBefore sending, run the drafted message through the **gtm-humanizer** skill (it auto-loads humanizer-context.md) so it reads like a real person wrote it, not AI: no em dashes, no \"I hope this finds you well\" / \"I wanted to reach out\", no hype adjectives, one clear ask. Keep the sender's real voice.",
       "interactions": {
         "communication": {

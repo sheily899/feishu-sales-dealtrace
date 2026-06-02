@@ -1,0 +1,42 @@
+{
+  "name": "Team Collab Agent (per call)",
+  "nodes": [
+    { "parameters": { "httpMethod": "POST", "path": "conversation-analyzed", "responseMode": "onReceived" },
+      "id": "node-webhook", "name": "Recorder - conversation analyzed",
+      "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "notes": "Point your call recorder's 'conversation analyzed' webhook here. Payload should carry the call id." },
+
+    { "parameters": { "method": "GET", "url": "=https://api.gong.io/v2/calls/{{ $json.body.call_id }}/transcript",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
+      "id": "node-call", "name": "Recorder - get call details",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
+      "notes": "Fetch the transcript + metadata for the analyzed call. No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+
+    { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true, "headerParameters": { "parameters": [ { "name": "anthropic-version", "value": "2023-06-01" } ] },
+        "sendBody": true, "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"messages\": [{ \"role\": \"user\", \"content\": \"<<PASTE THE TEAM COLLAB OPERATING PROMPT (see team-collab-agent.md). Output NO_SIGNALS if no team is needed; otherwise one block per team.>>\\n\\nCALL:\\n{{ JSON.stringify($json) }}\" }]\n}" },
+      "id": "node-llm", "name": "Claude - pick teams",
+      "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0] },
+
+    { "parameters": { "conditions": { "options": { "caseSensitive": true }, "combinator": "and",
+        "conditions": [ { "leftValue": "={{ $json.content[0].text }}", "rightValue": "NO_SIGNALS", "operator": { "type": "string", "operation": "notContains" } } ] } },
+      "id": "node-if", "name": "Only if a team is needed",
+      "type": "n8n-nodes-base.if", "typeVersion": 2, "position": [660, 0] },
+
+    { "parameters": { "resource": "message", "operation": "post", "select": "channel",
+        "channelId": { "__rl": true, "value": "C0XXXXXXX", "mode": "id" },
+        "text": "={{ $json.content[0].text }}" },
+      "id": "node-slack", "name": "Slack - post alert(s)",
+      "type": "n8n-nodes-base.slack", "typeVersion": 2.2, "position": [880, 0],
+      "notes": "One call can route to several teams. To send each team's block to its own channel, split the model output per team (Code/Item Lists node) and route each to the matching channel id. This single node posts the combined output to a general collaboration channel." }
+  ],
+  "connections": {
+    "Recorder - conversation analyzed": { "main": [[{ "node": "Recorder - get call details", "type": "main", "index": 0 }]] },
+    "Recorder - get call details": { "main": [[{ "node": "Claude - pick teams", "type": "main", "index": 0 }]] },
+    "Claude - pick teams": { "main": [[{ "node": "Only if a team is needed", "type": "main", "index": 0 }]] },
+    "Only if a team is needed": { "main": [[{ "node": "Slack - post alert(s)", "type": "main", "index": 0 }]] }
+  },
+  "settings": {}, "pinData": {}
+}

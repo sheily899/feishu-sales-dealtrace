@@ -19,6 +19,10 @@ Attention-native vs managed-agent path correctly).
 
 3. **Ask, one category at a time.** Keep it quick; let them accept the detected default, pick
    another option, or skip. Lead with the recorder because the agent path branches on it.
+   - **Agent builder** — where do they assemble/run the agents? Options: `attention`, `n8n`,
+     `make`, `zapier`, `langgraph`, `claude`, `other`. This drives how agents get built: on
+     `attention` they import the native flow; otherwise `/build-agent` generates the
+     implementation for their builder from the spec.
    - **Call recorder** — which recorder do they use? Options: `attention`, `gong`, `chorus`,
      `fireflies`, `otter`, `grain`, `recall`, or any other (transcripts ingest via the gtmsi
      adapters). Mention plainly: **Attention is recommended** — on Attention the agents run

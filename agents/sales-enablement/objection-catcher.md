@@ -1,76 +1,107 @@
 # Objection Catcher
 
-**Function:** Sales Enablement  ·  **Integrations:** crm, email  ·  **Template id:** `AGTObjection01`
+> Weekly objection-handling digest: the most common objections across recorded calls, clustered into categories, with the highest-performing rebuttals reps actually used and concrete coaching tips for the patterns that fall flat.
 
-> Analyzes recorded calls weekly to identify common objections and surface the highest-performing rebuttals, delivering actionable coaching insights via email.
+**Function:** Sales Enablement · **Trigger:** scheduled (weekly, Monday 08:00) · **Template id:** `AGTObjection01`
+**Files:** [`objection-catcher.json`](./objection-catcher.json) (Attention agent-builder template) · [`objection-catcher.activepieces.json`](./objection-catcher.activepieces.json) (Activepieces flow)
+
+This page is the build-ready spec. It is platform-agnostic: any agent builder (Attention/Activepieces, n8n, Zapier, Make, LangGraph, a custom GPT/Claude agent) can implement it from the sections below. See [Build it in your stack](#build-it-in-your-stack).
+
+---
+
+## Goal
+
+Each run, produce one coaching digest that:
+1. Finds the most common objections across the week's calls and clusters them into a stable category taxonomy.
+2. Surfaces the highest-performing rebuttals reps used, scored on clarity, empathy, proof, and next step, weighted by deal outcomes.
+3. Gives 2-4 concrete coaching tips per top category, focused on the low-scoring patterns.
+4. Delivered by email in a constructive tone that reads like a real person wrote it.
 
 ## When it fires
 
-**Detector:** Trigger if the user wants to identify common objections in sales calls, find effective rebuttals, or analyze objection handling performance.
+- **Type:** schedule. **Default:** `0 8 * * 1` (Monday 08:00, workspace timezone). **Lookback:** trailing 7 days.
+- **Alternative trigger:** the underlying signal is per-call (objections surface on each conversation), but the digest is weekly so it can rank categories by frequency and impact, which a single call cannot.
 
-**Signal keywords:** `objection`, `objection handling`, `rebuttal`, `overcome objection`, `pricing objection`, `common objections`, `handle objections`, `objection response`
+## Inputs / data required
 
-## What it does
+| Data | Source | Generic capability |
+|---|---|---|
+| Every call from the last 7 days with a transcript | Call recorder | `search_calls` |
+| The objection quote + timestamp, the rep's response, and the response pattern | LLM over the transcripts | `analyze_calls` |
+| Optional deal outcome per call (stage, meeting booked, advanced, won/lost) for weighting | CRM | `query_records` |
 
-Behavior
+## Tools / capabilities
 
-Goal: Each week, analyze all recorded calls, identify the most common objections, and surface the highest-performing rebuttals reps used.
+| Generic action | What it does here | On Attention | On any other stack |
+|---|---|---|---|
+| `search_calls` | Pull the week's calls that have transcripts | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `analyze_calls` | Extract and cluster objections, score rebuttals | `ask_attention` | an LLM step over the transcripts |
+| `query_records` | Read deal outcomes to weight rebuttal scores | CRM tool | your CRM's API/MCP (Salesforce, HubSpot, ...) |
+| `send_email` | Email the digest to enablement | Email tool | your email tool's API/MCP |
 
-Trigger: conversation_analyzed events (primary). Weekly roll-up on Mondays 08:00 ET.
+This agent is **read-only on your data**. Its only side effect is sending one email.
 
-Systems: Call recorder transcripts + analytics; optional CRM context (stage/outcome), optional team communication for alerts; Email for delivery.
+## How it works (step by step)
 
-Procedure
+1. **Collect the week's calls.** `search_calls` for calls in the last 7 days that have a transcript. If none, send the "no calls" confirmation (see Edge cases) and stop.
+2. **Extract objections per call.** `analyze_calls`: the objection quote, its moment timestamp (mm:ss), the category, the rep's response quote, and a short response-pattern label.
+3. **Normalize into the taxonomy.** Cluster variants into the fixed set, keeping categories stable week to week: **Pricing, Timing/Priority, Competitor, Feature Gap, Security/Legal, Integration, Authority, ROI/Proof, Contract/Procurement, Other.**
+4. **Score the responses.** Each objection/response pair 0-100 on clarity, empathy, proof, and next step. Where CRM outcome data exists (`query_records`), weight by meeting booked / stage advanced / won/lost.
+5. **Rank and select best messaging.** Rank categories by frequency and impact; per top category, the 1-3 highest-scoring rebuttal snippets with a one-line note on why each worked.
+6. **Compute stats and tips.** Total objections, percent of calls with objections, week-over-week change, best-performing patterns, low-scoring coaching opportunities; 2-4 coaching tips per top category.
+7. **Email the digest** in the exact [Output](#output) format, then run it through the **[gtm-humanizer](../../.claude/skills/gtm-humanizer/SKILL.md)** as the final pass.
 
-Collect calls where call_date ∈ last 7 days and has_transcript = true.
+> The verbatim operating prompt (with the full taxonomy and scoring rubric) is the single source of truth in [`objection-catcher.json`](./objection-catcher.json) under `template.agent.instructions`. This section is its readable summary.
 
-Extract Objections per call:
+## Output
 
-Use model to pull objection snippet(s) + category + moment timestamp.
+A single plain-text email:
 
-Normalize categories (semantic clustering; e.g., "price", "budget", "too expensive" → Pricing).
+```
+Objection Catcher - Weekly Objection-Handling Digest - Week of [date range]
 
-Score Responses:
+Top Objection Categories (by frequency and impact)
+  1. [Category] - [N] objections, WoW [+/-]
+     Best rebuttal: "[snippet]"  (why it worked: [one line])
+     Coaching tips:
+       - [tip]
+       - [tip]
+  2. ...
 
-For each objection/response pair, compute a response quality score (clarity, empathy, proof, next step).
+Weekly Stats
+  - Total objections: [N] · Calls with objections: [%] · WoW change: [+/-]
+  - Best-performing patterns: [...] · Coaching opportunities: [low-score patterns]
+```
 
-Weight by downstream outcomes (meeting booked, stage advanced, opp won) when available from your CRM.
+## Edge cases
 
-Rank top objection categories by frequency and impact (lost/won delta, conversion uplift).
+- **No calls with transcripts in the period:** send "Objection Catcher ran for [range]. No recorded calls with transcripts were found this week." (confirms the agent is alive).
+- **Objection with no captured rep response:** list it under its category as unhandled and flag it as a coaching opportunity, rather than scoring a rebuttal.
+- **No CRM outcome data available:** score rebuttals on the four quality dimensions only and note that outcome weighting was unavailable.
 
-Select Best Messaging per category:
+## Guardrails
 
-Choose 1–3 rebuttal snippets with highest composite score.
+- Read-only on the recorder and CRM. The only write is the one email.
+- Every objection and rebuttal ties to a real call quote and timestamp. No invented examples.
+- Constructive, improvement-focused tone, not performance criticism.
+- Final **humanizer** pass: no em dashes, no AI throat-clearing, no hype, one clear ask.
 
-Include concise guidance pattern (why it worked).
+## Build it in your stack
 
-Generate Digest (HTML + plain text).
+**Attention (Activepieces-based builder):** import [`objection-catcher.activepieces.json`](./objection-catcher.activepieces.json). It follows Attention's export schema: a `@activepieces/piece-schedule` trigger → an `askAttention` step (analyzes the week's calls, clusters objections, scores rebuttals, writes the digest) → an email send. On import, connect Attention and your email piece and fill `<ENABLEMENT_RECIPIENT_EMAIL>`. Because the schema sample we modeled on was a per-call agent that posts to Slack, confirm four things against a flow you export from your own workspace: (1) the schedule piece name/version, (2) the `askAttention` context scope for a cross-call weekly query (we use `contextType: "user"`), (3) the email piece + `send_email` action name/version, and (4) the optional CRM outcome lookup. The fully-managed alternative is to import the agent template [`objection-catcher.json`](./objection-catcher.json).
 
-Send Email to owner(s) and CC relevant leads; log artifact to analytics store.
+**Any other builder - pre-built for you** in [`objection-catcher.builds/`](./objection-catcher.builds/):
 
-Tasks
+| Builder | Build | Form |
+|---|---|---|
+| Claude Managed Agents (Agent SDK) | [`claude-agent.py`](./objection-catcher.builds/claude-agent.py) | runnable Python (custom tools + system prompt) |
+| Claude Code subagent | [`claude-code-subagent.md`](./objection-catcher.builds/claude-code-subagent.md) | drop into `.claude/agents/` |
+| n8n | [`n8n.json`](./objection-catcher.builds/n8n.json) | importable workflow |
+| LangGraph / code | [`langgraph.py`](./objection-catcher.builds/langgraph.py) | runnable graph |
+| Zapier | [`zapier.md`](./objection-catcher.builds/zapier.md) | step-by-step Zap |
+| Make | [`make.md`](./objection-catcher.builds/make.md) | step-by-step scenario (blueprint JSON pending a sample export) |
 
-Detect and cluster objection variants; maintain category taxonomy: Pricing, Timing/Priority, Competitor, Feature Gap, Security/Legal, Integration, Authority, ROI/Proof, Contract/Procurement, Other.
-
-Extract: objection quote, timestamp (mm:ss), rep response quote, response pattern label, score (0–100), outcome signals (advanced/won/lost).
-
-Compute weekly stats: counts, % of calls with objections, WoW change, best-performing rebuttal patterns, coaching opportunities (low-score patterns).
-
-Produce actionable guidance: 2–4 bullet coaching tips per top category.
-
-Email the digest in plain text.
-
-## Tools / actions
-- **CRM** — Query Records
-- **Email** — Send Email
-
-## Before sending: humanize
-
-This agent drafts a customer- or teammate-facing message, so run the draft through the [`gtm-humanizer`](../../.claude/skills/gtm-humanizer/SKILL.md) skill as the final step (it auto-loads `humanizer-context.md` for sender voice). Strip AI tells — em dashes, throat-clearing openers, hype words, rule-of-three padding — and keep one clear ask. A message that reads like a bot kills reply rates.
-
-## Trigger
-
-**Type:** Schedule — runs weekly, Monday 08:00 (cron `0 8 * * 1`, set the timezone to the team's).
+On a builder not listed, run [`/build-agent`](../../.claude/commands/build-agent.md) `agents/sales-enablement/objection-catcher.md` and it generates the implementation from this spec. The agent logic does not change between platforms; only the bound connectors do.
 
 ---
-_From GTM Superintelligence agent templates. Raw definition: [`objection-catcher.json`](./objection-catcher.json)._
+_From GTM Superintelligence agent templates. Native: [`objection-catcher.json`](./objection-catcher.json) · [`objection-catcher.activepieces.json`](./objection-catcher.activepieces.json) (Attention). Other builders: [`objection-catcher.builds/`](./objection-catcher.builds/)._

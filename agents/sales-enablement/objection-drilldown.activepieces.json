@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Objection Drilldown",
+  "description": "Weekly objection intelligence report, as an Attention agent-builder flow: schedule -> askAttention (pull the week's calls, classify objections, score handling, extract rebuttals, compare to last week) -> post to a channel. CONFIRM against your builder before import: the schema this was modeled on is a per-call agent, so three things here are best-effort and flagged in objection-drilldown.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-call query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "sales-enablement", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Objection Drilldown",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every Monday at 08:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 8 * * 1", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_objections",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Classify objections, score handling, extract rebuttals, compare to last week",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Objection Drilldown agent. (1) Pull every team call from the last 7 days. If fewer than 5 calls, note the small sample and that trends may not be meaningful. (2) Classify every prospect objection into ONE category from: PRICING/BUDGET, TIMING/URGENCY, COMPETITION, FEATURE-GAPS, AUTHORITY/DECISION-PROCESS, SECURITY/LEGAL/COMPLIANCE, INTEGRATION/TECHNICAL, ROI/PROOF. For each, record the category, the rep, the call id, and a paraphrase of what the prospect said. (3) Score the rep's response per objection: Effective (3), Partial (2), Ineffective (1). (4) For each category, extract the top-scoring rebuttal as a reusable template (the exact language the rep used and the result). (5) Compare this week's frequency by category to the prior 7-day window: flag rising, declining, and new categories. (6) Correlate categories with outcomes; flag the categories most tied to calls with no next step set as high-risk. If no objections at all, output exactly: 'No prospect objections detected in [n] calls this week. This may indicate early-stage pipeline or insufficient sample size.' and stop. Output the exact report format in objection-drilldown.md -> Output. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the report to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":shield: *Objection Drilldown -- weekly objection intelligence*\n\n{{analyze_objections.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

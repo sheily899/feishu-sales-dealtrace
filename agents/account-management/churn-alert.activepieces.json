@@ -1,0 +1,77 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Churn Alert",
+  "description": "Weekly churn-risk report, as an Attention agent-builder flow: schedule -> askAttention (scope active customers, fuse CRM health with conversation sentiment, rate risk) -> post to a channel. CONFIRM against your builder before import: the Kiki sample this was modeled on is a per-call agent, so three things here are best-effort and flagged in churn-alert.md -> Build notes: (1) the @activepieces/piece-schedule trigger + version, (2) the askAttention context scope for a cross-account/CRM query, (3) the Slack channel-post action name. Set connections and the placeholder ids (<...>) on import.",
+  "tags": ["gtm-superintelligence", "account-management", "scheduled"],
+  "pieces": ["@activepieces/piece-schedule", "@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Churn Alert",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "Every day at 07:00",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-schedule",
+        "pieceVersion": "0.1.5",
+        "pieceType": "OFFICIAL",
+        "packageType": "REGISTRY",
+        "input": { "cronExpression": "0 7 * * *", "timezone": "UTC" },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "cron_expression"
+      },
+      "nextAction": {
+        "name": "analyze_churn_risk",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scope active customers, fuse signals, rate churn risk, write the report",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Churn Alert agent. (1) List all ACTIVE customer accounts (exclude open/live deals) with account name, renewal date, health/success score, NPS, contract value, assigned CSM, and open support cases. (2) For each account, pull its calls from the last ~90 days and report call frequency and any drop vs the prior period, average sentiment and trend, unresolved issues, competitor mentions, expressed dissatisfaction, and any expansion signals. (3) Fuse the CRM health data with the conversation signals and rate each at-risk account HIGH (multiple strong signals at once), MEDIUM (one clear signal or a few mild ones), or LOW (monitor only). For each at-risk account, give the key risk drivers and one specific, proactive retention action for this week. Only refer to active customers, never live deals. ANONYMIZE company names (use a stable alias per account). Output the exact report format in churn-alert.md -> Output: a Weekly Churn Risk Report grouped into High-Risk, Medium-Risk, and Low-Risk (Monitor), each account with its risk indicators and recommendation, then a summary count by category and the data sources. If no active customers show risk, say so plainly. Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextType": "user"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_report",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the churn-risk report to the CS channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":warning: *Weekly Churn Risk Report*\n\n{{analyze_churn_risk.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}

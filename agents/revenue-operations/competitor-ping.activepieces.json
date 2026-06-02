@@ -1,0 +1,83 @@
+{
+  "created": "",
+  "updated": "",
+  "name": "Competitor Ping",
+  "description": "Per-call competitive listener, as an Attention agent-builder flow. Fires once per analyzed call, scans the transcript for competitor mentions, and posts a structured intelligence alert to the team channel (only when competitors are detected). On import, set the connections and the placeholder ids (<...>). Schema matches Attention's agent builder (Activepieces); on a different platform use competitor-ping.md.",
+  "tags": ["gtm-superintelligence", "revenue-operations", "per-call"],
+  "pieces": ["@activepieces/piece-attention", "@activepieces/piece-slack"],
+  "signals": [],
+  "template": {
+    "displayName": "Competitor Ping",
+    "trigger": {
+      "name": "trigger",
+      "valid": true,
+      "displayName": "When one of my calls is analyzed",
+      "type": "PIECE_TRIGGER",
+      "settings": {
+        "pieceName": "@activepieces/piece-attention",
+        "pieceVersion": "0.22.0",
+        "pieceType": "CUSTOM",
+        "packageType": "ARCHIVE",
+        "input": {
+          "auth": "{{connections['Attention Connection']}}",
+          "user": "<YOUR_ATTENTION_USER_ID>",
+          "detailedTranscript": false,
+          "includeImportMetadata": false
+        },
+        "inputUiInfo": { "customizedInputs": {} },
+        "triggerName": "webhookTrigger"
+      },
+      "nextAction": {
+        "name": "scan_competitors",
+        "type": "PIECE",
+        "valid": true,
+        "displayName": "Scan the call for competitor mentions and extract intelligence",
+        "settings": {
+          "input": {
+            "auth": "{{connections['Attention Connection']}}",
+            "prompt": "You are the Competitor Ping agent, scanning THIS analyzed call (title: {{trigger.attributes.title}}) for competitor mentions. Detect explicit competitor names, implicit references ('another vendor', 'the other tool we're looking at', 'the incumbent'), and competitor product references. Check the configured competitor list; a company not on it is a NEW competitor to verify. If NO competitor is mentioned in a competitive or evaluative context, output exactly: 'No competitor mentions detected.' and stop (do not alert). For each competitor detected, extract: mention context (PROSPECT-INITIATED / REP-INITIATED / ACTIVE-EVALUATION / INCUMBENT / PAST-USER), strengths cited (with quotes), weaknesses cited (with quotes), prospect sentiment toward the competitor (POSITIVE / NEUTRAL / NEGATIVE), how the rep positioned against it and whether it landed, and win/loss risk (HIGH / MODERATE / LOW). Then output the exact alert format in competitor-ping.md -> Output: a deal/rep/date/competitors header table, one intelligence block per competitor (risk, sentiment, strengths, weaknesses, rep positioning, key quote), and 2-3 recommended actions. Ignore trivial mentions ('I used to work at X'). Apply humanizer rules: no em dashes, no AI throat-clearing, no hype, one clear ask.",
+            "contextId": "{{trigger.id}}",
+            "contextType": "conversation"
+          },
+          "pieceName": "@activepieces/piece-attention",
+          "pieceType": "CUSTOM",
+          "actionName": "askAttention",
+          "inputUiInfo": { "customizedInputs": {} },
+          "packageType": "ARCHIVE",
+          "pieceVersion": "0.22.0",
+          "errorHandlingOptions": {
+            "retryOnFailure": { "value": false },
+            "continueOnFailure": { "value": false }
+          }
+        },
+        "nextAction": {
+          "name": "post_alert",
+          "type": "PIECE",
+          "valid": true,
+          "displayName": "Post the competitive intelligence alert to the team channel",
+          "settings": {
+            "input": {
+              "auth": "{{connections['Slack Connection']}}",
+              "text": ":crossed_swords: *Competitor Ping* on {{trigger.attributes.title}}\n\n{{scan_competitors.output}}",
+              "channel": "<YOUR_SLACK_CHANNEL_ID>"
+            },
+            "pieceName": "@activepieces/piece-slack",
+            "pieceType": "CUSTOM",
+            "actionName": "send_channel_message",
+            "inputUiInfo": { "customizedInputs": {} },
+            "packageType": "ARCHIVE",
+            "pieceVersion": "0.15.5",
+            "errorHandlingOptions": {
+              "retryOnFailure": { "value": false },
+              "continueOnFailure": { "value": false }
+            }
+          },
+          "nextAction": null
+        }
+      }
+    },
+    "valid": false,
+    "schemaVersion": "1"
+  },
+  "blogUrl": ""
+}
