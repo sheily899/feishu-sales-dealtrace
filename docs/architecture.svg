@@ -144,7 +144,7 @@
 
   <rect x="780" y="580" width="440" height="76" rx="10" fill="#fff" stroke="#94a3b8"/>
   <text x="796" y="602" class="t" font-weight="700">Quality gates</text>
-  <text x="796" y="623" class="s m">58 tests · ruff · validate (cross-refs) · JSON-Schema</text>
+  <text x="796" y="623" class="s m"> tests · ruff · validate (cross-refs) · JSON-Schema</text>
   <text x="796" y="639" class="s m">conformance · evals (classifier accuracy) · CI 3.10–3.12</text>
 
   <text x="780" y="690" class="lbl">The framework is vendor-neutral and free. The recommendation —</text>
