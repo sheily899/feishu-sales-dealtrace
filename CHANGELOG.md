@@ -66,6 +66,19 @@ semantic versioning.
   optional `ATTENTION_API_KEY` connection, and **opt-in, off-by-default** anonymous
   telemetry (`gtmsi telemetry`, never sends transcript content). New docs:
   `docs/distribution.md`, `docs/telemetry.md`, `SECURITY.md`.
+- **Agents built for every builder + two-path model**: each of the 30 agent templates now
+  ships as a detailed, builder-agnostic spec (`<agent>.md`), the native Attention forms
+  (`<agent>.json` template + `<agent>.activepieces.json` flow matching Attention's real
+  agent-builder/Activepieces export schema), and a `<agent>.builds/` folder pre-built for
+  **n8n, Make, Zapier, LangGraph, the Claude Agent SDK, and a Claude Code subagent**. On
+  Attention you import natively; on any other builder, `/build-agent` reads the spec and
+  generates the implementation for your stack. New `/setup` (writes `agents/config.yaml`,
+  incl. `agent_builder`) and `/build-agent` commands. All IDs are placeholders; no internal
+  hosts. Verified the Activepieces schedule/Slack piece schemas against the public source.
+- **Recorder regression suite**: end-to-end fixtures for all 9 adapters (Gong, Fireflies,
+  Otter, Recall, Grain, Zoom/VTT, SRT, generic JSON, plaintext) asserting adapter detection,
+  turn merging, ms→seconds timestamp conversion, and native role labeling; plus a 2-party
+  side-inference (`--participants` naming one side resolves the other). 70 tests total.
 - **Adapter hardening** (adversarial bug-hunt, 12 fixes): VTT skips NOTE/STYLE/REGION
   blocks, handles optional/1–2-digit-hour timestamps and `<v.class>` voice tags; a
   shared speaker-label guard stops colon-in-sentence/heading lines (`Note:`, `Action

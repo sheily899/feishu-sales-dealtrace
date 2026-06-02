@@ -42,10 +42,18 @@ structured coaching report. No key needed.
 | `/account-health <folder> [name]` | Score a customer account's health across its calls (CSM) |
 | `/inbox <folder> [--scope rep\|team\|company]` | Build a "what to improve" inbox |
 | `/crm-fill <report.json> [--crm …]` | Map a report to CRM fields (dry-run patch) |
+| `/crm-stages <folder> [--crm …]` | Resolve your org's real won/lost/open CRM stages from data |
+| `/setup` | Set your stack (recorder, CRM, comms, email, agent builder) → writes `agents/config.yaml` |
+| `/run-agent <agent.json>` | Run a [GTM agent](../agents): native on Attention, or as a managed Claude agent on any recorder |
+| `/build-agent <agent.md> [for <builder>]` | Generate an agent's implementation for your builder (n8n / Make / Zapier / LangGraph / Claude / …) |
 
 Each command takes a path (or pasted text) as its argument. `/coach` accepts any
 supported format (`.txt`, `.md`, `.vtt`, `.srt`, `.json`) and auto-detects the adapter.
 The commands live in [`.claude/commands/`](../.claude/commands).
+
+The 30 [agent templates](../agents) ship pre-built for every builder (Attention native flow +
+n8n / Make / Zapier / LangGraph / Claude Agent SDK / Claude Code subagent). Run `/setup` once,
+then import on Attention or `/build-agent` for any other stack.
 
 ---
 
