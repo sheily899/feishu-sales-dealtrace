@@ -32,11 +32,42 @@ def _build_llm(args):
     return AnthropicCoach(model=args.model) if getattr(args, "model", None) else AnthropicCoach()
 
 
+def _infer_two_party_sides(t):
+    """In a clean 2-speaker call, if exactly one speaker's side is known (rep or
+    prospect) and the other is unknown, label the other as the counterpart.
+
+    Lets the user name just one side — e.g. ``--participants '{"Dana": "rep"}'`` on a
+    Fireflies/Zoom/Grain call (which carry no role field) — and have the whole call
+    resolve, instead of forcing them to enumerate both speakers.
+    """
+    opp = {"rep": "prospect", "prospect": "rep"}
+    # Best-known side per speaker (a known side on any turn wins over unknown).
+    sides: dict[str, str] = {}
+    for turn in t.turns:
+        if turn.speaker not in sides or turn.side != "unknown":
+            sides[turn.speaker] = turn.side
+    if len(sides) != 2:
+        return t
+    known = [(name, s) for name, s in sides.items() if s in opp]
+    unknown = [name for name, s in sides.items() if s == "unknown"]
+    if len(known) != 1 or len(unknown) != 1:
+        return t
+    target, other_side = unknown[0], opp[known[0][1]]
+    for turn in t.turns:
+        if turn.speaker == target:
+            turn.side = other_side
+    for p in t.participants:
+        if target in (p.name, p.id):
+            p.side = other_side
+    return t
+
+
 def _apply_participants(t, spec: str | None):
     """Override speaker→side mapping from a JSON string or a path to a JSON file.
 
     Example: --participants '{"Alex": "rep", "Sam": "prospect"}'. This fixes the
-    common case where side detection from names alone is ambiguous.
+    common case where side detection from names alone is ambiguous. In a 2-speaker
+    call you can name just one side (e.g. only the rep) and the other is inferred.
     """
     if not spec:
         return t
@@ -51,6 +82,7 @@ def _apply_participants(t, spec: str | None):
         side = mapping.get(p.name) or mapping.get(p.id)
         if side in valid:
             p.side = side
+    _infer_two_party_sides(t)
     return t
 
 

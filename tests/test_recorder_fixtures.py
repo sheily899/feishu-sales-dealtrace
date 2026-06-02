@@ -151,3 +151,31 @@ def test_roleless_recorder_resolves_with_participants(tmp_path):
     _apply_participants(t, '{"Dana Lee": "rep", "Priya Rao": "prospect"}')
     sides = {turn.side for turn in t.turns}
     assert "rep" in sides and "prospect" in sides
+
+
+def test_naming_one_side_infers_the_other_in_two_party_call(tmp_path):
+    """In a 2-speaker call, naming only the rep infers the other speaker as prospect."""
+    fn, content, _, _ = FIXTURES["fireflies"]
+    t = load_transcript(_write(tmp_path, fn, content))
+    assert {turn.side for turn in t.turns} == {"unknown"}
+
+    _apply_participants(t, '{"Dana Lee": "rep"}')  # only the rep named
+    by_speaker = {turn.speaker: turn.side for turn in t.turns}
+    assert by_speaker["Dana Lee"] == "rep"
+    assert by_speaker["Priya Rao"] == "prospect"  # inferred
+
+
+def test_no_inference_with_three_speakers(tmp_path):
+    """Inference is conservative: 3+ speakers are left alone (name them explicitly)."""
+    p = tmp_path / "three.json"
+    p.write_text(json.dumps({"segments": [
+        {"speaker": "Dana Lee", "text": "Thanks for joining.", "start": 0.0},
+        {"speaker": "Priya Rao", "text": "Happy to be here.", "start": 5.0},
+        {"speaker": "Sam Okafor", "text": "Me too.", "start": 9.5},
+    ]}))
+    t = load_transcript(str(p))
+    _apply_participants(t, '{"Dana Lee": "rep"}')
+    by_speaker = {turn.speaker: turn.side for turn in t.turns}
+    assert by_speaker["Dana Lee"] == "rep"
+    assert by_speaker["Priya Rao"] == "unknown"  # not guessed
+    assert by_speaker["Sam Okafor"] == "unknown"
