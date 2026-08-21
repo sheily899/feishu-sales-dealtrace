@@ -178,3 +178,8 @@ def test_normalize_deepseek_response_converts_quotes_and_score_field_names():
     assert result["scores"][0]["criterion_name"] == "Clear next steps"
     assert result["scores"][0]["evidence"] == [{"speaker": "Jordan", "text": "Would Friday work?"}]
     assert result["outcomes"][0]["evidence"] == [{"speaker": "Sam", "text": "Send it over."}]
+
+
+def test_normalize_deepseek_response_wraps_a_single_evidence_string():
+    result = _normalize_deepseek_response({"evidence": '"Clear next steps."'})
+    assert result["evidence"] == [{"speaker": "Unknown", "text": "Clear next steps."}]

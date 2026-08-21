@@ -207,7 +207,9 @@ def _normalize_deepseek_response(value: Any) -> Any:
         normalized.setdefault("criterion_id", normalized["id"])
         normalized.setdefault("criterion_name", normalized["name"])
     evidence = normalized.get("evidence")
-    if isinstance(evidence, list):
+    if isinstance(evidence, str):
+        normalized["evidence"] = [_normalize_deepseek_quote(evidence)]
+    elif isinstance(evidence, list):
         normalized["evidence"] = [_normalize_deepseek_quote(item) for item in evidence]
     return normalized
 
@@ -217,7 +219,7 @@ def _normalize_deepseek_quote(value: Any) -> Any:
         return value
     speaker, separator, text = value.partition(":")
     if not separator:
-        return {"speaker": "Unknown", "text": value.strip()}
+        return {"speaker": "Unknown", "text": value.strip().strip("'\"")}
     return {"speaker": speaker.strip() or "Unknown", "text": text.strip().strip("'\"")}
 
 

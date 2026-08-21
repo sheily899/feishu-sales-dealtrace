@@ -54,7 +54,7 @@ def test_coach_merges_and_backfills():
         ],
         "scores": [
             # Note: no weight and no band provided -> pipeline back-fills both.
-            {"criterion_id": "priority_quantified", "criterion_name": "Top Priority Identified & Quantified",
+            {"criterion_id": "priority_quantified",
              "score": 72, "band": "", "rationale": "named hours not dollars",
              "evidence": [{"speaker": "Sam", "text": "10 hours a week"}]}
         ],
@@ -74,6 +74,7 @@ def test_coach_merges_and_backfills():
 
     # weight back-filled from the scorecard, band derived from score.
     s = r.scores[0]
+    assert s.criterion_name == "Top Priority Identified & Quantified"
     assert s.weight is not None and s.weight > 0
     assert s.band == "good"  # 72 -> good
     # overall score computed

@@ -118,6 +118,8 @@ def coach(t: Transcript, classification: Classification, reg: Registry, llm: LLM
     data.setdefault("call_id", t.call_id)
     for s in data.get("scores", []):
         crit = next((c for c in scorecard.criteria if c.id == s.get("criterion_id")), None)
+        if crit and not s.get("criterion_name"):
+            s["criterion_name"] = crit.name
         if crit and s.get("weight") is None:
             s["weight"] = crit.weight
         # Coerce a missing/null score to 0 so a malformed LLM response degrades
