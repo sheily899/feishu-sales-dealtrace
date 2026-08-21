@@ -6,10 +6,12 @@ client that returns canned (text, stop_reason) responses and records the
 ``max_tokens`` it was called with.
 """
 import json
+import sys
+import types
 
 import pytest
 
-from gtmsi.llm import AnthropicCoach, LLMError
+from gtmsi.llm import AnthropicCoach, DeepSeekCoach, LLMError, _normalize_deepseek_response, build_coach
 
 
 class _FakeBlock:
@@ -104,3 +106,75 @@ def test_valid_first_response_no_retry():
     coach = _coach([_FakeResp(json.dumps({"a": 1}), "end_turn")])
     assert _complete(coach) == {"a": 1}
     assert coach.client.messages.calls == [4096]  # single call, no retry
+
+
+def test_build_coach_defaults_to_deepseek(monkeypatch):
+    captured = {}
+
+    class FakeDeepSeekCoach:
+        def __init__(self, model=None):
+            captured["model"] = model
+
+    monkeypatch.setattr("gtmsi.llm.DeepSeekCoach", FakeDeepSeekCoach)
+    assert isinstance(build_coach(), FakeDeepSeekCoach)
+    assert captured["model"] is None
+
+
+def test_build_coach_rejects_unknown_provider():
+    with pytest.raises(LLMError, match="unsupported LLM provider"):
+        build_coach(provider="unsupported")
+
+
+def test_build_coach_loads_local_dotenv_without_overriding_environment(monkeypatch):
+    calls = []
+    monkeypatch.setitem(sys.modules, "dotenv", types.SimpleNamespace(load_dotenv=lambda **kwargs: calls.append(kwargs)))
+    monkeypatch.setattr("gtmsi.llm.DeepSeekCoach", lambda model=None: object())
+    build_coach()
+    assert calls == [{"override": False}]
+
+
+def test_deepseek_truncation_retry_raises_the_budget():
+    class FakeCompletions:
+        def __init__(self):
+            self.calls = []
+            self.responses = [
+                type("Response", (), {"choices": [type("Choice", (), {"message": type("Message", (), {"content": '{"a":'})(), "finish_reason": "length"})()]})(),
+                type("Response", (), {"choices": [type("Choice", (), {"message": type("Message", (), {"content": '{"a": 1}'})(), "finish_reason": "stop"})()]})(),
+            ]
+
+        def create(self, **kwargs):
+            self.calls.append(kwargs)
+            return self.responses.pop(0)
+
+    coach = DeepSeekCoach.__new__(DeepSeekCoach)
+    coach.client = type("Client", (), {"chat": type("Chat", (), {"completions": FakeCompletions()})()})()
+    coach.model = "deepseek-v4-flash"
+    coach.max_tokens = 4096
+    assert _complete(coach) == {"a": 1}
+    assert coach.client.chat.completions.calls[0]["response_format"] == {"type": "json_object"}
+    assert [call["max_tokens"] for call in coach.client.chat.completions.calls] == [4096, 8192]
+
+
+def test_normalize_deepseek_response_converts_quotes_and_score_field_names():
+    raw = {
+        "scores": [{
+            "id": "next_steps",
+            "name": "Clear next steps",
+            "score": 40,
+            "rationale": "No meeting booked.",
+            "evidence": ["Jordan: 'Would Friday work?'"]
+        }],
+        "outcomes": [{
+            "id": "secure-next-step",
+            "statement": "Book a follow-up",
+            "status": "missed",
+            "evidence": ["Sam: 'Send it over.'"]
+        }],
+    }
+
+    result = _normalize_deepseek_response(raw)
+
+    assert result["scores"][0]["criterion_id"] == "next_steps"
+    assert result["scores"][0]["criterion_name"] == "Clear next steps"
+    assert result["scores"][0]["evidence"] == [{"speaker": "Jordan", "text": "Would Friday work?"}]
+    assert result["outcomes"][0]["evidence"] == [{"speaker": "Sam", "text": "Send it over."}]

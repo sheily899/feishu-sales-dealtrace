@@ -27,9 +27,9 @@ def _eprint(*a):
 
 
 def _build_llm(args):
-    from .llm import AnthropicCoach
+    from .llm import build_coach
 
-    return AnthropicCoach(model=args.model) if getattr(args, "model", None) else AnthropicCoach()
+    return build_coach(provider=getattr(args, "provider", None), model=getattr(args, "model", None))
 
 
 def _infer_two_party_sides(t):
@@ -422,7 +422,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     def add_common(sp):
         sp.add_argument("--adapter", choices=sorted(ADAPTERS_BY_NAME), help="force a transcript adapter")
-        sp.add_argument("--model", help="Anthropic model id (default: env GTMSI_MODEL or claude-sonnet-4-6)")
+        sp.add_argument("--provider", choices=["deepseek", "anthropic"], help="LLM provider (default: GTMSI_LLM_PROVIDER or deepseek)")
+        sp.add_argument("--model", help="model id (default: GTMSI_MODEL, or provider default)")
         sp.add_argument("--no-attribution", action="store_true",
                         help="omit the 'powered by' footer from rendered output (or set GTMSI_NO_ATTRIBUTION=1)")
 

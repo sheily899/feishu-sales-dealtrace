@@ -15,7 +15,8 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-DEFAULT_MODEL = os.environ.get("GTMSI_MODEL", "claude-sonnet-4-6")
+DEFAULT_ANTHROPIC_MODEL = "claude-sonnet-4-6"
+DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-flash"
 
 
 @dataclass
@@ -37,7 +38,7 @@ _MAX_RETRY_TOKENS = 32768
 
 
 class AnthropicCoach:
-    def __init__(self, api_key: str | None = None, model: str = DEFAULT_MODEL, max_tokens: int = 4096):
+    def __init__(self, api_key: str | None = None, model: str | None = None, max_tokens: int = 4096):
         try:
             from anthropic import Anthropic
         except ImportError as e:  # pragma: no cover
@@ -49,7 +50,7 @@ class AnthropicCoach:
         if not key:
             raise LLMError("ANTHROPIC_API_KEY is not set. Export it or pass api_key=...")
         self.client = Anthropic(api_key=key)
-        self.model = model
+        self.model = model or os.environ.get("GTMSI_MODEL", DEFAULT_ANTHROPIC_MODEL)
         self.max_tokens = max_tokens
 
     def complete_json(
@@ -119,6 +120,105 @@ class AnthropicCoach:
         )
         text = "".join(b.text for b in resp.content if getattr(b, "type", None) == "text")
         return text, getattr(resp, "stop_reason", None)
+
+
+class DeepSeekCoach:
+    """DeepSeek Chat Completions provider for structured sales analysis."""
+
+    def __init__(self, api_key: str | None = None, model: str | None = None, max_tokens: int = 4096):
+        try:
+            from openai import OpenAI
+        except ImportError as e:  # pragma: no cover
+            raise LLMError(
+                "The 'openai' package is required for DeepSeek coaching. "
+                "Install with `pip install -e \".[llm]\"`."
+            ) from e
+        key = api_key or os.environ.get("DEEPSEEK_API_KEY")
+        if not key:
+            raise LLMError("DEEPSEEK_API_KEY is not set. Export it or pass api_key=...")
+        self.client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
+        self.model = model or os.environ.get("GTMSI_MODEL", DEFAULT_DEEPSEEK_MODEL)
+        self.max_tokens = max_tokens
+
+    def complete_json(
+        self,
+        system: str,
+        cached_blocks: list[CachedBlock],
+        user_text: str,
+        max_tokens: int | None = None,
+    ) -> Any:
+        context = "\n\n".join(f"### {blk.label}\n{blk.text}" for blk in cached_blocks)
+        prompt = f"{context}\n\n{user_text}" if context else user_text
+        raw, stop_reason = self._call(system, prompt, max_tokens)
+        try:
+            return _normalize_deepseek_response(_extract_json(raw))
+        except ValueError as first_err:
+            retry_tokens = max_tokens
+            if stop_reason == "max_tokens":
+                retry_tokens = min((max_tokens or self.max_tokens) * 2, _MAX_RETRY_TOKENS)
+            retry, retry_stop = self._call(
+                system,
+                f"{prompt}\n\nYour previous output was not valid JSON. Reply with ONLY valid JSON.",
+                retry_tokens,
+            )
+            try:
+                return _normalize_deepseek_response(_extract_json(retry))
+            except ValueError as retry_err:
+                if stop_reason == "max_tokens" or retry_stop == "max_tokens":
+                    raise LLMError("model output exceeded max_tokens and was truncated; raise max_tokens or shorten the transcript") from retry_err
+                raise LLMError(f"model did not return valid JSON: {retry_err}") from first_err
+
+    def _call(self, system: str, user_text: str, max_tokens: int | None) -> tuple[str, str | None]:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": user_text}],
+            max_tokens=max_tokens or self.max_tokens,
+            response_format={"type": "json_object"},
+            extra_body={"thinking": {"type": "disabled"}},
+        )
+        choice = response.choices[0]
+        stop_reason = "max_tokens" if choice.finish_reason == "length" else choice.finish_reason
+        return choice.message.content or "", stop_reason
+
+
+def build_coach(provider: str | None = None, model: str | None = None):
+    """Create the configured live model provider; DeepSeek is the default."""
+    from dotenv import load_dotenv
+
+    # Preserve explicitly exported environment variables over local developer settings.
+    load_dotenv(override=False)
+    selected = (provider or os.environ.get("GTMSI_LLM_PROVIDER", "deepseek")).lower()
+    if selected == "deepseek":
+        return DeepSeekCoach(model=model)
+    if selected == "anthropic":
+        return AnthropicCoach(model=model)
+    raise LLMError(f"unsupported LLM provider: {selected}")
+
+
+def _normalize_deepseek_response(value: Any) -> Any:
+    """Map common DeepSeek JSON variations to the project's report contract."""
+    if isinstance(value, list):
+        return [_normalize_deepseek_response(item) for item in value]
+    if not isinstance(value, dict):
+        return value
+
+    normalized = {key: _normalize_deepseek_response(item) for key, item in value.items()}
+    if "score" in normalized and "id" in normalized and "name" in normalized:
+        normalized.setdefault("criterion_id", normalized["id"])
+        normalized.setdefault("criterion_name", normalized["name"])
+    evidence = normalized.get("evidence")
+    if isinstance(evidence, list):
+        normalized["evidence"] = [_normalize_deepseek_quote(item) for item in evidence]
+    return normalized
+
+
+def _normalize_deepseek_quote(value: Any) -> Any:
+    if not isinstance(value, str):
+        return value
+    speaker, separator, text = value.partition(":")
+    if not separator:
+        return {"speaker": "Unknown", "text": value.strip()}
+    return {"speaker": speaker.strip() or "Unknown", "text": text.strip().strip("'\"")}
 
 
 def _extract_json(text: str) -> Any:

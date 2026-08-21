@@ -3,7 +3,7 @@
 # 🎯 GTM Superintelligence
 **by [Attention](https://www.attention.com)**
 
-**Open-source, Claude-native GTM intelligence and automation for any call transcript.** Coaching, deal and account health scoring, daily rep / team / company inboxes, CRM auto-fill, and 30 post-call agents.
+**Open-source GTM intelligence and automation for any call transcript.** Coaching, deal and account health scoring, daily rep / team / company inboxes, CRM auto-fill, and 30 post-call agents.
 
 Turn raw sales and customer conversations into evidence-bound coaching, pipeline and account health, an updated CRM, and the post-call work done for you. Vendor-neutral (any recorder, any CRM). Framework-aware. Forkable.
 
@@ -121,8 +121,8 @@ A four-stage pipeline. Stages 2–4 run in a single cached LLM call.
 ```bash
 git clone https://github.com/attentiontech/gtm-superintelligence && cd gtm-superintelligence
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[llm]"          # core + Anthropic SDK
-export ANTHROPIC_API_KEY=sk-ant-...
+pip install -e ".[llm]"          # core + DeepSeek/Anthropic SDKs
+export DEEPSEEK_API_KEY=sk-...
 
 # Coach a call (any format — auto-detected)
 gtmsi coach examples/transcripts/discovery_acme.txt
@@ -154,6 +154,16 @@ gtmsi validate
 ```
 
 No API key yet? You can still run the whole thing — see below.
+
+### Model providers
+
+Live coaching uses DeepSeek by default, which is well suited to low-cost structured JSON analysis.
+Set `DEEPSEEK_API_KEY` and run the commands above; the default model is `deepseek-v4-flash`.
+Use `GTMSI_MODEL` to select another DeepSeek model.
+
+Anthropic remains available for existing deployments: set `ANTHROPIC_API_KEY` and pass
+`--provider anthropic` (optionally with `--model`). To make Anthropic the default for a
+deployment, set `GTMSI_LLM_PROVIDER=anthropic`.
 
 ## Run it inside Claude (no API key)
 

@@ -21,15 +21,16 @@ classifiers = [
 dependencies = [
   "pyyaml>=6.0",
   "pydantic>=2.6",
+  "python-dotenv>=1.0",
 ]
 
 [project.optional-dependencies]
 # Live coaching via the Anthropic API. Not needed when running inside Claude Code.
-llm = ["anthropic>=0.40"]
+llm = ["anthropic>=0.40", "openai>=1.0"]
 # Live CRM writeback (Salesforce/HubSpot). Dry-run needs nothing extra.
 crm = ["requests>=2.31"]
 # Schema validation utilities used by tests/CI.
-dev = ["anthropic>=0.40", "jsonschema>=4.0", "pytest>=8.0", "ruff>=0.5"]
+dev = ["anthropic>=0.40", "openai>=1.0", "jsonschema>=4.0", "pytest>=8.0", "ruff>=0.5"]
 
 [project.scripts]
 gtmsi = "gtmsi.cli:main"
