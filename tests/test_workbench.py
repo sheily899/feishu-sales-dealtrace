@@ -1,4 +1,4 @@
-from gtmsi.workbench import build_standard_transcript, normalize_events
+from gtmsi.workbench import build_evidence_map, build_standard_transcript, normalize_events
 
 
 ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
@@ -31,3 +31,23 @@ def test_build_standard_transcript_retains_message_evidence_ids():
         {"segmentId": "seg_m1", "messageId": "m1"},
         {"segmentId": "seg_m2", "messageId": "m2"},
     ]
+
+
+def test_build_evidence_map_links_quotes_to_normalized_chat_messages():
+    messages = [
+        {"messageId": "m1", "role": "customer", "text": "CRM 对接会不会很麻烦？"},
+        {"messageId": "m2", "role": "sales", "text": "可以安排技术同事确认接口。"},
+    ]
+    report = {
+        "group_chat": {
+            "customer_concerns": [
+                {"evidence": [{"speaker": "客户", "text": "CRM 对接会不会很麻烦？"}]}
+            ]
+        },
+        "coaching": {"strengths": [{"evidence": [{"speaker": "销售", "text": "安排技术同事确认"}]}]},
+    }
+
+    evidence_map = build_evidence_map(report, messages)
+
+    assert evidence_map["客户\nCRM 对接会不会很麻烦？"] == ["m1"]
+    assert evidence_map["销售\n安排技术同事确认"] == ["m2"]

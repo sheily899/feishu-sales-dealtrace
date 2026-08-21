@@ -98,6 +98,20 @@
         }
       }
     },
+    "group_chat": {
+      "type": ["object", "null"],
+      "description": "Optional group-chat-specific sales insights. Present when the input is a customer-sales chat.",
+      "required": ["customer_needs", "customer_concerns", "response_coverage", "sales_commitments", "todos", "next_steps"],
+      "additionalProperties": false,
+      "properties": {
+        "customer_needs": { "type": "array", "items": { "$ref": "#/$defs/coaching_point" } },
+        "customer_concerns": { "type": "array", "items": { "$ref": "#/$defs/coaching_point" } },
+        "response_coverage": { "type": "array", "items": { "$ref": "#/$defs/group_chat_response" } },
+        "sales_commitments": { "type": "array", "items": { "$ref": "#/$defs/coaching_point" } },
+        "todos": { "type": "array", "items": { "$ref": "#/$defs/coaching_point" } },
+        "next_steps": { "type": "array", "items": { "$ref": "#/$defs/coaching_point" } }
+      }
+    },
     "manager_notes": {
       "type": ["string", "null"],
       "description": "Optional aside for the manager (e.g. deal risk, pattern across calls). Not shown to the rep by default."
@@ -128,6 +142,17 @@
           "description": "A concrete, copy-pasteable example of what the rep could have said or done instead."
         },
         "priority": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "group_chat_response": {
+      "type": "object",
+      "required": ["title", "detail", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "detail": { "type": "string" },
+        "status": { "type": "string", "enum": ["addressed", "partially_addressed", "unaddressed"] },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/quote" } }
       }
     }
   }
