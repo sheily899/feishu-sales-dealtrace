@@ -32,6 +32,12 @@ def _build_llm(args):
     return build_coach(provider=getattr(args, "provider", None), model=getattr(args, "model", None))
 
 
+def cmd_workbench(args):
+    from .workbench import run_workbench
+    run_workbench(host=args.host, port=args.port)
+    return 0
+
+
 def _infer_two_party_sides(t):
     """In a clean 2-speaker call, if exactly one speaker's side is known (rep or
     prospect) and the other is unknown, label the other as the counterpart.
@@ -419,6 +425,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="gtmsi", description="Open-source, Claude-native sales coaching for any call transcript.")
     p.add_argument("--version", action="version", version=f"gtmsi {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
+
+    wb = sub.add_parser("workbench", help="run the local sales analysis workbench")
+    wb.add_argument("--host", default="127.0.0.1")
+    wb.add_argument("--port", type=int, default=8765)
+    wb.set_defaults(func=cmd_workbench)
 
     def add_common(sp):
         sp.add_argument("--adapter", choices=sorted(ADAPTERS_BY_NAME), help="force a transcript adapter")

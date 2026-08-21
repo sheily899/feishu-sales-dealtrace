@@ -1,0 +1,7 @@
+{"customerName":"演示客户 A","events":[
+{"message_id":"m-004","chat_id":"demo-customer-a","sender_id":"sales-demo","sender_name":"销售 李明","timestamp":"2026-08-22T10:07:00+08:00","text":"有，我下周一前发给您。"},
+{"message_id":"m-001","chat_id":"demo-customer-a","sender_id":"customer-demo","sender_name":"客户 王女士","timestamp":"2026-08-22T10:01:00+08:00","text":"我们主要担心 CRM 对接会不会很麻烦。"},
+{"message_id":"m-003","chat_id":"demo-customer-a","sender_id":"customer-demo","sender_name":"客户 王女士","timestamp":"2026-08-22T10:05:00+08:00","text":"还有类似客户案例吗？"},
+{"message_id":"m-002","chat_id":"demo-customer-a","sender_id":"sales-demo","sender_name":"销售 李明","timestamp":"2026-08-22T10:03:00+08:00","text":"可以先安排技术同事确认接口。"},
+{"message_id":"m-bot","chat_id":"demo-customer-a","sender_id":"bot-demo","sender_name":"AI 机器人","timestamp":"2026-08-22T10:08:00+08:00","text":"分析已更新。"},
+{"message_id":"m-002","chat_id":"demo-customer-a","sender_id":"sales-demo","sender_name":"销售 李明","timestamp":"2026-08-22T10:03:00+08:00","text":"重复事件。"}]}

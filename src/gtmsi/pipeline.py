@@ -13,7 +13,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Protocol
 
-from .llm import AnthropicCoach, CachedBlock
+from .llm import CachedBlock, build_coach
 from .models import Classification, CoachingReport, Transcript
 from .redaction import redact_transcript
 from .registry import Registry, load_registry
@@ -141,7 +141,7 @@ def coach_transcript(
 ) -> CoachingReport:
     """End-to-end: classify then coach a single transcript."""
     reg = reg or load_registry()
-    llm = llm or (AnthropicCoach(model=model) if model else AnthropicCoach())
+    llm = llm or build_coach(model=model)
     if redact:
         transcript = redact_transcript(transcript)
     classification = classify(transcript, reg, llm)
