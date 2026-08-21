@@ -207,6 +207,22 @@ class Coaching(BaseModel):
     next_call_focus: list[str] = Field(default_factory=list)
 
 
+class GroupChatResponse(BaseModel):
+    title: str
+    detail: str
+    status: Literal["addressed", "partially_addressed", "unaddressed"]
+    evidence: list[Quote] = Field(default_factory=list)
+
+
+class GroupChatAnalysis(BaseModel):
+    customer_needs: list[CoachingPoint] = Field(default_factory=list)
+    customer_concerns: list[CoachingPoint] = Field(default_factory=list)
+    response_coverage: list[GroupChatResponse] = Field(default_factory=list)
+    sales_commitments: list[CoachingPoint] = Field(default_factory=list)
+    todos: list[CoachingPoint] = Field(default_factory=list)
+    next_steps: list[CoachingPoint] = Field(default_factory=list)
+
+
 class CoachingReport(BaseModel):
     schema_version: str = "1.0"
     call_id: str | None = None
@@ -216,6 +232,7 @@ class CoachingReport(BaseModel):
     overall_score: float | None = None
     summary: str
     coaching: Coaching
+    group_chat: GroupChatAnalysis | None = None
     manager_notes: str | None = None
 
     @model_validator(mode="after")

@@ -85,6 +85,8 @@ def test_coach_merges_and_backfills():
                                "priority": "high"}],
             "next_call_focus": ["Bring an ROI estimate"],
         },
+        "group_chat": {"customer_needs": [{"title": "CRM 对接", "detail": "客户询问集成可行性。"}],
+                       "customer_concerns": [], "response_coverage": [], "sales_commitments": [], "todos": [], "next_steps": []},
     }
     from gtmsi.models import Classification
 
@@ -94,6 +96,7 @@ def test_coach_merges_and_backfills():
     # weight back-filled from the scorecard, band derived from score.
     s = r.scores[0]
     assert s.criterion_name == "Top Priority Identified & Quantified"
+    assert r.group_chat.customer_needs[0].title == "CRM 对接"
     assert s.weight is not None and s.weight > 0
     assert s.band == "good"  # 72 -> good
     # overall score computed

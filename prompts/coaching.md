@@ -26,6 +26,14 @@ accept pre-computed ones if provided).
      and a concrete **`better_move`** in quotes the rep can reuse.
    - `next_call_focus`: 1–3 things to do on the very next touch with this account.
 6. Optionally add `manager_notes` (deal risk / cross-call patterns) — manager-only.
+7. **Group-chat follow-up.** Also return `group_chat` for the workbench. It must contain:
+   `customer_needs`, `customer_concerns`, `response_coverage`, `sales_commitments`,
+   `todos`, and `next_steps`. Every list item needs a short Chinese `title`, a Chinese
+   `detail`, and evidence. For `response_coverage`, use `addressed`,
+   `partially_addressed`, or `unaddressed`. Extract explicit sales promises and dates
+   into both `sales_commitments` and actionable `todos`. Do not judge a short async
+   chat as a complete call: focus on whether the customer was answered and what must
+   happen next.
 
 ## Quality bar
 - No quote fabrication. No criteria beyond the scorecard. Calibrate scores honestly.
@@ -35,7 +43,7 @@ accept pre-computed ones if provided).
 Return ONLY a JSON object matching `schemas/coaching_report.schema.json` (the full
 report: `classification` is already known and will be merged in; you must return
 `outcomes`, `scores`, `overall_score`, `summary`, `coaching`, and optional
-`manager_notes`).
+`manager_notes`, plus `group_chat`).
 
 All human-readable values, including every outcome `statement`, must follow the output
 language requirement in the system prompt. Translate outcome-library templates rather
