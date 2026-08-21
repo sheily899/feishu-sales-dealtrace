@@ -1,0 +1,33 @@
+from gtmsi.workbench import build_standard_transcript, normalize_events
+
+
+ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
+
+
+def test_normalize_events_deduplicates_sorts_and_filters_bot_messages():
+    events = [
+        {"message_id": "m2", "chat_id": "chat-1", "sender_id": "sales-1", "sender_name": "销售", "timestamp": "2026-08-22T10:03:00+08:00", "text": "可以安排技术确认接口。"},
+        {"message_id": "m1", "chat_id": "chat-1", "sender_id": "customer-1", "sender_name": "客户", "timestamp": "2026-08-22T10:01:00+08:00", "text": "CRM 对接会不会很麻烦？"},
+        {"message_id": "m3", "chat_id": "chat-1", "sender_id": "bot-1", "sender_name": "机器人", "timestamp": "2026-08-22T10:04:00+08:00", "text": "分析已更新。"},
+        {"message_id": "m2", "chat_id": "chat-1", "sender_id": "sales-1", "sender_name": "销售", "timestamp": "2026-08-22T10:03:00+08:00", "text": "重复事件。"},
+    ]
+
+    messages = normalize_events(events, ROLE_MAP)
+
+    assert [message["messageId"] for message in messages] == ["m1", "m2"]
+    assert [message["role"] for message in messages] == ["customer", "sales"]
+
+
+def test_build_standard_transcript_retains_message_evidence_ids():
+    messages = [
+        {"messageId": "m1", "role": "customer", "text": "CRM 对接会不会很麻烦？", "sentAt": "2026-08-22T10:01:00+08:00"},
+        {"messageId": "m2", "role": "sales", "text": "可以安排技术确认接口。", "sentAt": "2026-08-22T10:03:00+08:00"},
+    ]
+
+    transcript, segments = build_standard_transcript(messages)
+
+    assert transcript == "客户：CRM 对接会不会很麻烦？\n\n销售：可以安排技术确认接口。"
+    assert segments == [
+        {"segmentId": "seg_m1", "messageId": "m1"},
+        {"segmentId": "seg_m2", "messageId": "m2"},
+    ]
