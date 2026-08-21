@@ -21,6 +21,11 @@ from .registry import Registry, load_registry
 
 # How many transcript characters to send. Generous; trims pathological inputs.
 MAX_TRANSCRIPT_CHARS = 60_000
+_ZH_OUTCOME_STATEMENTS = {
+    "quantify-priority": "识别并量化客户的首要优先级及不采取行动的成本。",
+    "map-decision-process": "梳理决策流程、评估标准及相关决策人。",
+    "secure-next-step": "与合适的相关人员确定具体、有时间安排的下一步行动。",
+}
 
 
 class LLMLike(Protocol):
@@ -55,6 +60,16 @@ def _transcript_text(t: Transcript) -> str:
 def _with_output_language(system: str) -> str:
     language = os.environ.get("GTMSI_OUTPUT_LANGUAGE", "Simplified Chinese")
     return f"{system}\n\n## Output language\nWrite every generated summary, rationale, coaching point, and better_move in {language}. Keep JSON field names unchanged."
+
+
+def _localize_outcome_statements(outcomes: list[dict]) -> None:
+    """Avoid leaking English canonical outcome templates into Chinese reports."""
+    if os.environ.get("GTMSI_OUTPUT_LANGUAGE", "Simplified Chinese") != "Simplified Chinese":
+        return
+    for outcome in outcomes:
+        localized = _ZH_OUTCOME_STATEMENTS.get(outcome.get("id"))
+        if localized:
+            outcome["statement"] = localized
 
 
 # --------------------------------------------------------------------------- stage 1
@@ -122,6 +137,7 @@ def coach(t: Transcript, classification: Classification, reg: Registry, llm: LLM
     # Merge known classification and back-fill criterion weights/bands defensively.
     data["classification"] = classification.model_dump()
     data.setdefault("call_id", t.call_id)
+    _localize_outcome_statements(data.get("outcomes", []))
     for s in data.get("scores", []):
         crit = next((c for c in scorecard.criteria if c.id == s.get("criterion_id")), None)
         if crit and not s.get("criterion_name"):

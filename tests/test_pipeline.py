@@ -5,7 +5,7 @@ responses, so we can test orchestration, merging, weight back-fill, banding, and
 rendering deterministically.
 """
 from gtmsi.models import Transcript, Turn
-from gtmsi.pipeline import _with_output_language, classify, coach, coach_transcript
+from gtmsi.pipeline import _localize_outcome_statements, _with_output_language, classify, coach, coach_transcript
 from gtmsi.registry import load_registry
 from gtmsi.render import to_markdown
 
@@ -32,6 +32,13 @@ def test_output_language_defaults_to_simplified_chinese(monkeypatch):
 def test_output_language_can_be_overridden(monkeypatch):
     monkeypatch.setenv("GTMSI_OUTPUT_LANGUAGE", "English")
     assert "English" in _with_output_language("base")
+
+
+def test_discovery_outcomes_are_localized_to_chinese_by_default(monkeypatch):
+    monkeypatch.delenv("GTMSI_OUTPUT_LANGUAGE", raising=False)
+    outcomes = [{"id": "quantify-priority", "statement": "Identify and quantify the buyer's top priority and the cost of inaction."}]
+    _localize_outcome_statements(outcomes)
+    assert outcomes[0]["statement"] == "识别并量化客户的首要优先级及不采取行动的成本。"
 
 
 def _transcript():

@@ -37,6 +37,10 @@ report: `classification` is already known and will be merged in; you must return
 `outcomes`, `scores`, `overall_score`, `summary`, `coaching`, and optional
 `manager_notes`).
 
+All human-readable values, including every outcome `statement`, must follow the output
+language requirement in the system prompt. Translate outcome-library templates rather
+than copying their source language.
+
 ---
 
 ## Classification
