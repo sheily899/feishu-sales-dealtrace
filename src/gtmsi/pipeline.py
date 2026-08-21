@@ -11,6 +11,7 @@ with ``complete_json``) to run offline or in tests.
 from __future__ import annotations
 
 from functools import lru_cache
+import os
 from typing import Protocol
 
 from .llm import CachedBlock, build_coach
@@ -51,9 +52,14 @@ def _transcript_text(t: Transcript) -> str:
     return txt
 
 
+def _with_output_language(system: str) -> str:
+    language = os.environ.get("GTMSI_OUTPUT_LANGUAGE", "Simplified Chinese")
+    return f"{system}\n\n## Output language\nWrite every generated summary, rationale, coaching point, and better_move in {language}. Keep JSON field names unchanged."
+
+
 # --------------------------------------------------------------------------- stage 1
 def classify(t: Transcript, reg: Registry, llm: LLMLike) -> Classification:
-    system = _read(reg, "prompts", "system.md")
+    system = _with_output_language(_read(reg, "prompts", "system.md"))
     template = _read(reg, "prompts", "classifier.md")
     call_types_yaml = _read(reg, "config", "call_types.yaml")
 
@@ -81,7 +87,7 @@ def coach(t: Transcript, classification: Classification, reg: Registry, llm: LLM
     if scorecard is None:
         raise ValueError(f"No scorecard available for call type '{classification.call_type}'")
 
-    system = _read(reg, "prompts", "system.md")
+    system = _with_output_language(_read(reg, "prompts", "system.md"))
     template = _read(reg, "prompts", "coaching.md")
     scorecard_yaml = _raw_yaml(reg, "scorecards", scorecard.id)
     frameworks_yaml = "\n---\n".join(

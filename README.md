@@ -160,6 +160,7 @@ No API key yet? You can still run the whole thing — see below.
 Live coaching uses DeepSeek by default, which is well suited to low-cost structured JSON analysis.
 Set `DEEPSEEK_API_KEY` and run the commands above; the default model is `deepseek-v4-flash`.
 Use `GTMSI_MODEL` to select another DeepSeek model.
+Reports are written in Simplified Chinese by default; set `GTMSI_OUTPUT_LANGUAGE` to override it.
 
 Anthropic remains available for existing deployments: set `ANTHROPIC_API_KEY` and pass
 `--provider anthropic` (optionally with `--model`). To make Anthropic the default for a

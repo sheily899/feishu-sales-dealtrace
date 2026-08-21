@@ -5,7 +5,7 @@ responses, so we can test orchestration, merging, weight back-fill, banding, and
 rendering deterministically.
 """
 from gtmsi.models import Transcript, Turn
-from gtmsi.pipeline import classify, coach, coach_transcript
+from gtmsi.pipeline import _with_output_language, classify, coach, coach_transcript
 from gtmsi.registry import load_registry
 from gtmsi.render import to_markdown
 
@@ -16,10 +16,22 @@ class FakeLLM:
     def __init__(self, *responses):
         self._queue = list(responses)
         self.calls = 0
+        self.systems = []
 
     def complete_json(self, system, cached_blocks, user_text, max_tokens=None):
         self.calls += 1
+        self.systems.append(system)
         return self._queue.pop(0)
+
+
+def test_output_language_defaults_to_simplified_chinese(monkeypatch):
+    monkeypatch.delenv("GTMSI_OUTPUT_LANGUAGE", raising=False)
+    assert "Simplified Chinese" in _with_output_language("base")
+
+
+def test_output_language_can_be_overridden(monkeypatch):
+    monkeypatch.setenv("GTMSI_OUTPUT_LANGUAGE", "English")
+    assert "English" in _with_output_language("base")
 
 
 def _transcript():
