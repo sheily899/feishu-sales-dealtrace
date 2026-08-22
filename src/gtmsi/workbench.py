@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 from threading import RLock
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from .customer_state import generate_customer_state
 from .llm import build_coach
@@ -295,20 +295,61 @@ class LiveWorkbench:
         return self.snapshot()
 
 
-def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None) -> None:
+class MultiChatWorkbench:
+    """Dispatch configured chat IDs to isolated single-chat workbenches."""
+
+    def __init__(self, role_map, chat_ids, store, coach_runner=coach_transcript, state_llm=None) -> None:
+        self.role_map = dict(role_map)
+        self.chat_ids = list(dict.fromkeys(chat_ids))
+        if not self.chat_ids:
+            raise ValueError("至少需要配置一个飞书群")
+        self.store = store
+        self.coach_runner = coach_runner
+        self.state_llm = state_llm
+        self._workbenches: dict[str, LiveWorkbench] = {}
+        self._lock = RLock()
+
+    def _workbench(self, chat_id: str | None) -> LiveWorkbench:
+        chat_id = chat_id or self.chat_ids[0]
+        if chat_id not in self.chat_ids:
+            raise KeyError(f"群 {chat_id} 未配置在 FEISHU_GROUP_ALLOWLIST 中")
+        with self._lock:
+            if chat_id not in self._workbenches:
+                self._workbenches[chat_id] = LiveWorkbench(
+                    self.role_map, store=self.store, chat_id=chat_id,
+                    coach_runner=self.coach_runner, state_llm=self.state_llm,
+                )
+            return self._workbenches[chat_id]
+
+    def ingest(self, event: Mapping[str, str]) -> None:
+        chat_id = event.get("chat_id")
+        if chat_id not in self.chat_ids:
+            return
+        self._workbench(chat_id).ingest(event)
+
+    def snapshot(self, chat_id: str | None = None) -> dict:
+        return self._workbench(chat_id).snapshot()
+
+    def analyze(self, chat_id: str | None = None) -> dict:
+        return self._workbench(chat_id).analyze()
+
+    def chat_summaries(self) -> list[dict]:
+        return self.store.load_chat_summaries(self.chat_ids)
+
+
+def create_workbench_server(host: str, port: int, feishu_config=None, store=None, start_listener: bool = True):
+    """Build a local workbench server; tests can inject a temporary store."""
     if feishu_config:
         from .workbench_store import SQLiteWorkbenchStore
 
-        configured_chat_id = feishu_config.group_allowlist[0] if len(feishu_config.group_allowlist) == 1 else None
-        state = LiveWorkbench(
+        state = MultiChatWorkbench(
             feishu_config.role_map,
-            store=SQLiteWorkbenchStore(_ROOT / "data" / "workbench.sqlite3"),
-            chat_id=configured_chat_id,
+            feishu_config.group_allowlist,
+            store=store or SQLiteWorkbenchStore(_ROOT / "data" / "workbench.sqlite3"),
         )
     else:
         state = DemoWorkbench()
-    configured_chat_ids = feishu_config.group_allowlist if feishu_config else []
-    if feishu_config:
+    if feishu_config and start_listener:
         from .feishu import FeishuGroupListener
 
         FeishuGroupListener(feishu_config, state.ingest).start()
@@ -325,31 +366,45 @@ def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None)
             self._send(json.dumps(body, ensure_ascii=False).encode(), "application/json; charset=utf-8", status)
 
         def do_GET(self) -> None:
-            path = urlparse(self.path).path
+            request = urlparse(self.path)
+            path = request.path
+            chat_id = parse_qs(request.query).get("chatId", [None])[0]
             if path == "/api/chats":
-                chats = state.store.load_chat_summaries(configured_chat_ids) if state.store else []
+                chats = state.chat_summaries() if feishu_config else []
                 self._json({"chats": chats})
             elif path == "/api/workbench":
-                self._json(state.snapshot())
+                try:
+                    self._json(state.snapshot(chat_id) if feishu_config else state.snapshot())
+                except KeyError as error:
+                    self._json({"error": str(error)}, HTTPStatus.NOT_FOUND)
             elif path == "/":
                 self._send(_PAGE.encode(), "text/html; charset=utf-8")
             else:
                 self.send_error(HTTPStatus.NOT_FOUND)
 
         def do_POST(self) -> None:
-            if urlparse(self.path).path != "/api/analyze":
+            request = urlparse(self.path)
+            if request.path != "/api/analyze":
                 self.send_error(HTTPStatus.NOT_FOUND)
                 return
             try:
-                self._json(state.analyze())
+                chat_id = parse_qs(request.query).get("chatId", [None])[0]
+                self._json(state.analyze(chat_id) if feishu_config else state.analyze())
+            except KeyError as error:
+                self._json({"error": str(error)}, HTTPStatus.NOT_FOUND)
             except Exception as error:
                 self._json({"error": str(error)}, HTTPStatus.BAD_GATEWAY)
 
         def log_message(self, format: str, *args) -> None:
             return
 
+    return ThreadingHTTPServer((host, port), Handler)
+
+
+def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None) -> None:
+    server = create_workbench_server(host, port, feishu_config)
     print(f"Sales workbench: http://{host}:{port}")
-    ThreadingHTTPServer((host, port), Handler).serve_forever()
+    server.serve_forever()
 
 
 _PAGE = """<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>AI 销售沟通分析</title>

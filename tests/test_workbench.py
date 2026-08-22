@@ -1,11 +1,20 @@
+import json
+import pytest
+from threading import Thread
+from urllib.error import HTTPError
+from urllib.request import urlopen
+
 from gtmsi.workbench import (
     _PAGE,
     build_evidence_map,
     build_standard_transcript,
+    create_workbench_server,
     display_call_type,
     LiveWorkbench,
+    MultiChatWorkbench,
     normalize_events,
 )
+from gtmsi.feishu import FeishuConfig
 from gtmsi.workbench_store import SQLiteWorkbenchStore
 from gtmsi.models import CustomerState, StateChange, StateTodo
 
@@ -39,12 +48,6 @@ def test_normalize_events_displays_all_timestamps_in_beijing_time():
 
 def test_workbench_page_polls_for_new_group_messages():
     assert "setInterval(load, 3000)" in _PAGE
-
-
-def test_workbench_server_exposes_configured_chat_summaries_endpoint():
-    import inspect
-
-    assert 'path == "/api/chats"' in inspect.getsource(__import__("gtmsi.workbench", fromlist=["run_workbench"]).run_workbench)
 
 
 def test_build_standard_transcript_retains_message_evidence_ids():
@@ -185,6 +188,71 @@ def test_live_workbench_saves_a_new_state_version_only_when_new_messages_arrive(
     assert first["customerState"]["version"] == 1
     assert second["noNewMessages"] is True
     assert [state.version for state in store.list_state_versions("oc-live")] == [1]
+
+
+def test_multi_chat_workbench_keeps_messages_reports_and_state_versions_isolated(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    workbench = MultiChatWorkbench(
+        {"ou-sales": "sales"}, ["oc-a", "oc-b"], store=store,
+        coach_runner=lambda _: _Report(), state_llm=_StateLLM(),
+    )
+    workbench.ingest({
+        "message_id": "m-a", "chat_id": "oc-a", "sender_id": "ou-sales", "sender_name": "语安",
+        "timestamp": "2026-08-22T10:01:00+08:00", "text": "我下周一前发给您。",
+    })
+    workbench.ingest({
+        "message_id": "m-b", "chat_id": "oc-b", "sender_id": "ou-sales", "sender_name": "语安",
+        "timestamp": "2026-08-22T10:02:00+08:00", "text": "我下周一前发给您。",
+    })
+
+    first = workbench.analyze("oc-a")
+    second = workbench.snapshot("oc-b")
+
+    assert [message["messageId"] for message in first["messages"]] == ["m-a"]
+    assert first["customerState"]["version"] == 1
+    assert [message["messageId"] for message in second["messages"]] == ["m-b"]
+    assert second["analysis"] is None
+    assert second["customerState"] is None
+    assert store.list_state_versions("oc-b") == []
+
+
+def test_multi_chat_workbench_rejects_a_group_outside_the_allowlist(tmp_path):
+    workbench = MultiChatWorkbench({"ou-sales": "sales"}, ["oc-a"], store=SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3"))
+
+    with pytest.raises(KeyError, match="未配置"):
+        workbench.snapshot("oc-other")
+
+
+def test_workbench_http_api_reads_only_the_requested_configured_group(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    for chat_id, message_id, text in [("oc-a", "m-a", "客户 A"), ("oc-b", "m-b", "客户 B")]:
+        store.save_event({
+            "message_id": message_id, "chat_id": chat_id, "sender_id": "ou-sales", "sender_name": "语安",
+            "timestamp": "2026-08-22T10:01:00+08:00", "text": text,
+        })
+    config = FeishuConfig("cli_demo", "not-a-real-secret", {"ou-sales": "sales"}, ["oc-a", "oc-b"])
+    server = create_workbench_server("127.0.0.1", 0, config, store=store, start_listener=False)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{server.server_port}"
+    try:
+        with urlopen(f"{base_url}/api/workbench?chatId=oc-b") as response:
+            selected = json.load(response)
+        with urlopen(f"{base_url}/api/workbench") as response:
+            default = json.load(response)
+        with urlopen(f"{base_url}/api/chats") as response:
+            chats = json.load(response)
+        with pytest.raises(HTTPError) as error:
+            urlopen(f"{base_url}/api/workbench?chatId=oc-other")
+    finally:
+        server.shutdown()
+        thread.join()
+        server.server_close()
+
+    assert [message["messageId"] for message in selected["messages"]] == ["m-b"]
+    assert [message["messageId"] for message in default["messages"]] == ["m-a"]
+    assert [chat["chatId"] for chat in chats["chats"]] == ["oc-a", "oc-b"]
+    assert error.value.code == 404
 
 
 def test_workbench_page_includes_customer_state_and_change_timeline():
