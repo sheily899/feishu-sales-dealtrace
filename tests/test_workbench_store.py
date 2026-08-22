@@ -77,7 +77,7 @@ def test_store_returns_lightweight_summaries_scoped_to_requested_groups(tmp_path
     ), StateChange(), ["m-a"])
 
     assert store.load_chat_summaries(["oc-b", "oc-a", "oc-empty", "oc-b"]) == [
-        {"chatId": "oc-b", "displayName": "oc-b", "latestMessageAt": "2026-08-22T11:01:00+08:00", "stage": "discovery", "todoCount": 0},
-        {"chatId": "oc-a", "displayName": "oc-a", "latestMessageAt": "2026-08-22T10:01:00+08:00", "stage": "方案评估", "todoCount": 1},
-        {"chatId": "oc-empty", "displayName": "oc-empty", "latestMessageAt": None, "stage": None, "todoCount": 0},
+        {"chatId": "oc-b", "displayName": "客户群 1", "latestMessageAt": "2026-08-22T11:01:00+08:00", "stage": "discovery", "todoCount": 0},
+        {"chatId": "oc-a", "displayName": "客户群 2", "latestMessageAt": "2026-08-22T10:01:00+08:00", "stage": "方案评估", "todoCount": 1},
+        {"chatId": "oc-empty", "displayName": "客户群 3", "latestMessageAt": None, "stage": None, "todoCount": 0},
     ]

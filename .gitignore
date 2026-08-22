@@ -9,6 +9,7 @@ dist/
 venv/
 env/
 .pytest_cache/
+.pytest-tmp/
 .ruff_cache/
 .mypy_cache/
 

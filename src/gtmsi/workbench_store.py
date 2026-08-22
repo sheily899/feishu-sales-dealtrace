@@ -162,7 +162,10 @@ class SQLiteWorkbenchStore:
                 "stage": stage,
                 "todoCount": sum(todo.status == "pending" for todo in state.todos) if state else 0,
             }
-        return [summaries[chat_id] for chat_id in chat_ids]
+        return [
+            {**summaries[chat_id], "displayName": f"客户群 {index}"}
+            for index, chat_id in enumerate(chat_ids, start=1)
+        ]
 
     def save_state_version(
         self,
