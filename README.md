@@ -166,6 +166,32 @@ Anthropic remains available for existing deployments: set `ANTHROPIC_API_KEY` an
 `--provider anthropic` (optionally with `--model`). To make Anthropic the default for a
 deployment, set `GTMSI_LLM_PROVIDER=anthropic`.
 
+### 飞书群聊销售分析工作台
+
+本仓库额外提供一个面向中文销售场景的本地 Web 工作台：飞书测试群中的客户、
+销售正常发言，机器人通过长连接接收文本消息，按预配置身份整理为标准对话后，
+使用现有分析引擎生成客户需求、顾虑、销售回应、承诺、待办和下一步建议。
+
+```text
+飞书测试群 → 消息适配与角色映射 → GTMSI 销售分析 → Web 报告与原文证据
+```
+
+安装并启动真实飞书测试群模式：
+
+```bash
+pip install -e ".[llm,feishu]"
+python -m gtmsi workbench --feishu --port 8766
+```
+
+在本地 `.env` 配置 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、客户/销售的
+`FEISHU_ROLE_MAP` 与测试群 `FEISHU_GROUP_ALLOWLIST`。密钥和 `.env` 不应提交。
+浏览器打开 `http://127.0.0.1:8766`；页面每 3 秒同步新消息，时间按北京时间显示。
+
+真实飞书模式会把群聊适配字段及每个群的最近分析报告保存在本机
+`data/workbench.sqlite3`，该目录已被 Git 忽略。当前实现是单机测试群 MVP：
+不包含登录、多租户、完整 CRM 或自动任务派发，不能直接无保护地暴露到公网。
+完整配置、隐私边界与清理方式见 [docs/feishu-workbench.md](./docs/feishu-workbench.md)。
+
 ## Run it inside Claude (no API key)
 
 GTM Superintelligence ships as a **Claude Code skill + subagents + slash commands**, so you can
