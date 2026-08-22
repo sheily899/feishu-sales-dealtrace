@@ -17,7 +17,7 @@ GTMSI 分析引擎，并在本地 Web 页面展示带原文证据的分析报告
    FEISHU_APP_ID=cli_xxx
    FEISHU_APP_SECRET=...
    FEISHU_ROLE_MAP={"ou_customer":"customer","ou_sales":"sales"}
-   FEISHU_GROUP_ALLOWLIST=oc_test_group
+   FEISHU_GROUP_ALLOWLIST=oc_customer_a,oc_customer_b
    ```
 
 3. 启动工作台：
@@ -27,6 +27,10 @@ GTMSI 分析引擎，并在本地 Web 页面展示带原文证据的分析报告
    ```
 
 打开 `http://127.0.0.1:8766`。页面每 3 秒同步一次本地状态；群内新消息到达后会显示为“客户”或“销售”，而不会展示飞书 Open ID。
+
+`FEISHU_GROUP_ALLOWLIST` 必须至少包含一个群 ID，支持单群旧写法和逗号分隔的多个
+群 ID；空项会忽略，重复 ID 会自动去重。同一个飞书应用、机器人和客户/销售角色映射
+可服务这些测试群。
 
 ## 本地持久化与隐私边界
 
@@ -38,8 +42,20 @@ data/workbench.sqlite3
 ```
 
 该目录已被 `.gitignore` 排除，不能提交到 GitHub。工作台重启时会按
-`FEISHU_GROUP_ALLOWLIST` 中唯一的群 ID 恢复消息、最新报告和最新客户状态；新消息
-到达后，旧报告会自动失效，需再次点击“生成分析”。
+`FEISHU_GROUP_ALLOWLIST` 中的每个群恢复消息、最新报告和最新客户状态；新消息到达后，
+该群的旧报告会自动失效，需再次点击“生成分析”。
+
+## 多客户群管理
+
+工作台左侧列出 allowlist 中的客户群，并显示群 ID、当前阶段和待办数量。点击群后，
+聊天记录、销售分析报告、客户状态和版本时间线都会切换到该群；“生成分析/重新分析”
+只对当前选中群生效。
+
+- `GET /api/chats` 返回已配置群的轻量摘要，不加载完整历史聊天。
+- `GET /api/workbench?chatId=oc_xxx` 返回指定群；省略 `chatId` 时为了兼容旧单群链接，
+  默认返回 allowlist 的第一个群；指定未配置群返回 404。
+- 所有消息、报告和状态快照均以 `chatId` 作为查询条件。本功能是单销售多群管理，
+  不是多租户：没有登录、用户权限或跨公司数据隔离。
 
 ## 客户状态跟踪
 

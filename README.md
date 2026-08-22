@@ -184,15 +184,18 @@ python -m gtmsi workbench --feishu --port 8766
 ```
 
 在本地 `.env` 配置 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、客户/销售的
-`FEISHU_ROLE_MAP` 与测试群 `FEISHU_GROUP_ALLOWLIST`。密钥和 `.env` 不应提交。
-浏览器打开 `http://127.0.0.1:8766`；页面每 3 秒同步新消息，时间按北京时间显示。
+`FEISHU_ROLE_MAP` 与测试群 `FEISHU_GROUP_ALLOWLIST`。allowlist 支持一个或多个
+逗号分隔的群 ID，例如 `oc_customer_a,oc_customer_b`；空配置会被拒绝，重复 ID 自动
+去重。密钥和 `.env` 不应提交。浏览器打开 `http://127.0.0.1:8766`；页面每 3 秒同步
+新消息，时间按北京时间显示。
 
 真实飞书模式会把群聊适配字段、每个群的最近分析报告，以及追加保存的客户状态
 版本保存在本机 `data/workbench.sqlite3`，该目录已被 Git 忽略。销售手动点击
 “生成分析/重新分析”后，系统只使用自上一版以来的新消息更新状态；没有新消息时
 不会调用模型，并提示“暂无新消息”。状态的新增、已解决和待办状态迁移均需绑定
-本轮新增原文证据，历史版本不会被覆盖。当前实现是单机测试群 MVP：不包含登录、
-多租户、完整 CRM 或自动任务派发，不能直接无保护地暴露到公网。
+本轮新增原文证据，历史版本不会被覆盖。一个销售可在左侧客户群列表切换已配置群；
+每个群的消息、报告、状态和分析操作均按 `chatId` 独立隔离。当前实现是单机测试群
+MVP：不包含登录、多租户、完整 CRM 或自动任务派发，不能直接无保护地暴露到公网。
 完整配置、隐私边界与清理方式见 [docs/feishu-workbench.md](./docs/feishu-workbench.md)。
 
 ## Run it inside Claude (no API key)
