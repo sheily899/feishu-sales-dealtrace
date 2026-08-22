@@ -47,7 +47,7 @@ def test_normalize_events_displays_all_timestamps_in_beijing_time():
 
 
 def test_workbench_page_polls_for_new_group_messages():
-    assert "setInterval(load, 3000)" in _PAGE
+    assert "setInterval(refresh, 3000)" in _PAGE
 
 
 def test_build_standard_transcript_retains_message_evidence_ids():
@@ -263,3 +263,10 @@ def test_workbench_page_includes_customer_state_and_change_timeline():
     assert "本次变化" in _PAGE
     assert "版本时间线" in _PAGE
     assert "暂无新消息" in _PAGE
+
+
+def test_workbench_page_includes_a_selectable_customer_group_list():
+    assert 'id="chat-list"' in _PAGE
+    assert 'fetch("/api/chats")' in _PAGE
+    assert "currentChatId" in _PAGE
+    assert '"/api/analyze"+chatQuery()' in _PAGE
