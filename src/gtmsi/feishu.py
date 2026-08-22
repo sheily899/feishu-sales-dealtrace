@@ -7,7 +7,39 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 import json
+import os
+from dataclasses import dataclass
 from typing import Any, Mapping
+
+
+@dataclass(frozen=True)
+class FeishuConfig:
+    """Non-secret runtime configuration for the local Feishu group listener."""
+
+    app_id: str
+    app_secret: str
+    role_map: dict[str, str]
+    group_allowlist: list[str]
+
+    @classmethod
+    def from_env(cls, environment: Mapping[str, str] | None = None) -> "FeishuConfig":
+        values = environment if environment is not None else os.environ
+        app_id = values.get("FEISHU_APP_ID", "").strip()
+        app_secret = values.get("FEISHU_APP_SECRET", "").strip()
+        if not app_id:
+            raise ValueError("FEISHU_APP_ID is required when starting Feishu mode")
+        if not app_secret:
+            raise ValueError("FEISHU_APP_SECRET is required when starting Feishu mode")
+        try:
+            role_map = json.loads(values.get("FEISHU_ROLE_MAP", "{}"))
+        except json.JSONDecodeError as error:
+            raise ValueError("FEISHU_ROLE_MAP must be a JSON object") from error
+        if not isinstance(role_map, dict) or any(role not in {"customer", "sales"} for role in role_map.values()):
+            raise ValueError("FEISHU_ROLE_MAP values must be customer or sales")
+        if any(not isinstance(sender_id, str) for sender_id in role_map):
+            raise ValueError("FEISHU_ROLE_MAP keys must be sender open IDs")
+        groups = [chat_id.strip() for chat_id in values.get("FEISHU_GROUP_ALLOWLIST", "").split(",") if chat_id.strip()]
+        return cls(app_id=app_id, app_secret=app_secret, role_map=role_map, group_allowlist=groups)
 
 
 def parse_message_event(payload: Mapping[str, Any]) -> dict[str, str] | None:

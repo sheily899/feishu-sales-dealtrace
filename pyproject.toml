@@ -27,6 +27,8 @@ dependencies = [
 [project.optional-dependencies]
 # Live coaching via the Anthropic API. Not needed when running inside Claude Code.
 llm = ["anthropic>=0.40", "openai>=1.0"]
+# Local long-connection listener for Feishu group message events.
+feishu = ["lark-channel-sdk==1.2.0"]
 # Live CRM writeback (Salesforce/HubSpot). Dry-run needs nothing extra.
 crm = ["requests>=2.31"]
 # Schema validation utilities used by tests/CI.

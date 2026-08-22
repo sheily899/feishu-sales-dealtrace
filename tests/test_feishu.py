@@ -1,4 +1,6 @@
-from gtmsi.feishu import parse_message_event
+import pytest
+
+from gtmsi.feishu import FeishuConfig, parse_message_event
 
 
 def test_parse_message_event_converts_group_text_to_raw_message():
@@ -37,3 +39,26 @@ def test_parse_message_event_ignores_non_group_and_non_text_events():
     }
 
     assert parse_message_event(payload) is None
+
+
+def test_feishu_config_reads_role_and_group_allowlists_from_environment():
+    config = FeishuConfig.from_env({
+        "FEISHU_APP_ID": "cli_demo",
+        "FEISHU_APP_SECRET": "not-a-real-secret",
+        "FEISHU_ROLE_MAP": '{"ou-customer":"customer","ou-sales":"sales"}',
+        "FEISHU_GROUP_ALLOWLIST": "oc_demo,oc_backup",
+    })
+
+    assert config.role_map == {"ou-customer": "customer", "ou-sales": "sales"}
+    assert config.group_allowlist == ["oc_demo", "oc_backup"]
+
+
+def test_feishu_config_requires_app_credentials_and_valid_roles():
+    with pytest.raises(ValueError, match="FEISHU_APP_ID"):
+        FeishuConfig.from_env({})
+    with pytest.raises(ValueError, match="customer or sales"):
+        FeishuConfig.from_env({
+            "FEISHU_APP_ID": "cli_demo",
+            "FEISHU_APP_SECRET": "not-a-real-secret",
+            "FEISHU_ROLE_MAP": '{"ou-demo":"bot"}',
+        })
