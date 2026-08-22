@@ -6,6 +6,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
+from threading import RLock
 from urllib.parse import urlparse
 
 from .models import Transcript, Turn
@@ -128,8 +129,66 @@ class DemoWorkbench:
         return self.snapshot()
 
 
-def run_workbench(host: str = "127.0.0.1", port: int = 8765) -> None:
-    state = DemoWorkbench()
+class LiveWorkbench:
+    """In-memory workbench fed by the real Feishu listener during a local demo."""
+
+    def __init__(self, role_map: Mapping[str, str]) -> None:
+        self.name = "飞书测试群"
+        self.role_map = dict(role_map)
+        self.raw_events: list[dict[str, str]] = []
+        self.messages: list[dict[str, str]] = []
+        self.transcript = ""
+        self.segments: list[dict[str, str]] = []
+        self.analysis = None
+        self.evidence_map: dict[str, list[str]] = {}
+        self._lock = RLock()
+
+    def ingest(self, event: Mapping[str, str]) -> None:
+        """Store an event and rebuild the deterministic chat view."""
+        with self._lock:
+            sender_id = event.get("sender_id", "")
+            if sender_id not in self.role_map:
+                print(f"Feishu message ignored: map sender {sender_id} in FEISHU_ROLE_MAP before analysis.")
+            self.raw_events.append(dict(event))
+            self.messages = normalize_events(self.raw_events, self.role_map)
+            self.transcript, self.segments = build_standard_transcript(self.messages)
+            self.analysis = None
+            self.evidence_map = {}
+
+    def snapshot(self) -> dict:
+        with self._lock:
+            return {
+                "customerName": self.name,
+                "sourceLabel": "飞书测试群同步",
+                "messages": list(self.messages),
+                "segments": list(self.segments),
+                "analysis": self.analysis,
+                "evidenceMap": dict(self.evidence_map),
+                "callTypeLabel": display_call_type(self.analysis["classification"]["call_type"])
+                if self.analysis else None,
+            }
+
+    def analyze(self) -> dict:
+        with self._lock:
+            messages = list(self.messages)
+        if not messages:
+            raise ValueError("尚未同步可分析的客户或销售群聊消息")
+        turns = [Turn(speaker="客户" if m["role"] == "customer" else "销售",
+                      side="prospect" if m["role"] == "customer" else "rep", text=m["text"])
+                 for m in messages]
+        analysis = coach_transcript(Transcript(title=self.name, turns=turns)).model_dump()
+        with self._lock:
+            self.analysis = analysis
+            self.evidence_map = build_evidence_map(analysis, self.messages)
+        return self.snapshot()
+
+
+def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None) -> None:
+    state = LiveWorkbench(feishu_config.role_map) if feishu_config else DemoWorkbench()
+    if feishu_config:
+        from .feishu import FeishuGroupListener
+
+        FeishuGroupListener(feishu_config, state.ingest).start()
 
     class Handler(BaseHTTPRequestHandler):
         def _send(self, body: bytes, content_type: str, status: HTTPStatus = HTTPStatus.OK) -> None:

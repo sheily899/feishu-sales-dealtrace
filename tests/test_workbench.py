@@ -2,6 +2,7 @@ from gtmsi.workbench import (
     build_evidence_map,
     build_standard_transcript,
     display_call_type,
+    LiveWorkbench,
     normalize_events,
 )
 
@@ -61,3 +62,26 @@ def test_build_evidence_map_links_quotes_to_normalized_chat_messages():
 def test_display_call_type_uses_business_friendly_chinese_label():
     assert display_call_type("discovery") == "需求探索（Discovery）"
     assert display_call_type("unknown-stage") == "unknown-stage"
+
+
+def test_live_workbench_uses_the_same_normalizer_for_feishu_messages():
+    workbench = LiveWorkbench({"ou-customer": "customer", "ou-sales": "sales"})
+
+    workbench.ingest({
+        "message_id": "om-2", "chat_id": "oc-live", "sender_id": "ou-sales",
+        "sender_name": "语安", "timestamp": "2026-08-22T10:03:00+08:00", "text": "我下周一前发案例。",
+    })
+    workbench.ingest({
+        "message_id": "om-1", "chat_id": "oc-live", "sender_id": "ou-customer",
+        "sender_name": "amily", "timestamp": "2026-08-22T10:01:00+08:00", "text": "能否对接现有 CRM？",
+    })
+    workbench.ingest({
+        "message_id": "om-bot", "chat_id": "oc-live", "sender_id": "ou-bot",
+        "sender_name": "机器人", "timestamp": "2026-08-22T10:04:00+08:00", "text": "分析已更新。",
+    })
+
+    snapshot = workbench.snapshot()
+
+    assert snapshot["sourceLabel"] == "飞书测试群同步"
+    assert [message["messageId"] for message in snapshot["messages"]] == ["om-1", "om-2"]
+    assert workbench.transcript == "客户：能否对接现有 CRM？\n\n销售：我下周一前发案例。"
