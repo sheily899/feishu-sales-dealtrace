@@ -179,3 +179,13 @@ def test_live_workbench_saves_a_new_state_version_only_when_new_messages_arrive(
     assert first["customerState"]["version"] == 1
     assert second["noNewMessages"] is True
     assert [state.version for state in store.list_state_versions("oc-live")] == [1]
+
+
+def test_workbench_page_includes_customer_state_and_change_timeline():
+    from gtmsi.workbench import _PAGE
+
+    assert 'id="customer-state"' in _PAGE
+    assert "当前客户状态" in _PAGE
+    assert "本次变化" in _PAGE
+    assert "版本时间线" in _PAGE
+    assert "暂无新消息" in _PAGE
