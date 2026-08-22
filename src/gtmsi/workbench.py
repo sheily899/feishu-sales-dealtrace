@@ -148,7 +148,11 @@ class LiveWorkbench:
         with self._lock:
             sender_id = event.get("sender_id", "")
             if sender_id not in self.role_map:
-                print(f"Feishu message ignored: map sender {sender_id} in FEISHU_ROLE_MAP before analysis.")
+                print(
+                    "Feishu message ignored: add sender "
+                    f"{sender_id} to FEISHU_ROLE_MAP before analysis "
+                    f"(chat ID: {event.get('chat_id', '')})."
+                )
             self.raw_events.append(dict(event))
             self.messages = normalize_events(self.raw_events, self.role_map)
             self.transcript, self.segments = build_standard_transcript(self.messages)

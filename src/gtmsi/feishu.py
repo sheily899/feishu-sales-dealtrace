@@ -134,7 +134,6 @@ class FeishuGroupListener:
             app_secret=self.config.app_secret,
             policy=policy,
             security=SecurityConfig(mode="audit"),
-            resolve_sender_names=True,
         )
 
         async def receive(message: Any) -> None:
