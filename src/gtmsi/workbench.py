@@ -16,6 +16,7 @@ from datetime import datetime
 
 def normalize_events(events: Iterable[Mapping[str, str]], role_map: Mapping[str, str]) -> list[dict[str, str]]:
     """Deduplicate and order text events before creating sales-analysis input."""
+    role_labels = {"customer": "客户", "sales": "销售"}
     unique: dict[str, dict[str, str]] = {}
     for event in events:
         message_id = event["message_id"]
@@ -27,7 +28,7 @@ def normalize_events(events: Iterable[Mapping[str, str]], role_map: Mapping[str,
         unique[message_id] = {
             "messageId": message_id,
             "chatId": event["chat_id"],
-            "senderName": event.get("sender_name", role),
+            "senderName": role_labels[role],
             "role": role,
             "sentAt": event["timestamp"],
             "text": event["text"].strip(),
