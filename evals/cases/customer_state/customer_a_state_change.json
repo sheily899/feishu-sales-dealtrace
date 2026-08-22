@@ -1,0 +1,23 @@
+{
+  "case_id": "customer_a_case_sent_and_budget_concern",
+  "description": "验证销售发送案例后待办完成，并从新增客户消息中识别预算顾虑。",
+  "previous_state": {
+    "stage": "方案评估",
+    "needs": [{"title": "CRM 对接", "evidence": [{"speaker": "客户", "text": "我们主要担心 CRM 对接会不会很麻烦。"}]}],
+    "unresolved_concerns": [],
+    "commitments": [{"title": "发送客户案例", "evidence": [{"speaker": "销售", "text": "我下周一前发给您。"}]}],
+    "todos": [{"title": "发送客户案例", "status": "pending", "evidence": [{"speaker": "销售", "text": "我下周一前发给您。"}]}],
+    "stakeholders": [],
+    "risks": [],
+    "scheduled_next_steps": []
+  },
+  "new_messages": [
+    {"message_id": "m-05", "role": "sales", "text": "案例已经发给您了，您可以先看看。"},
+    {"message_id": "m-06", "role": "customer", "text": "收到了，案例比较符合我们的情况。不过老板比较关心预算范围。"}
+  ],
+  "expected": {
+    "todo_status_transitions": [{"title": "发送客户案例", "from_status": "pending", "to_status": "completed", "evidence_text": "案例已经发给您了"}],
+    "added_concerns": [{"title": "预算范围", "evidence_text": "老板比较关心预算范围"}],
+    "added_stakeholders": [{"title": "老板", "evidence_text": "老板比较关心预算范围"}]
+  }
+}
