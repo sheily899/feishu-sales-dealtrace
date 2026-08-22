@@ -141,11 +141,13 @@ class DemoWorkbench:
 
 
 class LiveWorkbench:
-    """In-memory workbench fed by the real Feishu listener during a local demo."""
+    """Feishu workbench backed by optional local SQLite persistence."""
 
-    def __init__(self, role_map: Mapping[str, str]) -> None:
+    def __init__(self, role_map: Mapping[str, str], store=None, chat_id: str | None = None) -> None:
         self.name = "飞书测试群"
         self.role_map = dict(role_map)
+        self.store = store
+        self.chat_id = chat_id
         self.raw_events: list[dict[str, str]] = []
         self.messages: list[dict[str, str]] = []
         self.transcript = ""
@@ -153,10 +155,27 @@ class LiveWorkbench:
         self.analysis = None
         self.evidence_map: dict[str, list[str]] = {}
         self._lock = RLock()
+        if self.store and self.chat_id:
+            with self._lock:
+                self._restore_locked()
+
+    def _restore_locked(self) -> None:
+        if not self.store or not self.chat_id:
+            return
+        self.raw_events = self.store.load_events(self.chat_id)
+        self.messages = normalize_events(self.raw_events, self.role_map)
+        self.transcript, self.segments = build_standard_transcript(self.messages)
+        saved_report = self.store.load_report(self.chat_id)
+        self.analysis, self.evidence_map = saved_report if saved_report else (None, {})
 
     def ingest(self, event: Mapping[str, str]) -> None:
         """Store an event and rebuild the deterministic chat view."""
         with self._lock:
+            incoming_chat_id = event.get("chat_id", "")
+            if self.chat_id and incoming_chat_id != self.chat_id:
+                return
+            if not self.chat_id:
+                self.chat_id = incoming_chat_id
             sender_id = event.get("sender_id", "")
             if sender_id not in self.role_map:
                 print(
@@ -164,6 +183,12 @@ class LiveWorkbench:
                     f"{sender_id} to FEISHU_ROLE_MAP before analysis "
                     f"(chat ID: {event.get('chat_id', '')})."
                 )
+            if self.store:
+                is_new = self.store.save_event(event)
+                if is_new:
+                    self.store.delete_report(self.chat_id)
+                self._restore_locked()
+                return
             self.raw_events.append(dict(event))
             self.messages = normalize_events(self.raw_events, self.role_map)
             self.transcript, self.segments = build_standard_transcript(self.messages)
@@ -195,11 +220,23 @@ class LiveWorkbench:
         with self._lock:
             self.analysis = analysis
             self.evidence_map = build_evidence_map(analysis, self.messages)
+            if self.store and self.chat_id:
+                self.store.save_report(self.chat_id, self.analysis, self.evidence_map)
         return self.snapshot()
 
 
 def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None) -> None:
-    state = LiveWorkbench(feishu_config.role_map) if feishu_config else DemoWorkbench()
+    if feishu_config:
+        from .workbench_store import SQLiteWorkbenchStore
+
+        configured_chat_id = feishu_config.group_allowlist[0] if len(feishu_config.group_allowlist) == 1 else None
+        state = LiveWorkbench(
+            feishu_config.role_map,
+            store=SQLiteWorkbenchStore(_ROOT / "data" / "workbench.sqlite3"),
+            chat_id=configured_chat_id,
+        )
+    else:
+        state = DemoWorkbench()
     if feishu_config:
         from .feishu import FeishuGroupListener
 

@@ -94,3 +94,7 @@ class SQLiteWorkbenchStore:
         if row is None:
             return None
         return json.loads(row[0]), json.loads(row[1])
+
+    def delete_report(self, chat_id: str) -> None:
+        with self._connection() as connection:
+            connection.execute("DELETE FROM group_reports WHERE chat_id = ?", (chat_id,))

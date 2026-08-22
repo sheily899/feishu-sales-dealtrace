@@ -6,6 +6,7 @@ from gtmsi.workbench import (
     LiveWorkbench,
     normalize_events,
 )
+from gtmsi.workbench_store import SQLiteWorkbenchStore
 
 
 ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
@@ -101,3 +102,25 @@ def test_live_workbench_uses_the_same_normalizer_for_feishu_messages():
     assert [message["messageId"] for message in snapshot["messages"]] == ["om-1", "om-2"]
     assert [message["senderName"] for message in snapshot["messages"]] == ["客户", "销售"]
     assert workbench.transcript == "客户：能否对接现有 CRM？\n\n销售：我下周一前发案例。"
+
+
+def test_live_workbench_restores_group_messages_and_latest_report_after_restart(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    workbench = LiveWorkbench({"ou-customer": "customer", "ou-sales": "sales"}, store=store)
+    workbench.ingest({
+        "message_id": "om-1", "chat_id": "oc-live", "sender_id": "ou-customer",
+        "sender_name": "amily", "timestamp": "2026-08-22T10:01:00+08:00", "text": "能否对接现有 CRM？",
+    })
+    store.save_report("oc-live", {"classification": {"call_type": "discovery"}, "summary": "已保存报告"}, {})
+
+    restarted = LiveWorkbench({"ou-customer": "customer", "ou-sales": "sales"}, store=store, chat_id="oc-live")
+
+    assert restarted.snapshot()["messages"][0]["text"] == "能否对接现有 CRM？"
+    assert restarted.snapshot()["analysis"]["summary"] == "已保存报告"
+
+    restarted.ingest({
+        "message_id": "om-2", "chat_id": "oc-live", "sender_id": "ou-sales",
+        "sender_name": "语安", "timestamp": "2026-08-22T10:03:00+08:00", "text": "我安排技术确认。",
+    })
+
+    assert restarted.snapshot()["analysis"] is None
