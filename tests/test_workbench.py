@@ -1,4 +1,9 @@
-from gtmsi.workbench import build_evidence_map, build_standard_transcript, normalize_events
+from gtmsi.workbench import (
+    build_evidence_map,
+    build_standard_transcript,
+    display_call_type,
+    normalize_events,
+)
 
 
 ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
@@ -51,3 +56,8 @@ def test_build_evidence_map_links_quotes_to_normalized_chat_messages():
 
     assert evidence_map["客户\nCRM 对接会不会很麻烦？"] == ["m1"]
     assert evidence_map["销售\n安排技术同事确认"] == ["m2"]
+
+
+def test_display_call_type_uses_business_friendly_chinese_label():
+    assert display_call_type("discovery") == "需求探索（Discovery）"
+    assert display_call_type("unknown-stage") == "unknown-stage"
