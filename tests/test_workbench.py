@@ -41,6 +41,12 @@ def test_workbench_page_polls_for_new_group_messages():
     assert "setInterval(load, 3000)" in _PAGE
 
 
+def test_workbench_server_exposes_configured_chat_summaries_endpoint():
+    import inspect
+
+    assert 'path == "/api/chats"' in inspect.getsource(__import__("gtmsi.workbench", fromlist=["run_workbench"]).run_workbench)
+
+
 def test_build_standard_transcript_retains_message_evidence_ids():
     messages = [
         {"messageId": "m1", "role": "customer", "text": "CRM 对接会不会很麻烦？", "sentAt": "2026-08-22T10:01:00+08:00"},

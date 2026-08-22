@@ -118,6 +118,52 @@ class SQLiteWorkbenchStore:
         with self._connection() as connection:
             connection.execute("DELETE FROM group_reports WHERE chat_id = ?", (chat_id,))
 
+    def load_chat_summaries(self, chat_ids: list[str]) -> list[dict]:
+        """Return one lightweight summary per configured group without loading transcripts."""
+        chat_ids = list(dict.fromkeys(chat_id for chat_id in chat_ids if chat_id))
+        if not chat_ids:
+            return []
+        values = ", ".join("(?)" for _ in chat_ids)
+        with self._connection() as connection:
+            rows = connection.execute(
+                f"""
+                WITH allowed(chat_id) AS (VALUES {values}),
+                latest_events AS (
+                    SELECT chat_id, MAX(sent_at) AS latest_message_at
+                    FROM group_events WHERE chat_id IN (SELECT chat_id FROM allowed)
+                    GROUP BY chat_id
+                ), latest_versions AS (
+                    SELECT chat_id, MAX(version) AS version
+                    FROM customer_state_snapshots
+                    WHERE chat_id IN (SELECT chat_id FROM allowed)
+                    GROUP BY chat_id
+                )
+                SELECT allowed.chat_id, latest_events.latest_message_at,
+                       group_reports.report_json, customer_state_snapshots.state_json
+                FROM allowed
+                LEFT JOIN latest_events ON latest_events.chat_id = allowed.chat_id
+                LEFT JOIN group_reports ON group_reports.chat_id = allowed.chat_id
+                LEFT JOIN latest_versions ON latest_versions.chat_id = allowed.chat_id
+                LEFT JOIN customer_state_snapshots
+                    ON customer_state_snapshots.chat_id = latest_versions.chat_id
+                    AND customer_state_snapshots.version = latest_versions.version
+                """,
+                chat_ids,
+            ).fetchall()
+        summaries = {}
+        for chat_id, latest_message_at, report_json, state_json in rows:
+            state = CustomerState.model_validate_json(state_json) if state_json else None
+            report = json.loads(report_json) if report_json else {}
+            stage = state.stage if state and state.stage != "unknown" else report.get("classification", {}).get("call_type")
+            summaries[chat_id] = {
+                "chatId": chat_id,
+                "displayName": chat_id,
+                "latestMessageAt": latest_message_at,
+                "stage": stage,
+                "todoCount": sum(todo.status == "pending" for todo in state.todos) if state else 0,
+            }
+        return [summaries[chat_id] for chat_id in chat_ids]
+
     def save_state_version(
         self,
         chat_id: str,

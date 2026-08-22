@@ -59,3 +59,25 @@ def test_store_keeps_state_change_and_analyzed_message_boundary_per_version(tmp_
 
     assert store.load_state_change("oc-a", saved.version) == change
     assert store.load_analyzed_message_ids("oc-a", saved.version) == ["m-3", "m-4"]
+
+
+def test_store_returns_lightweight_summaries_scoped_to_requested_groups(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    store.save_event({
+        "message_id": "m-a", "chat_id": "oc-a", "sender_id": "ou-customer",
+        "sender_name": "客户", "timestamp": "2026-08-22T10:01:00+08:00", "text": "请发案例。",
+    })
+    store.save_event({
+        "message_id": "m-b", "chat_id": "oc-b", "sender_id": "ou-customer",
+        "sender_name": "客户", "timestamp": "2026-08-22T11:01:00+08:00", "text": "需要报价。",
+    })
+    store.save_report("oc-b", {"classification": {"call_type": "discovery"}}, {})
+    store.save_state_version("oc-a", CustomerState(
+        stage="方案评估", todos=[StateTodo(title="发送案例", status="pending")],
+    ), StateChange(), ["m-a"])
+
+    assert store.load_chat_summaries(["oc-b", "oc-a", "oc-empty", "oc-b"]) == [
+        {"chatId": "oc-b", "displayName": "oc-b", "latestMessageAt": "2026-08-22T11:01:00+08:00", "stage": "discovery", "todoCount": 0},
+        {"chatId": "oc-a", "displayName": "oc-a", "latestMessageAt": "2026-08-22T10:01:00+08:00", "stage": "方案评估", "todoCount": 1},
+        {"chatId": "oc-empty", "displayName": "oc-empty", "latestMessageAt": None, "stage": None, "todoCount": 0},
+    ]

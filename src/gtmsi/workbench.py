@@ -307,6 +307,7 @@ def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None)
         )
     else:
         state = DemoWorkbench()
+    configured_chat_ids = feishu_config.group_allowlist if feishu_config else []
     if feishu_config:
         from .feishu import FeishuGroupListener
 
@@ -324,9 +325,13 @@ def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None)
             self._send(json.dumps(body, ensure_ascii=False).encode(), "application/json; charset=utf-8", status)
 
         def do_GET(self) -> None:
-            if urlparse(self.path).path == "/api/workbench":
+            path = urlparse(self.path).path
+            if path == "/api/chats":
+                chats = state.store.load_chat_summaries(configured_chat_ids) if state.store else []
+                self._json({"chats": chats})
+            elif path == "/api/workbench":
                 self._json(state.snapshot())
-            elif urlparse(self.path).path == "/":
+            elif path == "/":
                 self._send(_PAGE.encode(), "text/html; charset=utf-8")
             else:
                 self.send_error(HTTPStatus.NOT_FOUND)
