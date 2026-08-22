@@ -270,3 +270,5 @@ def test_workbench_page_includes_a_selectable_customer_group_list():
     assert 'fetch("/api/chats")' in _PAGE
     assert "currentChatId" in _PAGE
     assert '"/api/analyze"+chatQuery()' in _PAGE
+    assert "请选择一个客户群" in _PAGE
+    assert "if(!currentChatId){emptyChat();return}" in _PAGE
