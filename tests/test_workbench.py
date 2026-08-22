@@ -7,6 +7,7 @@ from gtmsi.workbench import (
     normalize_events,
 )
 from gtmsi.workbench_store import SQLiteWorkbenchStore
+from gtmsi.models import CustomerState, StateChange, StateTodo
 
 
 ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
@@ -124,3 +125,57 @@ def test_live_workbench_restores_group_messages_and_latest_report_after_restart(
     })
 
     assert restarted.snapshot()["analysis"] is None
+
+
+class _Report:
+    def model_dump(self):
+        return {"classification": {"call_type": "discovery"}, "summary": "分析完成"}
+
+
+class _StateLLM:
+    def __init__(self):
+        self.calls = 0
+
+    def complete_json(self, system, cached_blocks, user_text, max_tokens=None):
+        self.calls += 1
+        return {
+            "state": {"stage": "需求探索", "todos": [{"title": "发送客户案例", "status": "pending"}]},
+            "change": {"added": [{"category": "todo", "title": "发送客户案例", "evidence": [{"speaker": "销售", "text": "下周一前发给您"}]}]},
+        }
+
+
+def test_live_workbench_skips_all_model_calls_when_state_has_no_new_messages(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    event = {"message_id": "m-1", "chat_id": "oc-live", "sender_id": "ou-sales", "sender_name": "语安",
+             "timestamp": "2026-08-22T10:01:00+08:00", "text": "我下周一前发给您。"}
+    store.save_event(event)
+    store.save_state_version("oc-live", CustomerState(), StateChange(), ["m-1"])
+    store.save_report("oc-live", {"classification": {"call_type": "discovery"}, "summary": "历史报告"}, {})
+
+    def unexpected_coach(_):
+        raise AssertionError("没有新增消息时不得调用销售分析模型")
+
+    state_llm = _StateLLM()
+    workbench = LiveWorkbench({"ou-sales": "sales"}, store=store, chat_id="oc-live",
+                              coach_runner=unexpected_coach, state_llm=state_llm)
+
+    snapshot = workbench.analyze()
+
+    assert snapshot["noNewMessages"] is True
+    assert snapshot["customerState"]["version"] == 1
+    assert snapshot["analysis"]["summary"] == "历史报告"
+    assert state_llm.calls == 0
+
+
+def test_live_workbench_saves_a_new_state_version_only_when_new_messages_arrive(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    workbench = LiveWorkbench({"ou-sales": "sales"}, store=store, coach_runner=lambda _: _Report(), state_llm=_StateLLM())
+    workbench.ingest({"message_id": "m-1", "chat_id": "oc-live", "sender_id": "ou-sales", "sender_name": "语安",
+                      "timestamp": "2026-08-22T10:01:00+08:00", "text": "我下周一前发给您。"})
+
+    first = workbench.analyze()
+    second = workbench.analyze()
+
+    assert first["customerState"]["version"] == 1
+    assert second["noNewMessages"] is True
+    assert [state.version for state in store.list_state_versions("oc-live")] == [1]

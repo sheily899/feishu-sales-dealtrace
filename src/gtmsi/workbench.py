@@ -9,6 +9,8 @@ from pathlib import Path
 from threading import RLock
 from urllib.parse import urlparse
 
+from .customer_state import generate_customer_state
+from .llm import build_coach
 from .models import Transcript, Turn
 from .pipeline import coach_transcript
 from datetime import datetime, timedelta, timezone
@@ -143,17 +145,31 @@ class DemoWorkbench:
 class LiveWorkbench:
     """Feishu workbench backed by optional local SQLite persistence."""
 
-    def __init__(self, role_map: Mapping[str, str], store=None, chat_id: str | None = None) -> None:
+    def __init__(
+        self,
+        role_map: Mapping[str, str],
+        store=None,
+        chat_id: str | None = None,
+        coach_runner=coach_transcript,
+        state_llm=None,
+    ) -> None:
         self.name = "飞书测试群"
         self.role_map = dict(role_map)
         self.store = store
         self.chat_id = chat_id
+        self.coach_runner = coach_runner
+        self.state_llm = state_llm
         self.raw_events: list[dict[str, str]] = []
         self.messages: list[dict[str, str]] = []
         self.transcript = ""
         self.segments: list[dict[str, str]] = []
         self.analysis = None
         self.evidence_map: dict[str, list[str]] = {}
+        self.customer_state = None
+        self.state_change = None
+        self.state_history: list = []
+        self.rejected_state_changes: list[str] = []
+        self.no_new_messages = False
         self._lock = RLock()
         if self.store and self.chat_id:
             with self._lock:
@@ -167,6 +183,12 @@ class LiveWorkbench:
         self.transcript, self.segments = build_standard_transcript(self.messages)
         saved_report = self.store.load_report(self.chat_id)
         self.analysis, self.evidence_map = saved_report if saved_report else (None, {})
+        self.customer_state = self.store.load_latest_state(self.chat_id)
+        self.state_change = (
+            self.store.load_state_change(self.chat_id, self.customer_state.version)
+            if self.customer_state else None
+        )
+        self.state_history = self.store.list_state_versions(self.chat_id)
 
     def ingest(self, event: Mapping[str, str]) -> None:
         """Store an event and rebuild the deterministic chat view."""
@@ -188,40 +210,88 @@ class LiveWorkbench:
                 if is_new:
                     self.store.delete_report(self.chat_id)
                 self._restore_locked()
+                self.no_new_messages = False
                 return
             self.raw_events.append(dict(event))
             self.messages = normalize_events(self.raw_events, self.role_map)
             self.transcript, self.segments = build_standard_transcript(self.messages)
             self.analysis = None
             self.evidence_map = {}
+            self.no_new_messages = False
 
     def snapshot(self) -> dict:
         with self._lock:
+            state_evidence = build_evidence_map(
+                {
+                    "customer_state": self.customer_state.model_dump() if self.customer_state else {},
+                    "state_change": self.state_change.model_dump() if self.state_change else {},
+                },
+                self.messages,
+            )
+            evidence_map = dict(self.evidence_map)
+            evidence_map.update(state_evidence)
             return {
                 "customerName": self.name,
                 "sourceLabel": "飞书测试群同步",
                 "messages": list(self.messages),
                 "segments": list(self.segments),
                 "analysis": self.analysis,
-                "evidenceMap": dict(self.evidence_map),
+                "evidenceMap": evidence_map,
                 "callTypeLabel": display_call_type(self.analysis["classification"]["call_type"])
                 if self.analysis else None,
+                "customerState": self.customer_state.model_dump() if self.customer_state else None,
+                "stateChange": self.state_change.model_dump() if self.state_change else None,
+                "stateHistory": [
+                    {
+                        "version": state.version,
+                        "updatedAt": state.updated_at,
+                        "change": self.store.load_state_change(self.chat_id, state.version).model_dump()
+                        if self.store and self.store.load_state_change(self.chat_id, state.version) else None,
+                    }
+                    for state in self.state_history
+                ],
+                "rejectedStateChanges": list(self.rejected_state_changes),
+                "noNewMessages": self.no_new_messages,
             }
 
     def analyze(self) -> dict:
         with self._lock:
             messages = list(self.messages)
+            previous_state = self.customer_state
+            analyzed_ids = set(previous_state.analyzed_message_ids) if previous_state else set()
+            new_messages = [message for message in messages if message["messageId"] not in analyzed_ids]
         if not messages:
             raise ValueError("尚未同步可分析的客户或销售群聊消息")
+        if previous_state and not new_messages:
+            with self._lock:
+                self.no_new_messages = True
+            return self.snapshot()
         turns = [Turn(speaker="客户" if m["role"] == "customer" else "销售",
                       side="prospect" if m["role"] == "customer" else "rep", text=m["text"])
                  for m in messages]
-        analysis = coach_transcript(Transcript(title=self.name, turns=turns)).model_dump()
+        analysis = self.coach_runner(Transcript(title=self.name, turns=turns)).model_dump()
+        state_result = None
+        if self.store and self.chat_id:
+            state_result = generate_customer_state(
+                previous_state,
+                new_messages,
+                self.state_llm or build_coach(),
+            )
         with self._lock:
             self.analysis = analysis
             self.evidence_map = build_evidence_map(analysis, self.messages)
             if self.store and self.chat_id:
                 self.store.save_report(self.chat_id, self.analysis, self.evidence_map)
+                self.customer_state = self.store.save_state_version(
+                    self.chat_id,
+                    state_result.state,
+                    state_result.change,
+                    [message["messageId"] for message in messages],
+                )
+                self.state_change = state_result.change
+                self.state_history = self.store.list_state_versions(self.chat_id)
+                self.rejected_state_changes = state_result.rejected_changes
+            self.no_new_messages = False
         return self.snapshot()
 
 
