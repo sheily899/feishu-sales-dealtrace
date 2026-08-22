@@ -17,6 +17,9 @@ env/
 .env.*
 !.env.example
 
+# Local sales-chat persistence (may contain customer conversation data)
+data/
+
 # Coaching output
 **/coaching/
 examples/transcripts/coaching/
