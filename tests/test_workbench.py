@@ -1,4 +1,5 @@
 from gtmsi.workbench import (
+    _PAGE,
     build_evidence_map,
     build_standard_transcript,
     display_call_type,
@@ -23,6 +24,19 @@ def test_normalize_events_deduplicates_sorts_and_filters_bot_messages():
     assert [message["messageId"] for message in messages] == ["m1", "m2"]
     assert [message["role"] for message in messages] == ["customer", "sales"]
     assert [message["senderName"] for message in messages] == ["客户", "销售"]
+
+
+def test_normalize_events_displays_all_timestamps_in_beijing_time():
+    messages = normalize_events([
+        {"message_id": "m1", "chat_id": "chat-1", "sender_id": "customer-1", "sender_name": "客户",
+         "timestamp": "2026-08-22T02:01:00+00:00", "text": "测试"},
+    ], ROLE_MAP)
+
+    assert messages[0]["sentAt"] == "2026-08-22T10:01:00+08:00"
+
+
+def test_workbench_page_polls_for_new_group_messages():
+    assert "setInterval(load, 3000)" in _PAGE
 
 
 def test_build_standard_transcript_retains_message_evidence_ids():

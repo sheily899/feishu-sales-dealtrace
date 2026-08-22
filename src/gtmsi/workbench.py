@@ -11,7 +11,17 @@ from urllib.parse import urlparse
 
 from .models import Transcript, Turn
 from .pipeline import coach_transcript
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+
+# China Standard Time is UTC+8 year-round; a fixed offset avoids relying on
+# an operating-system time-zone database in local Windows virtualenvs.
+_BEIJING_TIMEZONE = timezone(timedelta(hours=8), name="CST")
+
+
+def _beijing_timestamp(timestamp: str) -> str:
+    """Render all inbound event timestamps in China Standard Time for the workbench."""
+    return datetime.fromisoformat(timestamp).astimezone(_BEIJING_TIMEZONE).isoformat(timespec="seconds")
 
 
 def normalize_events(events: Iterable[Mapping[str, str]], role_map: Mapping[str, str]) -> list[dict[str, str]]:
@@ -30,7 +40,7 @@ def normalize_events(events: Iterable[Mapping[str, str]], role_map: Mapping[str,
             "chatId": event["chat_id"],
             "senderName": role_labels[role],
             "role": role,
-            "sentAt": event["timestamp"],
+            "sentAt": _beijing_timestamp(event["timestamp"]),
             "text": event["text"].strip(),
         }
     return sorted(unique.values(), key=lambda message: (message["sentAt"], message["messageId"]))
@@ -244,5 +254,6 @@ function focusMessage(messageId){let target=q('[data-message-id="'+messageId+'"]
 function show(d){state=d;q("#name").textContent=d.customerName;q("#meta").textContent="来源："+d.sourceLabel+" · 已同步 "+d.messages.length+" 条有效消息";q("#messages").innerHTML=d.messages.map(m=>'<div class="message '+m.role+'" data-message-id="'+e(m.messageId)+'"><span class="who">'+e(m.senderName)+'</span><span class="time">'+m.sentAt.slice(11,16)+'</span><p>'+e(m.text)+'</p></div>').join("");if(!d.analysis)return;let a=d.analysis,g=a.group_chat,out='<p>'+e(a.summary)+'</p><h3>沟通阶段：'+e(d.callTypeLabel||a.classification.call_type)+'</h3>';if(g){out+=items("客户需求",g.customer_needs)+items("客户顾虑",g.customer_concerns)+items("销售回应覆盖",g.response_coverage)+items("销售承诺",g.sales_commitments)+items("待办事项",g.todos)+items("下一步建议",g.next_steps)}else{out+=items("客户目标",a.outcomes)+items("销售表现",a.coaching.strengths)+items("改进建议",a.coaching.improvements)}q("#report").innerHTML=out}
 q("#report").onclick=x=>{let button=x.target.closest("[data-message-id]");if(button)focusMessage(button.dataset.messageId)};
 q("#go").onclick=async()=>{let b=q("#go");b.disabled=true;b.textContent="分析中…";q("#status").textContent="DeepSeek 分析中";try{let r=await fetch("/api/analyze",{method:"POST"}),d=await r.json();if(!r.ok)throw Error(d.error);show(d);q("#status").textContent="分析完成";b.textContent="重新分析"}catch(x){q("#report").className="error";q("#report").textContent="分析失败："+x.message;q("#status").textContent="分析失败"}finally{b.disabled=false}};
-fetch("/api/workbench").then(r=>r.json()).then(show)
+async function load(){try{let r=await fetch("/api/workbench");if(!r.ok)throw Error("群聊同步失败");show(await r.json())}catch(x){q("#status").textContent="同步失败"}}
+load();setInterval(load, 3000)
 </script>"""
