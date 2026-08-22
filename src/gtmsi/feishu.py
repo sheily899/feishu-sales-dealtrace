@@ -9,7 +9,8 @@ from datetime import UTC, datetime
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Mapping
+from threading import Thread
+from typing import Any, Callable, Mapping
 
 
 @dataclass(frozen=True)
@@ -74,3 +75,72 @@ def parse_message_event(payload: Mapping[str, Any]) -> dict[str, str] | None:
         "timestamp": timestamp,
         "text": text,
     }
+
+
+def inbound_message_to_raw(message: Any) -> dict[str, str] | None:
+    """Convert the official Channel SDK's normalized message to our raw contract."""
+    if getattr(message, "chat_type", None) != "group" or getattr(message, "sender_is_bot", False):
+        return None
+    message_id = getattr(message, "message_id", None)
+    chat_id = getattr(message, "chat_id", None)
+    sender_id = getattr(message, "sender_id", None)
+    text = str(getattr(message, "content_text", "")).strip()
+    if not all(isinstance(value, str) and value for value in (message_id, chat_id, sender_id, text)):
+        return None
+    created_ms = getattr(message, "create_time", 0)
+    try:
+        timestamp = datetime.fromtimestamp(int(created_ms) / 1000, UTC).isoformat()
+    except (TypeError, ValueError, OSError):
+        return None
+    return {
+        "message_id": message_id,
+        "chat_id": chat_id,
+        "sender_id": sender_id,
+        "sender_name": getattr(message, "sender_name", None) or sender_id,
+        "timestamp": timestamp,
+        "text": text,
+    }
+
+
+class FeishuGroupListener:
+    """Background long-connection listener that forwards safe group text events."""
+
+    def __init__(self, config: FeishuConfig, on_message: Callable[[dict[str, str]], None]) -> None:
+        self.config = config
+        self.on_message = on_message
+        self.thread: Thread | None = None
+
+    def start(self) -> Thread:
+        """Start the SDK's blocking WebSocket lifecycle in a daemon thread."""
+        if self.thread and self.thread.is_alive():
+            return self.thread
+        self.thread = Thread(target=self._run, name="feishu-group-listener", daemon=True)
+        self.thread.start()
+        return self.thread
+
+    def _run(self) -> None:
+        import asyncio
+
+        from lark_channel import FeishuChannel, PolicyConfig, SecurityConfig
+
+        policy = PolicyConfig(
+            dm_policy="disabled",
+            group_policy="allowlist" if self.config.group_allowlist else "open",
+            group_allowlist=self.config.group_allowlist or None,
+            require_mention=False,
+        )
+        channel = FeishuChannel(
+            app_id=self.config.app_id,
+            app_secret=self.config.app_secret,
+            policy=policy,
+            security=SecurityConfig(mode="audit"),
+            resolve_sender_names=True,
+        )
+
+        async def receive(message: Any) -> None:
+            raw = inbound_message_to_raw(message)
+            if raw is not None:
+                self.on_message(raw)
+
+        channel.on("message", receive)
+        asyncio.run(channel.connect())

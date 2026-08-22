@@ -1,6 +1,6 @@
 import pytest
 
-from gtmsi.feishu import FeishuConfig, parse_message_event
+from gtmsi.feishu import FeishuConfig, inbound_message_to_raw, parse_message_event
 
 
 def test_parse_message_event_converts_group_text_to_raw_message():
@@ -62,3 +62,34 @@ def test_feishu_config_requires_app_credentials_and_valid_roles():
             "FEISHU_APP_SECRET": "not-a-real-secret",
             "FEISHU_ROLE_MAP": '{"ou-demo":"bot"}',
         })
+
+
+class _InboundMessage:
+    chat_type = "group"
+    message_id = "om_live_001"
+    chat_id = "oc_live"
+    sender_id = "ou-sales"
+    sender_name = "语安"
+    sender_is_bot = False
+    content_text = "可以安排技术同事确认接口。"
+    create_time = 1787543700000
+
+
+def test_inbound_message_to_raw_converts_sdk_message_without_sdk_network_access():
+    assert inbound_message_to_raw(_InboundMessage()) == {
+        "message_id": "om_live_001",
+        "chat_id": "oc_live",
+        "sender_id": "ou-sales",
+        "sender_name": "语安",
+        "timestamp": "2026-08-24T03:55:00+00:00",
+        "text": "可以安排技术同事确认接口。",
+    }
+
+
+def test_inbound_message_to_raw_filters_bot_and_non_group_messages():
+    message = _InboundMessage()
+    message.sender_is_bot = True
+    assert inbound_message_to_raw(message) is None
+    message.sender_is_bot = False
+    message.chat_type = "p2p"
+    assert inbound_message_to_raw(message) is None
