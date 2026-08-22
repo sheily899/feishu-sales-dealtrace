@@ -183,3 +183,9 @@ def test_normalize_deepseek_response_converts_quotes_and_score_field_names():
 def test_normalize_deepseek_response_wraps_a_single_evidence_string():
     result = _normalize_deepseek_response({"evidence": '"Clear next steps."'})
     assert result["evidence"] == [{"speaker": "Unknown", "text": "Clear next steps."}]
+
+
+def test_normalize_deepseek_response_converts_partially_outcome_status():
+    result = _normalize_deepseek_response({"outcomes": [{"status": "partially"}]})
+
+    assert result["outcomes"][0]["status"] == "partial"

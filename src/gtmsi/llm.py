@@ -203,6 +203,10 @@ def _normalize_deepseek_response(value: Any) -> Any:
         return value
 
     normalized = {key: _normalize_deepseek_response(item) for key, item in value.items()}
+    # The report contract calls this state "partial"; DeepSeek may emit the
+    # grammatically natural but invalid variant "partially".
+    if normalized.get("status") == "partially":
+        normalized["status"] = "partial"
     if "score" in normalized and "id" in normalized and "name" in normalized:
         normalized.setdefault("criterion_id", normalized["id"])
         normalized.setdefault("criterion_name", normalized["name"])
