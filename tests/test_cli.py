@@ -1,6 +1,6 @@
 """CLI wiring that runs offline (no API key)."""
 from gtmsi.adapters import load_transcript
-from gtmsi.cli import _apply_participants, main
+from gtmsi.cli import _apply_participants, build_parser, main
 
 
 def test_apply_participants_overrides_sides(tmp_path):
@@ -36,3 +36,10 @@ def test_cli_crm_dry_run_offline():
 def test_cli_crm_live_requires_token():
     # hubspot live writer without a token should fail cleanly (exit 1), not crash.
     assert main(["crm", "examples/reports/deal_acme.json", "--crm", "hubspot", "--writer", "hubspot"]) == 1
+
+
+def test_workbench_feishu_flag_is_opt_in():
+    args = build_parser().parse_args(["workbench", "--feishu", "--port", "8766"])
+
+    assert args.feishu is True
+    assert args.port == 8766

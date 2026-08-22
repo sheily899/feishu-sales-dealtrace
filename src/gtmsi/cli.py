@@ -34,7 +34,16 @@ def _build_llm(args):
 
 def cmd_workbench(args):
     from .workbench import run_workbench
-    run_workbench(host=args.host, port=args.port)
+
+    feishu_config = None
+    if args.feishu:
+        from dotenv import load_dotenv
+
+        from .feishu import FeishuConfig
+
+        load_dotenv(override=False)
+        feishu_config = FeishuConfig.from_env()
+    run_workbench(host=args.host, port=args.port, feishu_config=feishu_config)
     return 0
 
 
@@ -429,6 +438,7 @@ def build_parser() -> argparse.ArgumentParser:
     wb = sub.add_parser("workbench", help="run the local sales analysis workbench")
     wb.add_argument("--host", default="127.0.0.1")
     wb.add_argument("--port", type=int, default=8765)
+    wb.add_argument("--feishu", action="store_true", help="receive real Feishu test-group messages through a long connection")
     wb.set_defaults(func=cmd_workbench)
 
     def add_common(sp):
