@@ -223,6 +223,60 @@ class GroupChatAnalysis(BaseModel):
     next_steps: list[CoachingPoint] = Field(default_factory=list)
 
 
+class StateItem(BaseModel):
+    """An evidence-bound item retained in a customer's current sales state."""
+
+    title: str
+    detail: str | None = None
+    evidence: list[Quote] = Field(default_factory=list)
+
+
+class StateTodo(StateItem):
+    status: Literal["pending", "completed"] = "pending"
+
+
+class StateChangeItem(StateItem):
+    category: Literal["need", "concern", "commitment", "todo", "stakeholder", "risk", "next_step"]
+
+
+class StateTransition(BaseModel):
+    category: Literal["concern", "todo", "risk"]
+    title: str
+    from_status: str
+    to_status: str
+    evidence: list[Quote] = Field(default_factory=list)
+
+
+class StateChange(BaseModel):
+    """The evidence-bound delta between two append-only customer state versions."""
+
+    added: list[StateChangeItem] = Field(default_factory=list)
+    resolved: list[StateChangeItem] = Field(default_factory=list)
+    status_transitions: list[StateTransition] = Field(default_factory=list)
+    current_focus: str | None = None
+    evidence: list[Quote] = Field(default_factory=list)
+
+
+class CustomerState(BaseModel):
+    """A versioned, per-chat customer state snapshot.
+
+    ``version=0`` represents an unsaved model candidate. The SQLite store assigns
+    persisted snapshots a monotonically increasing version starting at 1.
+    """
+
+    version: int = Field(default=0, ge=0)
+    stage: str = "unknown"
+    needs: list[StateItem] = Field(default_factory=list)
+    unresolved_concerns: list[StateItem] = Field(default_factory=list)
+    commitments: list[StateItem] = Field(default_factory=list)
+    todos: list[StateTodo] = Field(default_factory=list)
+    stakeholders: list[StateItem] = Field(default_factory=list)
+    risks: list[StateItem] = Field(default_factory=list)
+    scheduled_next_steps: list[StateItem] = Field(default_factory=list)
+    updated_at: str | None = None
+    analyzed_message_ids: list[str] = Field(default_factory=list)
+
+
 class CoachingReport(BaseModel):
     schema_version: str = "1.0"
     call_id: str | None = None

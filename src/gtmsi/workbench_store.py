@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 import sqlite3
 from typing import Mapping
+from datetime import UTC, datetime
+
+from .models import CustomerState, StateChange
 
 
 class SQLiteWorkbenchStore:
@@ -34,6 +37,22 @@ class SQLiteWorkbenchStore:
                     chat_id TEXT PRIMARY KEY,
                     report_json TEXT NOT NULL,
                     evidence_map_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS customer_state_snapshots (
+                    chat_id TEXT NOT NULL,
+                    version INTEGER NOT NULL,
+                    state_json TEXT NOT NULL,
+                    analyzed_message_ids_json TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    PRIMARY KEY (chat_id, version)
+                );
+                CREATE TABLE IF NOT EXISTS customer_state_changes (
+                    chat_id TEXT NOT NULL,
+                    version INTEGER NOT NULL,
+                    change_json TEXT NOT NULL,
+                    PRIMARY KEY (chat_id, version),
+                    FOREIGN KEY (chat_id, version)
+                        REFERENCES customer_state_snapshots(chat_id, version)
                 );
                 """
             )
@@ -98,3 +117,97 @@ class SQLiteWorkbenchStore:
     def delete_report(self, chat_id: str) -> None:
         with self._connection() as connection:
             connection.execute("DELETE FROM group_reports WHERE chat_id = ?", (chat_id,))
+
+    def save_state_version(
+        self,
+        chat_id: str,
+        state: CustomerState,
+        change: StateChange,
+        analyzed_message_ids: list[str],
+    ) -> CustomerState:
+        """Append one immutable customer-state version and its matching delta."""
+        if not isinstance(chat_id, str) or not chat_id.strip():
+            raise ValueError("chat_id is required for a customer state")
+        if any(not isinstance(message_id, str) or not message_id.strip() for message_id in analyzed_message_ids):
+            raise ValueError("analyzed_message_ids must contain non-empty strings")
+        if len(set(analyzed_message_ids)) != len(analyzed_message_ids):
+            raise ValueError("analyzed_message_ids must not contain duplicates")
+        now = datetime.now(UTC).isoformat()
+        with self._connection() as connection:
+            next_version = connection.execute(
+                "SELECT COALESCE(MAX(version), 0) + 1 FROM customer_state_snapshots WHERE chat_id = ?",
+                (chat_id,),
+            ).fetchone()[0]
+            stored_state = state.model_copy(update={
+                "version": next_version,
+                "updated_at": now,
+                "analyzed_message_ids": list(analyzed_message_ids),
+            })
+            connection.execute(
+                """
+                INSERT INTO customer_state_snapshots
+                    (chat_id, version, state_json, analyzed_message_ids_json, created_at)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    chat_id,
+                    stored_state.version,
+                    stored_state.model_dump_json(),
+                    json.dumps(analyzed_message_ids, ensure_ascii=False),
+                    now,
+                ),
+            )
+            connection.execute(
+                """
+                INSERT INTO customer_state_changes (chat_id, version, change_json)
+                VALUES (?, ?, ?)
+                """,
+                (chat_id, stored_state.version, change.model_dump_json()),
+            )
+        return stored_state
+
+    def load_latest_state(self, chat_id: str) -> CustomerState | None:
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT state_json FROM customer_state_snapshots
+                WHERE chat_id = ? ORDER BY version DESC LIMIT 1
+                """,
+                (chat_id,),
+            ).fetchone()
+        return CustomerState.model_validate_json(row[0]) if row else None
+
+    def load_state_version(self, chat_id: str, version: int) -> CustomerState | None:
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT state_json FROM customer_state_snapshots WHERE chat_id = ? AND version = ?",
+                (chat_id, version),
+            ).fetchone()
+        return CustomerState.model_validate_json(row[0]) if row else None
+
+    def list_state_versions(self, chat_id: str) -> list[CustomerState]:
+        with self._connection() as connection:
+            rows = connection.execute(
+                "SELECT state_json FROM customer_state_snapshots WHERE chat_id = ? ORDER BY version ASC",
+                (chat_id,),
+            ).fetchall()
+        return [CustomerState.model_validate_json(row[0]) for row in rows]
+
+    def load_state_change(self, chat_id: str, version: int) -> StateChange | None:
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT change_json FROM customer_state_changes WHERE chat_id = ? AND version = ?",
+                (chat_id, version),
+            ).fetchone()
+        return StateChange.model_validate_json(row[0]) if row else None
+
+    def load_analyzed_message_ids(self, chat_id: str, version: int) -> list[str]:
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT analyzed_message_ids_json FROM customer_state_snapshots
+                WHERE chat_id = ? AND version = ?
+                """,
+                (chat_id, version),
+            ).fetchone()
+        return json.loads(row[0]) if row else []

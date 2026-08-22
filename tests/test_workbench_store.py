@@ -1,4 +1,5 @@
 from gtmsi.workbench_store import SQLiteWorkbenchStore
+from gtmsi.models import CustomerState, StateChange, StateChangeItem, StateItem, StateTodo
 
 
 def test_store_keeps_messages_scoped_to_each_group_and_deduplicated(tmp_path):
@@ -24,3 +25,37 @@ def test_store_replaces_only_the_latest_report_for_a_group(tmp_path):
 
     assert store.load_report("oc-a") == ({"summary": "第二版"}, {"销售\\n安排评估": ["om-2"]})
     assert store.load_report("oc-b") is None
+
+
+def test_store_appends_customer_state_versions_without_overwriting_history(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    first = CustomerState(
+        stage="需求探索",
+        needs=[StateItem(title="对接现有 CRM")],
+        todos=[StateTodo(title="发送客户案例", status="pending")],
+    )
+    second = CustomerState(
+        stage="方案评估",
+        needs=[StateItem(title="对接现有 CRM")],
+        todos=[StateTodo(title="发送客户案例", status="completed")],
+    )
+
+    saved_first = store.save_state_version("oc-a", first, StateChange(), ["m-1"])
+    saved_second = store.save_state_version("oc-a", second, StateChange(), ["m-2"])
+
+    assert saved_first.version == 1
+    assert saved_second.version == 2
+    assert store.load_latest_state("oc-a").version == 2
+    assert store.load_state_version("oc-a", 1).todos[0].status == "pending"
+    assert [state.version for state in store.list_state_versions("oc-a")] == [1, 2]
+    assert store.load_latest_state("oc-b") is None
+
+
+def test_store_keeps_state_change_and_analyzed_message_boundary_per_version(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    change = StateChange(added=[StateChangeItem(category="concern", title="预算范围")], current_focus="补充初步报价")
+
+    saved = store.save_state_version("oc-a", CustomerState(), change, ["m-3", "m-4"])
+
+    assert store.load_state_change("oc-a", saved.version) == change
+    assert store.load_analyzed_message_ids("oc-a", saved.version) == ["m-3", "m-4"]
