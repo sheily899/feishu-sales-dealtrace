@@ -53,6 +53,21 @@ def test_feishu_config_reads_role_and_group_allowlists_from_environment():
     assert config.group_allowlist == ["oc_demo", "oc_backup"]
 
 
+def test_feishu_config_deduplicates_groups_and_requires_at_least_one_group():
+    environment = {
+        "FEISHU_APP_ID": "cli_demo",
+        "FEISHU_APP_SECRET": "not-a-real-secret",
+        "FEISHU_ROLE_MAP": '{"ou-customer":"customer"}',
+    }
+
+    assert FeishuConfig.from_env({
+        **environment,
+        "FEISHU_GROUP_ALLOWLIST": "oc_demo, oc_backup,oc_demo, ,oc_backup",
+    }).group_allowlist == ["oc_demo", "oc_backup"]
+    with pytest.raises(ValueError, match="FEISHU_GROUP_ALLOWLIST"):
+        FeishuConfig.from_env(environment)
+
+
 def test_feishu_config_requires_app_credentials_and_valid_roles():
     with pytest.raises(ValueError, match="FEISHU_APP_ID"):
         FeishuConfig.from_env({})

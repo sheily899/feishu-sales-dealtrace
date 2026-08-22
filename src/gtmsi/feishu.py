@@ -39,7 +39,13 @@ class FeishuConfig:
             raise ValueError("FEISHU_ROLE_MAP values must be customer or sales")
         if any(not isinstance(sender_id, str) for sender_id in role_map):
             raise ValueError("FEISHU_ROLE_MAP keys must be sender open IDs")
-        groups = [chat_id.strip() for chat_id in values.get("FEISHU_GROUP_ALLOWLIST", "").split(",") if chat_id.strip()]
+        groups = list(dict.fromkeys(
+            chat_id.strip()
+            for chat_id in values.get("FEISHU_GROUP_ALLOWLIST", "").split(",")
+            if chat_id.strip()
+        ))
+        if not groups:
+            raise ValueError("FEISHU_GROUP_ALLOWLIST must contain at least one group ID")
         return cls(app_id=app_id, app_secret=app_secret, role_map=role_map, group_allowlist=groups)
 
 
