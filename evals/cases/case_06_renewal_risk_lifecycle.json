@@ -1,0 +1,148 @@
+{
+  "schema_version": "lifecycle",
+  "case_id": "case_06_renewal_risk",
+  "source_type": "synthetic",
+  "source_reference": "构造场景，无外部数据来源",
+  "annotation_scope": "focused_tracked_issues",
+  "stage": "续约问题处理",
+  "source_case": "evals/cases/case_06_renewal_risk_source.json",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case06-day1-1", "case06-day1-2", "case06-day1-3"],
+      "expected_operations": [
+        {
+          "issue_key": "renewal_usability_risk",
+          "operation": "create",
+          "category": "risk",
+          "business_object": "renewal",
+          "evidence_message_ids": ["case06-day1-1", "case06-day1-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "renewal_usability_risk",
+          "category": "risk",
+          "business_object": "renewal",
+          "status": "open",
+          "evidence_message_ids": ["case06-day1-1", "case06-day1-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱】委婉表达也必须被识别为续约风险",
+          "expected_behavior": "客户说'用得还行，就是有几个功能不太方便'，措辞委婉、不像强烈投诉，但必须被识别为续约风险并保持 open，不能被当作普通反馈忽略，也不能直接标记为已解决"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case06-day2-1", "case06-day2-2", "case06-day2-3"],
+      "expected_operations": [
+        {
+          "issue_key": "feishu_miniapp_release",
+          "operation": "create",
+          "category": "commitment",
+          "business_object": "renewal_feature",
+          "evidence_message_ids": ["case06-day2-1"]
+        },
+        {
+          "issue_key": "renewal_budget_approval",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "renewal",
+          "evidence_message_ids": ["case06-day2-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "renewal_usability_risk",
+          "category": "risk",
+          "business_object": "renewal",
+          "status": "open",
+          "evidence_message_ids": ["case06-day1-1", "case06-day1-3"]
+        },
+        {
+          "issue_key": "feishu_miniapp_release",
+          "category": "commitment",
+          "business_object": "renewal_feature",
+          "status": "open",
+          "evidence_message_ids": ["case06-day2-1"]
+        },
+        {
+          "issue_key": "renewal_budget_approval",
+          "category": "concern",
+          "business_object": "renewal",
+          "status": "open",
+          "evidence_message_ids": ["case06-day2-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱】有条件的观望态度不等于问题已解决",
+          "expected_behavior": "客户说'如果确实好用的话，那倒是能解决我们的问题，先看看效果'——这是有条件、观望的表态，不能把 renewal_usability_risk 标记为已解决，必须等客户明确确认效果后才能 resolve"
+        },
+        {
+          "name": "预算未批不能被忽略或臆测为即将通过",
+          "expected_behavior": "客户明确说预算还没批、时间不确定，renewal_budget_approval 必须记录为 open，不能编造一个乐观的审批预期"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case06-day3-1", "case06-day3-2", "case06-day3-3"],
+      "expected_operations": [
+        {
+          "issue_key": "renewal_usability_risk",
+          "operation": "resolve",
+          "category": "risk",
+          "business_object": "renewal",
+          "evidence_message_ids": ["case06-day3-1", "case06-day3-2"]
+        },
+        {
+          "issue_key": "renewal_budget_approval",
+          "operation": "resolve",
+          "category": "concern",
+          "business_object": "renewal",
+          "evidence_message_ids": ["case06-day3-2"]
+        },
+        {
+          "issue_key": "send_renewal_contract",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "renewal",
+          "evidence_message_ids": ["case06-day3-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "renewal_usability_risk",
+          "category": "risk",
+          "business_object": "renewal",
+          "status": "resolved",
+          "evidence_message_ids": ["case06-day3-1", "case06-day3-2"]
+        },
+        {
+          "issue_key": "renewal_budget_approval",
+          "category": "concern",
+          "business_object": "renewal",
+          "status": "resolved",
+          "evidence_message_ids": ["case06-day3-2"]
+        },
+        {
+          "issue_key": "send_renewal_contract",
+          "category": "todo",
+          "business_object": "renewal",
+          "status": "open",
+          "evidence_message_ids": ["case06-day3-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "开放判断点：口头续约意向是否等同于续约完成",
+          "expected_behavior": "客户明确说'愿意继续续一年'，构成 renewal_usability_risk 的明确解决证据，应予 resolve；但这是否代表续约流程已'完成'（例如是否需要看到合同签署证据才算完全续约），是业务规则问题。按 case_02 已确立的口径，本 case 不强制要求据此判定续约已完全完成，只要求风险状态被正确标记为已解决，且新增 send_renewal_contract 待办跟踪后续合同发送动作"
+        }
+      ]
+    }
+  ]
+}

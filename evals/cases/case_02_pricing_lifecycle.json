@@ -1,0 +1,81 @@
+{
+  "schema_version": "lifecycle-v2",
+  "case_id": "case_02_价格商谈_厚德科技",
+  "source_case": "evals/cases/case_02_pricing_source.json",
+  "annotation_scope": "focused_tracked_issues",
+  "note": "独立 v2 口径；不修改或覆盖 legacy Golden。只标注主报价确认与附加部署费用两个持续事项。",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case02-day1-1", "case02-day1-2", "case02-day1-3", "case02-day1-4"],
+      "expected_operations": [
+        {
+          "issue_key": "base_offer_approval",
+          "operation": "create",
+          "category": "concern",
+          "evidence_message_ids": ["case02-day1-2", "case02-day1-4"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "base_offer_approval",
+          "category": "concern",
+          "status": "open",
+          "evidence_message_ids": ["case02-day1-2", "case02-day1-4"]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case02-day2-1", "case02-day2-2", "case02-day2-3"],
+      "expected_operations": [
+        {
+          "issue_key": "deployment_fee_approval",
+          "operation": "create",
+          "category": "concern",
+          "evidence_message_ids": ["case02-day2-2"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "base_offer_approval",
+          "category": "concern",
+          "status": "open",
+          "evidence_message_ids": ["case02-day1-2", "case02-day1-4"]
+        },
+        {
+          "issue_key": "deployment_fee_approval",
+          "category": "concern",
+          "status": "open",
+          "evidence_message_ids": ["case02-day2-2"]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case02-day3-1", "case02-day3-2", "case02-day3-3"],
+      "expected_operations": [
+        {
+          "issue_key": "base_offer_approval",
+          "operation": "resolve",
+          "category": "concern",
+          "evidence_message_ids": ["case02-day3-1", "case02-day3-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "base_offer_approval",
+          "category": "concern",
+          "status": "resolved",
+          "evidence_message_ids": ["case02-day3-1", "case02-day3-3"]
+        },
+        {
+          "issue_key": "deployment_fee_approval",
+          "category": "concern",
+          "status": "open",
+          "evidence_message_ids": ["case02-day2-2"]
+        }
+      ]
+    }
+  ]
+}

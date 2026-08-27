@@ -1,0 +1,145 @@
+{
+  "schema_version": "lifecycle",
+  "case_id": "case_03_product_demo",
+  "source_type": "synthetic",
+  "source_reference": "构造场景，无外部数据来源",
+  "annotation_scope": "focused_tracked_issues",
+  "stage": "产品演示",
+  "source_case": "evals/cases/case_03_product_demo_source.json",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case03-day1-1", "case03-day1-2"],
+      "expected_operations": [
+        {
+          "issue_key": "demo_security_concern",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "security",
+          "evidence_message_ids": ["case03-day1-1"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "demo_security_concern",
+          "category": "concern",
+          "business_object": "security",
+          "status": "open",
+          "evidence_message_ids": ["case03-day1-1"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "承诺发送资料不等于顾虑已解决",
+          "expected_behavior": "销售承诺发送安全白皮书只是一个待兑现动作，不能据此把 demo_security_concern 标记为已解决，必须等客户明确认可后才能 resolve"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case03-day2-1", "case03-day2-2", "case03-day2-3"],
+      "expected_operations": [
+        {
+          "issue_key": "demo_security_concern",
+          "operation": "resolve",
+          "category": "concern",
+          "business_object": "security",
+          "evidence_message_ids": ["case03-day2-2"]
+        },
+        {
+          "issue_key": "trial_environment_availability",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "trial_environment",
+          "evidence_message_ids": ["case03-day2-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "demo_security_concern",
+          "category": "concern",
+          "business_object": "security",
+          "status": "resolved",
+          "evidence_message_ids": ["case03-day2-2"]
+        },
+        {
+          "issue_key": "trial_environment_availability",
+          "category": "concern",
+          "business_object": "trial_environment",
+          "status": "open",
+          "evidence_message_ids": ["case03-day2-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "resolve 的证据必须来自客户确认，不能来自销售的发送动作",
+          "expected_behavior": "resolve demo_security_concern 的证据必须引用 case03-day2-2（客户明确认可'基本能满足安全要求'），不能引用 case03-day2-1（销售发送资料的动作），发送动作本身不构成解决证据"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case03-day3-1", "case03-day3-2", "case03-day3-3"],
+      "expected_operations": [
+        {
+          "issue_key": "customer_internal_alignment_risk",
+          "operation": "create",
+          "category": "risk",
+          "business_object": "competitive_comparison",
+          "evidence_message_ids": ["case03-day3-1"]
+        },
+        {
+          "issue_key": "send_competitor_comparison",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "sales_enablement",
+          "evidence_message_ids": ["case03-day3-2", "case03-day3-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "demo_security_concern",
+          "category": "concern",
+          "business_object": "security",
+          "status": "resolved",
+          "evidence_message_ids": ["case03-day2-2"]
+        },
+        {
+          "issue_key": "trial_environment_availability",
+          "category": "concern",
+          "business_object": "trial_environment",
+          "status": "open",
+          "evidence_message_ids": ["case03-day2-3"]
+        },
+        {
+          "issue_key": "customer_internal_alignment_risk",
+          "category": "risk",
+          "business_object": "competitive_comparison",
+          "status": "open",
+          "evidence_message_ids": ["case03-day3-1"]
+        },
+        {
+          "issue_key": "send_competitor_comparison",
+          "category": "todo",
+          "business_object": "sales_enablement",
+          "status": "open",
+          "evidence_message_ids": ["case03-day3-2", "case03-day3-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "商机阶段不应被误判为已推进到价格商谈或签约",
+          "expected_behavior": "客户说'具体合作的事我们内部还要再讨论'，不得据此把商机阶段推进为价格商谈或签约阶段，阶段应保持为产品演示"
+        },
+        {
+          "name": "IT 部门要求对比竞品是流失/竞争风险信号",
+          "expected_behavior": "不能忽略'IT 部门还想再对比一家'这条信息，也不能误判为已解决的顾虑，应作为 open 状态的风险持续跟踪"
+        },
+        {
+          "name": "trial_environment_availability 应从 day2 延续为 open",
+          "expected_behavior": "day3 没有任何消息提及试用环境开通进展，该事项必须原样保持 open，不能因本轮无提及就被判定为已解决或从状态中消失"
+        }
+      ]
+    }
+  ]
+}

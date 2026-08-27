@@ -1,0 +1,123 @@
+{
+  "case_id": "case_01_需求探索_厚德科技",
+  "stage": "需求探索",
+  "source_type": "adapted_from_public_dataset",
+  "primary_source": "CrossWOZ (thu-coai, CC BY 4.0)",
+  "adapted_dynamic": "约束逐轮澄清、未提及信息保持未知",
+  "note": "对话内容为原创构造，仅借鉴 CrossWOZ 中'客户约束条件随对话逐轮补充、未被提及的槽位不应被系统臆测填充'这一状态动态模式；不包含 CrossWOZ 原始对话文本或翻译。",
+  "customer_name": "厚德科技（虚构公司，仅用于测试）",
+
+  "days": [
+    {
+      "day": 1,
+      "new_messages": [
+        {"speaker": "客户", "text": "您好，想先了解一下你们的CRM产品大概是做什么的。"},
+        {"speaker": "销售", "text": "我们主要做面向中小企业的轻量级CRM，可以记录客户跟进、销售阶段、待办提醒这些。您这边是想解决什么问题呢？"},
+        {"speaker": "客户", "text": "我们现在跟客户沟通全靠飞书群和Excel，经常有信息丢的情况。"},
+        {"speaker": "销售", "text": "了解，那您比较关心的是记录留存还是团队协作这块？"},
+        {"speaker": "客户", "text": "应该是记录留存吧，具体还没想太清楚。"}
+      ],
+      "standard_state_snapshot": {
+        "stage": "需求探索",
+        "needs": ["希望解决客户沟通信息留存问题（初步表达，尚未完全明确）"],
+        "unresolved_concerns": [],
+        "commitments": [],
+        "todos": [],
+        "stakeholders": [],
+        "risks": [],
+        "scheduled_next_steps": []
+      },
+      "standard_state_change": {
+        "added": ["需求：客户沟通信息容易丢失，希望改善记录留存"],
+        "resolved": [],
+        "status_transitions": [],
+        "current_focus": "了解客户当前痛点",
+        "evidence": ["我们现在跟客户沟通全靠飞书群和Excel，经常有信息丢的情况。"]
+      },
+      "trap_points": [
+        {
+          "description": "客户仅表达了模糊痛点，未提及团队规模、预算、时间线",
+          "expected_behavior": "系统不应对团队规模/预算/时间线做任何臆测填充，这些字段应保持缺省（未知），不能因为'中小企业'这类背景词就推断出具体人数或预算区间"
+        }
+      ]
+    },
+
+    {
+      "day": 2,
+      "new_messages": [
+        {"speaker": "客户", "text": "我们主要在飞书里跟客户沟通，如果CRM能跟飞书打通会比较方便。"},
+        {"speaker": "销售", "text": "这个我们是支持的，可以自动同步飞书群聊记录。您这边团队大概多少人在用？"},
+        {"speaker": "客户", "text": "先不说这个，我想先看看跟飞书打通具体怎么操作的。"},
+        {"speaker": "销售", "text": "好的，我可以先给您发一份对接文档。"}
+      ],
+      "standard_state_snapshot": {
+        "stage": "需求探索",
+        "needs": [
+          "希望解决客户沟通信息留存问题（初步表达，尚未完全明确）",
+          "需要与飞书打通，自动同步群聊记录"
+        ],
+        "unresolved_concerns": [],
+        "commitments": ["销售将发送飞书对接文档"],
+        "todos": ["发送飞书对接文档"],
+        "stakeholders": [],
+        "risks": [],
+        "scheduled_next_steps": []
+      },
+      "standard_state_change": {
+        "added": [
+          "需求：需要与飞书打通",
+          "销售承诺：发送飞书对接文档"
+        ],
+        "resolved": [],
+        "status_transitions": [],
+        "current_focus": "飞书对接可行性",
+        "evidence": ["我们主要在飞书里跟客户沟通，如果CRM能跟飞书打通会比较方便。", "好的，我可以先给您发一份对接文档。"]
+      },
+      "trap_points": [
+        {
+          "description": "客户被问及团队规模时明确回避（'先不说这个'）",
+          "expected_behavior": "团队规模必须继续保持'未知'状态，不能因为客户主动跳过问题就臆测出任何具体数字，也不能错误标记为'已确认不重要'——回避回答和明确表态是两回事"
+        }
+      ]
+    },
+
+    {
+      "day": 3,
+      "new_messages": [
+        {"speaker": "客户", "text": "文档看了，看起来符合我们的需求。"},
+        {"speaker": "销售", "text": "太好了，那接下来是否可以约个时间做一次演示？"},
+        {"speaker": "客户", "text": "可以，我们下周二下午有空。"}
+      ],
+      "standard_state_snapshot": {
+        "stage": "产品演示",
+        "needs": [
+          "希望解决客户沟通信息留存问题（初步表达，尚未完全明确）",
+          "需要与飞书打通，自动同步群聊记录"
+        ],
+        "unresolved_concerns": [],
+        "commitments": ["销售将发送飞书对接文档"],
+        "todos": ["安排下周二下午产品演示"],
+        "stakeholders": [],
+        "risks": [],
+        "scheduled_next_steps": ["下周二下午：产品演示"]
+      },
+      "standard_state_change": {
+        "added": ["下一步：下周二下午产品演示"],
+        "resolved": ["待办：飞书对接文档已完成"],
+        "status_transitions": [],
+        "current_focus": "准备产品演示",
+        "evidence": ["可以，我们下周二下午有空。"]
+      },
+      "trap_points": [
+        {
+          "description": "客户说'文档看了，符合我们的需求'，措辞接近'已确认采购意向'，但实际只是认可文档内容",
+          "expected_behavior": "不能把这句话误判为'客户已确认采购意向'或'需求收集已完全完成'——客户只是认可了对接方案的可行性，仍需通过演示环节才能进一步推进，需求探索阶段的核心待办（是否符合更全面的需求）尚未完全闭环"
+        },
+        {
+          "description": "本轮触发了阶段迁移（需求探索 → 产品演示）",
+          "expected_behavior": "系统应正确识别'约定了演示时间'是阶段迁移的触发信号，并给出触发迁移的具体原文证据，而不是无依据地跳阶段"
+        }
+      ]
+    }
+  ]
+}

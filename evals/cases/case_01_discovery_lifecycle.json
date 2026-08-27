@@ -1,0 +1,111 @@
+{
+  "schema_version": "lifecycle-v2",
+  "case_id": "case_01_需求探索_厚德科技",
+  "source_case": "evals/cases/case_01_discovery_source.json",
+  "annotation_scope": "focused_tracked_issues",
+  "note": "独立 v2 口径；跟踪沟通留存需求、飞书集成需求、发送文档待办和演示安排，不修改 legacy Golden。",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case01-day1-1", "case01-day1-2", "case01-day1-3", "case01-day1-4", "case01-day1-5"],
+      "expected_operations": [
+        {
+          "issue_key": "communication_record_retention",
+          "operation": "create",
+          "category": "need",
+          "evidence_message_ids": ["case01-day1-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "communication_record_retention",
+          "category": "need",
+          "status": "open",
+          "evidence_message_ids": ["case01-day1-3"]
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case01-day2-1", "case01-day2-2", "case01-day2-3", "case01-day2-4"],
+      "expected_operations": [
+        {
+          "issue_key": "feishu_integration",
+          "operation": "create",
+          "category": "need",
+          "evidence_message_ids": ["case01-day2-1"]
+        },
+        {
+          "issue_key": "send_integration_document",
+          "operation": "create",
+          "category": "todo",
+          "evidence_message_ids": ["case01-day2-4"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "communication_record_retention",
+          "category": "need",
+          "status": "open",
+          "evidence_message_ids": ["case01-day1-3"]
+        },
+        {
+          "issue_key": "feishu_integration",
+          "category": "need",
+          "status": "open",
+          "evidence_message_ids": ["case01-day2-1"]
+        },
+        {
+          "issue_key": "send_integration_document",
+          "category": "todo",
+          "status": "open",
+          "evidence_message_ids": ["case01-day2-4"]
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case01-day3-1", "case01-day3-2", "case01-day3-3"],
+      "expected_operations": [
+        {
+          "issue_key": "send_integration_document",
+          "operation": "resolve",
+          "category": "todo",
+          "evidence_message_ids": ["case01-day3-1"]
+        },
+        {
+          "issue_key": "product_demo_schedule",
+          "operation": "create",
+          "category": "next_step",
+          "evidence_message_ids": ["case01-day3-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "communication_record_retention",
+          "category": "need",
+          "status": "open",
+          "evidence_message_ids": ["case01-day1-3"]
+        },
+        {
+          "issue_key": "feishu_integration",
+          "category": "need",
+          "status": "open",
+          "evidence_message_ids": ["case01-day2-1"]
+        },
+        {
+          "issue_key": "send_integration_document",
+          "category": "todo",
+          "status": "resolved",
+          "evidence_message_ids": ["case01-day3-1"]
+        },
+        {
+          "issue_key": "product_demo_schedule",
+          "category": "next_step",
+          "status": "open",
+          "evidence_message_ids": ["case01-day3-3"]
+        }
+      ]
+    }
+  ]
+}

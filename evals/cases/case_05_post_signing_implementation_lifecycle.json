@@ -1,0 +1,228 @@
+{
+  "schema_version": "lifecycle",
+  "case_id": "case_05_post_signing_implementation",
+  "source_type": "synthetic",
+  "source_reference": "构造场景，无外部数据来源",
+  "annotation_scope": "focused_tracked_issues",
+  "stage": "签约后实施",
+  "source_case": "evals/cases/case_05_post_signing_implementation_source.json",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case05-day1-1", "case05-day1-2", "case05-day1-3"],
+      "expected_operations": [
+        {
+          "issue_key": "customer_implementation_owner",
+          "operation": "create",
+          "category": "stakeholder",
+          "business_object": "implementation",
+          "evidence_message_ids": ["case05-day1-2"]
+        },
+        {
+          "issue_key": "prepare_migration_data",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day1-3"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "customer_implementation_owner",
+          "category": "stakeholder",
+          "business_object": "implementation",
+          "status": "open",
+          "evidence_message_ids": ["case05-day1-2"]
+        },
+        {
+          "issue_key": "prepare_migration_data",
+          "category": "todo",
+          "business_object": "data_migration",
+          "status": "open",
+          "evidence_message_ids": ["case05-day1-3"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "阶段应直接识别为签约后实施",
+          "expected_behavior": "对话提到'合同签好了''实施顾问对接''数据迁移'，阶段应识别为签约后实施，不应因术语交叉而误判仍处于价格商谈或产品演示阶段"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case05-day2-1", "case05-day2-2", "case05-day2-3", "case05-day2-4"],
+      "expected_operations": [
+        {
+          "issue_key": "data_quality_issue",
+          "operation": "create",
+          "category": "risk",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day2-1"]
+        },
+        {
+          "issue_key": "review_data_samples",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day2-2"]
+        },
+        {
+          "issue_key": "go_live_date",
+          "operation": "create",
+          "category": "next_step",
+          "business_object": "launch",
+          "evidence_message_ids": ["case05-day2-4"]
+        },
+        {
+          "issue_key": "schedule_trainings",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "implementation_training",
+          "evidence_message_ids": ["case05-day2-4"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "prepare_migration_data",
+          "category": "todo",
+          "business_object": "data_migration",
+          "status": "open",
+          "evidence_message_ids": ["case05-day1-3"]
+        },
+        {
+          "issue_key": "data_quality_issue",
+          "category": "risk",
+          "business_object": "data_migration",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-1"]
+        },
+        {
+          "issue_key": "review_data_samples",
+          "category": "todo",
+          "business_object": "data_migration",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-2"]
+        },
+        {
+          "issue_key": "go_live_date",
+          "category": "next_step",
+          "business_object": "launch",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-4"]
+        },
+        {
+          "issue_key": "schedule_trainings",
+          "category": "todo",
+          "business_object": "implementation_training",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-4"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱】'差不多了'不等于'已完成'",
+          "expected_behavior": "客户说数据'整理得差不多了'——这是接近完成、非明确完成，prepare_migration_data 待办不能被标记为已完成，必须保持 open，且随后出现的数据质量问题进一步说明这项工作实际尚未真正结束"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case05-day3-1", "case05-day3-2", "case05-day3-3", "case05-day3-4"],
+      "expected_operations": [
+        {
+          "issue_key": "prepare_migration_data",
+          "operation": "resolve",
+          "category": "todo",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "data_quality_issue",
+          "operation": "resolve",
+          "category": "risk",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "review_data_samples",
+          "operation": "resolve",
+          "category": "todo",
+          "business_object": "data_migration",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "first_training_session",
+          "operation": "create",
+          "category": "next_step",
+          "business_object": "implementation_training",
+          "evidence_message_ids": ["case05-day3-2"]
+        },
+        {
+          "issue_key": "custom_report_pricing",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "custom_feature_pricing",
+          "evidence_message_ids": ["case05-day3-3", "case05-day3-4"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "prepare_migration_data",
+          "category": "todo",
+          "business_object": "data_migration",
+          "status": "resolved",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "data_quality_issue",
+          "category": "risk",
+          "business_object": "data_migration",
+          "status": "resolved",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "review_data_samples",
+          "category": "todo",
+          "business_object": "data_migration",
+          "status": "resolved",
+          "evidence_message_ids": ["case05-day3-1"]
+        },
+        {
+          "issue_key": "go_live_date",
+          "category": "next_step",
+          "business_object": "launch",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-4"]
+        },
+        {
+          "issue_key": "schedule_trainings",
+          "category": "todo",
+          "business_object": "implementation_training",
+          "status": "open",
+          "evidence_message_ids": ["case05-day2-4"]
+        },
+        {
+          "issue_key": "first_training_session",
+          "category": "next_step",
+          "business_object": "implementation_training",
+          "status": "open",
+          "evidence_message_ids": ["case05-day3-2"]
+        },
+        {
+          "issue_key": "custom_report_pricing",
+          "category": "concern",
+          "business_object": "custom_feature_pricing",
+          "status": "open",
+          "evidence_message_ids": ["case05-day3-3", "case05-day3-4"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱，对应设计文档明确要求】追加功能收费不应回退阶段或关闭实施事项",
+          "expected_behavior": "客户询问'追加自定义报表功能是否收费'，措辞类似价格商谈，但不得把商机阶段回退为价格商谈，也不得关闭 go_live_date、schedule_trainings 等既有实施事项；应新建独立顾虑 custom_report_pricing 单独跟踪，阶段应继续保持为签约后实施"
+        }
+      ]
+    }
+  ]
+}

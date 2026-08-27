@@ -1,0 +1,146 @@
+{
+  "schema_version": "lifecycle",
+  "case_id": "case_04_technical_integration",
+  "source_type": "synthetic",
+  "source_reference": "构造场景，无外部数据来源",
+  "annotation_scope": "focused_tracked_issues",
+  "stage": "技术接入讨论",
+  "source_case": "evals/cases/case_04_technical_integration_source.json",
+  "days": [
+    {
+      "day": 1,
+      "message_ids": ["case04-day1-1", "case04-day1-2"],
+      "expected_operations": [
+        {
+          "issue_key": "customer_technical_owner",
+          "operation": "create",
+          "category": "stakeholder",
+          "business_object": "technical_decision",
+          "evidence_message_ids": ["case04-day1-1"]
+        },
+        {
+          "issue_key": "api_rate_limit_concern",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "api_permission",
+          "evidence_message_ids": ["case04-day1-1"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "customer_technical_owner",
+          "category": "stakeholder",
+          "business_object": "technical_decision",
+          "status": "open",
+          "evidence_message_ids": ["case04-day1-1"]
+        },
+        {
+          "issue_key": "api_rate_limit_concern",
+          "category": "concern",
+          "business_object": "api_permission",
+          "status": "open",
+          "evidence_message_ids": ["case04-day1-1"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "发送文档不等于顾虑已解决",
+          "expected_behavior": "销售发送接口文档只是待兑现动作，不能据此把 api_rate_limit_concern 标记为已解决"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "message_ids": ["case04-day2-1", "case04-day2-2", "case04-day2-3"],
+      "expected_operations": [
+        {
+          "issue_key": "api_rate_limit_concern",
+          "operation": "resolve",
+          "category": "concern",
+          "business_object": "api_permission",
+          "evidence_message_ids": ["case04-day2-1"]
+        },
+        {
+          "issue_key": "data_department_isolation_concern",
+          "operation": "create",
+          "category": "concern",
+          "business_object": "data_permission",
+          "evidence_message_ids": ["case04-day2-1", "case04-day2-2"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "api_rate_limit_concern",
+          "category": "concern",
+          "business_object": "api_permission",
+          "status": "resolved",
+          "evidence_message_ids": ["case04-day2-1"]
+        },
+        {
+          "issue_key": "data_department_isolation_concern",
+          "category": "concern",
+          "business_object": "data_permission",
+          "status": "open",
+          "evidence_message_ids": ["case04-day2-1", "case04-day2-2"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱】话题被搁置不等于已解决",
+          "expected_behavior": "客户说'先放一放'——这是话题被暂时搁置，data_department_isolation_concern 必须继续保持 open，不能因为对话没有立刻给出结论就被系统遗漏或误判为客户已接受"
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "message_ids": ["case04-day3-1", "case04-day3-2"],
+      "expected_operations": [
+        {
+          "issue_key": "data_department_isolation_concern",
+          "operation": "status_transition",
+          "category": "concern",
+          "business_object": "data_permission",
+          "from_status": "open",
+          "to_status": "accepted_workaround",
+          "evidence_message_ids": ["case04-day3-1"]
+        },
+        {
+          "issue_key": "notify_department_isolation_release",
+          "operation": "create",
+          "category": "todo",
+          "business_object": "data_permission",
+          "evidence_message_ids": ["case04-day3-2"]
+        }
+      ],
+      "expected_state": [
+        {
+          "issue_key": "api_rate_limit_concern",
+          "category": "concern",
+          "business_object": "api_permission",
+          "status": "resolved",
+          "evidence_message_ids": ["case04-day2-1"]
+        },
+        {
+          "issue_key": "data_department_isolation_concern",
+          "category": "concern",
+          "business_object": "data_permission",
+          "status": "accepted_workaround",
+          "evidence_message_ids": ["case04-day3-1"]
+        },
+        {
+          "issue_key": "notify_department_isolation_release",
+          "category": "todo",
+          "business_object": "data_permission",
+          "status": "open",
+          "evidence_message_ids": ["case04-day3-2"]
+        }
+      ],
+      "trap_cases": [
+        {
+          "name": "【核心陷阱】接受临时方案 ≠ 需求已被满足",
+          "expected_behavior": "客户接受的是账号权限的临时替代方案，部门级数据隔离这个原始需求本身并未被产品满足，不能把这次让步等同于 resolve（问题已解决），应建模为 status_transition（open → accepted_workaround），并新增一条独立待办跟踪未来功能上线后的告知义务。同一业务事件（data_department_isolation_concern）不能同时出现 resolve 和 status_transition 两条操作。"
+        }
+      ]
+    }
+  ]
+}
