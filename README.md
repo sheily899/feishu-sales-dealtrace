@@ -1,87 +1,89 @@
-# DealTrace｜飞书销售对话事项追踪 Agent
+# DealTrace | Feishu Sales Conversation Issue Tracker
 
-DealTrace 面向企业销售团队，从飞书群聊中提取客户需求、顾虑、待办和风险，并跨轮保存事项状态与原文证据，帮助销售确认“客户想要什么、担心什么、下一步做什么”。
+[中文说明](README.zh-CN.md)
+
+DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments from Feishu group chats, then preserves each issue’s status and source evidence across conversations.
 
 ## Demo
 
-![DealTrace 工作台](docs/assets/demo-workbench.png)
+![DealTrace workbench](docs/assets/demo-workbench.png)
 
-```powershell
+![DealTrace workbench overview](docs/assets/demo-workbench-overview.png)
+
+```bash
 python -m venv .venv
-.venv\Scripts\activate
+source .venv/bin/activate
 pip install -e ".[llm]"
 python -m dealtrace workbench --port 8765
 ```
 
-打开 <http://127.0.0.1:8765/>。演示模式使用内置脱敏消息；点击“生成分析”需要可用的 DeepSeek API Key。
+Open <http://127.0.0.1:8765/>. The demo uses bundled anonymized messages; live analysis requires a working DeepSeek API key.
 
-## 核心流程
+## Workflow
 
 ```text
-飞书群聊 → 消息过滤与角色识别 → 客户事项提取 → 历史事项关联
-        → 状态合并与证据校验 → 客户状态快照与原文回溯
+Feishu chat → message and role normalization → issue extraction
+            → historical linking → state merge and evidence checks
+            → customer snapshot with source-message links
 ```
 
-每个事项拥有独立身份、类别、状态、更新时间和证据历史。未解决事项不会因为本轮没有被提到就自动消失；状态变化必须引用真实聊天消息，证据不足的变化会被拒绝并保留旧状态。
+Unresolved issues are not removed merely because the next conversation changes topic. Unsupported state changes are rejected and the previous state is preserved.
 
-## 能做什么
+## Features
 
-- 规范化飞书群聊事件，区分客户、销售等角色；
-- 识别需求、顾虑、风险、相关角色、承诺、待办和下一步；
-- 跨天保留未解决事项，支持新增、更新、暂时接受替代方案和解决；
-- 将状态变化关联到具体消息，支持页面内证据定位；
-- 保存客户状态版本、分析结果和拒绝原因；
-- 通过命令行处理录音转写文本并输出结构化报告。
+- Normalize Feishu events and identify customer/sales roles;
+- Extract needs, concerns, risks, stakeholders, commitments, todos, and next steps;
+- Preserve unresolved issues across days;
+- Support create, update, accepted-workaround, and resolved states;
+- Link accepted changes to source messages;
+- Save state versions, analysis output, and rejection reasons.
 
-## 接入真实飞书群
+## Feishu integration
 
-复制 `.env.example` 为 `.env`，填写飞书应用凭证、群聊白名单和角色映射：
+Copy `.env.example` to `.env`, configure Feishu credentials, chat allowlist, and role mapping, then run:
 
-```powershell
+```bash
 pip install -e ".[llm,feishu]"
 python -m dealtrace workbench --feishu --port 8766
 ```
 
-真实模式将消息和状态保存到本地 `data/workbench.sqlite3`。当前版本是单机原型，不包含登录、多租户、完整 CRM 权限和自动任务派发，不应直接暴露到公网。
+Live mode stores messages and state in `data/workbench.sqlite3`. It is a single-machine prototype without authentication, multi-tenancy, full CRM permissions, or automatic task dispatch.
 
-## 评测结果
+## Evaluation
 
-评测集覆盖 6 类销售场景、6 个案例和 18 轮连续对话：需求探索、产品演示、技术接入、价格商谈、签约后实施和续约问题处理。
+The evaluation set contains six sales scenarios, six cases, and 18 sequential rounds covering discovery, product demo, technical integration, pricing, post-signing implementation, and renewal handling.
 
-当前正式评测（`deepseek-v4-flash`、seed=42、单次运行）：
+Current internal evaluation (`deepseek-v4-flash`, seed 42, single run):
 
-| 指标 | 结果 | 用户含义 |
+| Metric | Result | Meaning |
 |---|---:|---|
-| 事项变化判断精确率 | 84.6% | 写入的事项变化中，正确的比例 |
-| 事项变化召回率 | 61.1% | 应识别的事项变化中，实际识别的比例 |
-| 客户状态判断精确率 | 94.1% | 保存到客户状态中的内容，正确的比例 |
-| 客户状态召回率 | 66.7% | 应保存的状态中，实际保存的比例 |
-| 原文证据可追溯率 | 100% | 有效结果能定位到聊天原文的比例 |
+| Change precision | 84.6% | Correct accepted changes among predictions |
+| Change recall | 61.1% | Gold changes that were identified |
+| State precision | 94.1% | Correct entries among saved state items |
+| State recall | 66.7% | Gold state items that were saved |
+| Evidence traceability | 100% | Accepted results linked to source messages |
 
-这些数字来自小规模内部评测，用于验证短周期多轮追踪能力，不代表数月、数百条消息的生产效果。
+These figures come from a small internal set and validate short-horizon multi-turn tracking, not months-long production conversations.
 
-```powershell
+```bash
 python evals/run_eval.py
 ```
 
-## 目录
+## Layout
 
 ```text
-src/dealtrace/     核心应用、飞书接入、模型调用和状态管理
-fixtures/          脱敏本地演示事件
-prompts/           分析提示词
-schemas/           输出结构定义
-evals/             Golden 数据和评测脚本
-tests/             自动化测试
+src/dealtrace/     Core application, Feishu integration, LLM, and state logic
+fixtures/          Anonymized local demo events
+prompts/           Analysis prompts
+schemas/           Output schemas
+evals/             Golden cases and evaluators
+tests/             Automated tests
 ```
 
-## 隐私与安全
+## Privacy and security
 
-- 不要提交 `.env`、API Key 或真实客户聊天记录；
-- 公开示例仅用于演示和测试；
-- 生产接入前应补充登录、权限、数据保留和脱敏策略；
-- 模型 API 不可用时，可使用已保存的离线回放结果。
+Never commit `.env`, API keys, or real customer conversations. Add authentication, authorization, retention, and redaction controls before production use.
 
 ## License
 
-Apache-2.0，详见 [LICENSE](LICENSE)。
+Apache-2.0. See [LICENSE](LICENSE).
