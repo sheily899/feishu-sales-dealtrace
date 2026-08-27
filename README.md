@@ -6,22 +6,15 @@ DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments 
 
 ## Demo
 
-> **[Launch the local demo](http://127.0.0.1:8765/)** (start the command below first)
+> **[Try the offline demo](https://sheily899.github.io/feishu-sales-dealtrace/)** — opens directly in the browser; no setup or API key required.
 
 ![DealTrace workbench](docs/assets/demo-workbench.png)
 
 ![DealTrace workbench overview](docs/assets/demo-workbench-overview.png)
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[llm]"
-python -m dealtrace workbench --port 8765
-```
+The public demo uses bundled anonymized messages and a precomputed report. It never calls a model and does not consume API quota.
 
-Open <http://127.0.0.1:8765/>. The demo uses bundled anonymized messages. Click **Offline demo** to load a bundled report without calling a model or consuming API quota; **Generate analysis** calls DeepSeek.
-
-Demo path: start the server → open the page → select “演示客户 A” → click **离线演示** → inspect issues, state, and source evidence.
+Demo path: open the public link → inspect issues, state, and source evidence.
 
 ## Workflow
 

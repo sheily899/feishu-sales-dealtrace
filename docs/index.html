@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DealTrace 离线演示</title>
+<style>
+:root{--ink:#17232c;--muted:#6b7984;--line:#dce4e8;--accent:#13756b;--soft:#f4f8f7}*{box-sizing:border-box}body{margin:0;background:#f4f7f6;color:var(--ink);font:16px Arial,"Microsoft YaHei",sans-serif}main{max-width:1200px;margin:auto;padding:32px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.eyebrow{font-size:12px;font-weight:bold;letter-spacing:1px;color:var(--accent)}h1{margin:6px 0;font-size:30px}h2{font-size:21px}.badge{color:var(--accent);border:1px solid #9ac7c0;border-radius:999px;padding:8px 12px;font-size:13px}.grid{display:grid;grid-template-columns:38% 62%;background:#fffefa;border:1px solid var(--line)}aside,article{padding:24px}aside{border-right:1px solid var(--line)}.message{padding:16px 0;border-bottom:1px solid #edf0f1}.who{font-weight:bold;color:#885918}.sales .who{color:var(--accent)}.time{color:var(--muted);font-size:12px;margin-left:8px}.item{border-left:3px solid #79aaa3;background:var(--soft);padding:12px 14px;margin:10px 0}.evidence{color:var(--accent);font-size:13px;text-decoration:underline}.note{color:var(--muted);font-size:14px}@media(max-width:800px){main{padding:16px}.grid{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+<main>
+<header><div><div class="eyebrow">DEALTRACE · OFFLINE DEMO</div><h1>飞书销售对话事项追踪</h1><p class="note">预置数据演示 · 不调用模型 · 不消耗 API 额度</p></div><span class="badge">离线演示</span></header>
+<section class="grid"><aside><h2>演示客户 A</h2><p class="note">来源：飞书测试数据 · 4 条有效消息</p><h2>群聊记录</h2>
+<div class="message"><span class="who">客户</span><span class="time">10:01</span><p>我们主要担心 CRM 对接会不会很麻烦。</p></div>
+<div class="message sales"><span class="who">销售</span><span class="time">10:03</span><p>可以先安排技术同事确认接口。</p></div>
+<div class="message"><span class="who">客户</span><span class="time">10:05</span><p>还有类似客户案例吗？</p></div>
+<div class="message sales"><span class="who">销售</span><span class="time">10:07</span><p>有，我下周一前发给您。</p></div></aside>
+<article><div class="eyebrow">AI ANALYSIS</div><h2>销售沟通分析</h2><p>客户担心 CRM 对接复杂，并希望查看类似客户案例；销售已承诺下周一前发送案例。</p><h3>沟通阶段：需求探索</h3>
+<h3>客户需求</h3><div class="item"><strong>确认 CRM 对接可行性</strong><p>客户希望确认对接过程是否复杂。</p><div class="evidence">原文依据：客户：我们主要担心 CRM 对接会不会很麻烦。</div></div><div class="item"><strong>参考类似客户案例</strong><p>客户希望了解类似客户的实施效果。</p><div class="evidence">原文依据：客户：还有类似客户案例吗？</div></div>
+<h3>客户顾虑</h3><div class="item"><strong>CRM 对接复杂性</strong><p>客户担心技术难度和实施成本。</p><div class="evidence">原文依据：客户：我们主要担心 CRM 对接会不会很麻烦。</div></div>
+<h3>销售承诺与待办</h3><div class="item"><strong>发送客户案例</strong><p>销售承诺下周一前发送相关案例。</p><div class="evidence">原文依据：销售：有，我下周一前发给您。</div></div>
+<h3>下一步建议</h3><div class="item"><strong>安排技术确认并跟进案例反馈</strong><p>进一步确认接口可行性，发送案例后跟进客户反馈。</p><div class="evidence">原文依据：销售：可以先安排技术同事确认接口。</div></div>
+<p class="note">提示：这是预置结果，用于体验页面结构和证据回溯方式；不会发起任何网络模型调用。</p></article></section>
+</main>
+</html>

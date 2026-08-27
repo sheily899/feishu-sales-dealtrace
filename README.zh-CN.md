@@ -6,22 +6,15 @@ DealTrace 面向企业销售团队，从飞书群聊中提取客户需求、顾�
 
 ## Demo
 
-> **[点击启动本地 Demo](http://127.0.0.1:8765/)**（需先按下方命令启动）
+> **[点击体验离线 Demo](https://sheily899.github.io/feishu-sales-dealtrace/)**：浏览器直接打开，无需安装、命令或 API Key。
 
 ![DealTrace 工作台](docs/assets/demo-workbench.png)
 
 ![工作台总览](docs/assets/demo-workbench-overview.png)
 
-```powershell
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e ".[llm]"
-python -m dealtrace workbench --port 8765
-```
+公开 Demo 使用内置脱敏消息和预置分析报告，不调用模型、不消耗 API 额度。
 
-打开 <http://127.0.0.1:8765/>。演示模式使用内置脱敏消息。点击“离线演示”会直接加载预置报告，不调用模型、不消耗 API 额度；点击“生成分析”才会调用 DeepSeek。
-
-完整体验路径：启动服务 → 打开页面 → 左侧选择“演示客户 A” → 点击“离线演示” → 查看事项、状态和原文依据。
+完整体验路径：打开公开链接 → 查看对话、事项、状态和原文依据。
 
 ## 核心流程
 
