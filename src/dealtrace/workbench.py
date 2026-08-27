@@ -362,7 +362,10 @@ class MultiChatWorkbench:
         return self._workbench(chat_id).analyze()
 
     def chat_summaries(self) -> list[dict]:
-        return self.store.load_chat_summaries(self.chat_ids)
+        summaries = self.store.load_chat_summaries(self.chat_ids)
+        for summary in summaries:
+            summary["stage"] = display_call_type(summary.get("stage"))
+        return summaries
 
 
 def create_workbench_server(host: str, port: int, feishu_config=None, store=None, start_listener: bool = True):
