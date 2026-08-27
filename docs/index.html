@@ -8,16 +8,22 @@
 </style>
 <main>
 <header><div><div class="eyebrow">DEALTRACE · OFFLINE DEMO</div><h1>飞书销售对话事项追踪</h1><p class="note">预置数据演示 · 不调用模型 · 不消耗 API 额度</p></div><span class="badge">离线演示</span></header>
-<section class="grid"><aside><h2>演示客户 A</h2><p class="note">来源：飞书测试数据 · 4 条有效消息</p><h2>群聊记录</h2>
-<div class="message"><span class="who">客户</span><span class="time">10:01</span><p>我们主要担心 CRM 对接会不会很麻烦。</p></div>
-<div class="message sales"><span class="who">销售</span><span class="time">10:03</span><p>可以先安排技术同事确认接口。</p></div>
-<div class="message"><span class="who">客户</span><span class="time">10:05</span><p>还有类似客户案例吗？</p></div>
-<div class="message sales"><span class="who">销售</span><span class="time">10:07</span><p>有，我下周一前发给您。</p></div></aside>
-<article><div class="eyebrow">AI ANALYSIS</div><h2>销售沟通分析</h2><p>客户担心 CRM 对接复杂，并希望查看类似客户案例；销售已承诺下周一前发送案例。</p><h3>沟通阶段：需求探索</h3>
-<h3>客户需求</h3><div class="item"><strong>确认 CRM 对接可行性</strong><p>客户希望确认对接过程是否复杂。</p><div class="evidence">原文依据：客户：我们主要担心 CRM 对接会不会很麻烦。</div></div><div class="item"><strong>参考类似客户案例</strong><p>客户希望了解类似客户的实施效果。</p><div class="evidence">原文依据：客户：还有类似客户案例吗？</div></div>
-<h3>客户顾虑</h3><div class="item"><strong>CRM 对接复杂性</strong><p>客户担心技术难度和实施成本。</p><div class="evidence">原文依据：客户：我们主要担心 CRM 对接会不会很麻烦。</div></div>
-<h3>销售承诺与待办</h3><div class="item"><strong>发送客户案例</strong><p>销售承诺下周一前发送相关案例。</p><div class="evidence">原文依据：销售：有，我下周一前发给您。</div></div>
-<h3>下一步建议</h3><div class="item"><strong>安排技术确认并跟进案例反馈</strong><p>进一步确认接口可行性，发送案例后跟进客户反馈。</p><div class="evidence">原文依据：销售：可以先安排技术同事确认接口。</div></div>
+<section class="grid"><aside><h2>演示客户 A</h2><p class="note">来源：飞书测试数据 · 10 条有效消息</p><h2>群聊记录</h2>
+<div class="message"><span class="who">客户｜王经理</span><span class="time">10:01</span><p>我们现在主要想解决销售沟通记录分散的问题，很多信息都留在个人聊天里。</p></div>
+<div class="message sales"><span class="who">销售｜小林</span><span class="time">10:02</span><p>了解。现在主要是哪些信息最容易丢失？客户需求、报价，还是跟进时间？</p></div>
+<div class="message"><span class="who">客户｜王经理</span><span class="time">10:03</span><p>客户需求和承诺最容易遗漏，销售人员也不太容易统一跟进。</p></div>
+<div class="message sales"><span class="who">销售｜小林</span><span class="time">10:04</span><p>那我们可以重点演示事项提取和跨天状态追踪，看看是否符合你们的流程。</p></div>
+<div class="message"><span class="who">客户｜李工</span><span class="time">10:05</span><p>我比较关心和现有 CRM 的对接，能不能同步客户和跟进记录？</p></div>
+<div class="message sales"><span class="who">销售｜小林</span><span class="time">10:06</span><p>可以安排技术同事确认接口，先了解你们 CRM 的字段和同步方式。</p></div>
+<div class="message"><span class="who">客户｜王经理</span><span class="time">10:07</span><p>另外，聊天内容涉及客户信息，数据能不能不出内网？</p></div>
+<div class="message sales"><span class="who">销售｜小林</span><span class="time">10:08</span><p>支持私有化部署方案，具体部署方式和费用需要结合你们的环境评估。</p></div>
+<div class="message"><span class="who">客户｜王经理</span><span class="time">10:09</span><p>如果能满足数据安全要求，我们愿意先安排一次内部试用。</p></div>
+<div class="message sales"><span class="who">销售｜小林</span><span class="time">10:10</span><p>好的，我明天发送部署说明和试用方案，并安排技术同事参加下周的评估会议。</p></div></aside>
+<article><div class="eyebrow">AI ANALYSIS</div><h2>销售沟通分析</h2><p>客户希望集中管理销售沟通记录，并关注 CRM 对接、数据安全和内部试用安排；销售已承诺发送部署说明并安排技术评估。</p><h3>沟通阶段：需求探索</h3>
+<h3>客户需求</h3><div class="item"><strong>集中管理销售沟通记录</strong><p>减少个人聊天中的信息遗漏，统一跟进客户需求和承诺。</p><div class="evidence">原文依据：客户｜王经理：我们现在主要想解决销售沟通记录分散的问题。</div></div>
+<h3>客户顾虑</h3><div class="item"><strong>CRM 对接与数据安全</strong><p>需要确认字段同步方式及私有化部署方案。</p><div class="evidence">原文依据：客户｜李工：能不能同步客户和跟进记录？；客户｜王经理：数据能不能不出内网？</div></div>
+<h3>销售承诺与待办</h3><div class="item"><strong>发送部署说明和试用方案</strong><p>销售承诺明天发送材料。</p><div class="evidence">原文依据：销售｜小林：我明天发送部署说明和试用方案。</div></div><div class="item"><strong>安排技术同事参加评估会议</strong><p>销售承诺安排下周技术评估。</p><div class="evidence">原文依据：销售｜小林：安排技术同事参加下周的评估会议。</div></div>
+<h3>下一步建议</h3><div class="item"><strong>推进内部试用与技术评估</strong><p>根据客户确认的安全要求推进试用。</p><div class="evidence">原文依据：客户｜王经理：我们愿意先安排一次内部试用。</div></div>
 <p class="note">提示：这是预置结果，用于体验页面结构和证据回溯方式；不会发起任何网络模型调用。</p></article></section>
 </main>
 </html>
