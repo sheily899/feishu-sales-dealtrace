@@ -10,8 +10,8 @@ with ``complete_json``) to run offline or in tests.
 """
 from __future__ import annotations
 
-from functools import lru_cache
 import os
+from functools import lru_cache
 from typing import Protocol
 
 from .llm import CachedBlock, build_coach

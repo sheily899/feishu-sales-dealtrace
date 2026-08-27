@@ -125,32 +125,32 @@ pip install -e ".[llm]"          # core + DeepSeek/Anthropic SDKs
 export DEEPSEEK_API_KEY=sk-...
 
 # Coach a call (any format — auto-detected)
-gtmsi coach examples/transcripts/discovery_acme.txt
+dealtrace coach examples/transcripts/discovery_acme.txt
 
 # Just classify it
-gtmsi classify examples/transcripts/demo_globex.vtt
+dealtrace classify examples/transcripts/demo_globex.vtt
 
 # Coach a whole folder, write markdown + json + an index
-gtmsi bulk examples/transcripts --out ./out
+dealtrace bulk examples/transcripts --out ./out
 
 # Score a DEAL across its calls (sales) / an ACCOUNT across its calls (CSM)
-gtmsi deal    ./acme_deal     --name "Acme — Platform"
-gtmsi account ./initech_acct  --name "Initech"
+dealtrace deal    ./acme_deal     --name "Acme — Platform"
+dealtrace account ./initech_acct  --name "Initech"
 
 # Build a rep / team / company coaching inbox (what to improve)
-gtmsi inbox ./jordan_calls --scope rep --for "Jordan"
-gtmsi inbox ./team         --scope team --for "AE Team"   # subfolders = reps
+dealtrace inbox ./jordan_calls --scope rep --for "Jordan"
+dealtrace inbox ./team         --scope team --for "AE Team"   # subfolders = reps
 
 # Auto-fill any CRM from a report (dry-run prints the patch; --writer to go live)
-gtmsi crm out/deal_acme.json --crm salesforce
+dealtrace crm out/deal_acme.json --crm salesforce
 
 # Inspect how an adapter normalized a file
-gtmsi inspect examples/transcripts/renewal_initech.json
+dealtrace inspect examples/transcripts/renewal_initech.json
 
 # Explore / sanity-check the knowledge base
-gtmsi list scorecards
-gtmsi list rubrics
-gtmsi validate
+dealtrace list scorecards
+dealtrace list rubrics
+dealtrace validate
 ```
 
 No API key yet? You can still run the whole thing — see below.
@@ -180,7 +180,7 @@ deployment, set `GTMSI_LLM_PROVIDER=anthropic`.
 
 ```bash
 pip install -e ".[llm,feishu]"
-python -m gtmsi workbench --feishu --port 8766
+python -m dealtrace workbench --feishu --port 8766
 ```
 
 在本地 `.env` 配置 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、客户/销售的
@@ -231,9 +231,9 @@ reports feed the layers above them.
 
 | Layer | Who | What it answers | Rubric | CLI |
 |---|---|---|---|---|
-| **Call** | Rep / CSM | How did this conversation go? | [`scorecards/`](./scorecards) | `gtmsi coach` |
-| **Deal / Opportunity** | Sales | Is this deal qualified, moving, and likely to close — and what will kill it? | [`rubrics/deal-health.yaml`](./rubrics/deal-health.yaml) | `gtmsi deal` |
-| **Account** | CSM | Is this customer adopting, getting value, and safe to renew/expand — or churning? | [`rubrics/account-health.yaml`](./rubrics/account-health.yaml) | `gtmsi account` |
+| **Call** | Rep / CSM | How did this conversation go? | [`scorecards/`](./scorecards) | `dealtrace coach` |
+| **Deal / Opportunity** | Sales | Is this deal qualified, moving, and likely to close — and what will kill it? | [`rubrics/deal-health.yaml`](./rubrics/deal-health.yaml) | `dealtrace deal` |
+| **Account** | CSM | Is this customer adopting, getting value, and safe to renew/expand — or churning? | [`rubrics/account-health.yaml`](./rubrics/account-health.yaml) | `dealtrace account` |
 
 Deal health is MEDDPICC/SPICED-grounded (qualification coverage, multithreading,
 compelling event, next-step hygiene → win-likelihood + slip risk). Account health is
@@ -251,8 +251,8 @@ where coaching moves the needle. Prioritization is deterministic (frequency × i
 so it's cheap enough to run every morning and DM each rep.
 
 ```bash
-gtmsi inbox ./jordan_calls --scope rep  --for "Jordan"
-gtmsi inbox ./team         --scope team --for "AE Team"   # subfolders = reps
+dealtrace inbox ./jordan_calls --scope rep  --for "Jordan"
+dealtrace inbox ./team         --scope team --for "AE Team"   # subfolders = reps
 ```
 
 Sample: [team inbox](./examples/reports/team_inbox.md). More:
@@ -266,8 +266,8 @@ generic template; **dry-run by default** (prints the exact patch; nothing is sen
 without credentials).
 
 ```bash
-gtmsi crm out/deal_acme.json --crm salesforce              # dry-run patch
-gtmsi crm out/deal_acme.json --crm hubspot --writer hubspot   # live (needs token)
+dealtrace crm out/deal_acme.json --crm salesforce              # dry-run patch
+dealtrace crm out/deal_acme.json --crm hubspot --writer hubspot   # live (needs token)
 ```
 
 It even back-fills MEDDPICC fields from the deal dimensions. Add your CRM by copying
@@ -296,7 +296,7 @@ A tool that grades your calls is meant to be shared. Every report carries a tast
 card for LinkedIn/X:
 
 ```bash
-gtmsi share out/discovery_acme.json
+dealtrace share out/discovery_acme.json
 ```
 
 Usage telemetry is **opt-in and off by default**, and never sends transcript content
@@ -329,7 +329,7 @@ gtm-superintelligence/
 ├── rubrics/        cross-call rubrics: deal-health (sales) + account-health (CSM)
 ├── prompts/        system + classifier + outcome + coaching + rubric-scoring prompts
 ├── schemas/        JSON Schemas: transcript, scorecard, framework, call type, rubric, reports, inbox, CRM
-├── src/gtmsi/  Python reference impl (adapters, pipeline, scoring, inbox, crm, CLI, caching)
+├── src/dealtrace/  Python reference impl (adapters, pipeline, scoring, inbox, crm, CLI, caching)
 ├── .claude/        Claude-native skill, subagents, and slash commands (/coach, /deal-score, /inbox, …)
 ├── agents/         Attention's 30 production agent templates, organized by function (showcase)
 ├── examples/       synthetic transcripts + sample call / deal / account / inbox reports
@@ -340,7 +340,7 @@ gtm-superintelligence/
 ## Using it as a library
 
 ```python
-from gtmsi import load_transcript, load_registry, coach_transcript, to_markdown
+from dealtrace import load_transcript, load_registry, coach_transcript, to_markdown
 
 t = load_transcript("my_call.vtt")          # auto-detect format
 report = coach_transcript(t)                  # classify + coach (needs ANTHROPIC_API_KEY)
@@ -358,7 +358,7 @@ decision-support for the people on the call, **not surveillance**. There's optio
 ## Contributing
 
 New adapters, frameworks, scorecards, and language support are all welcome. See
-[CONTRIBUTING.md](./CONTRIBUTING.md). Run `gtmsi validate` and `pytest` before a PR.
+[CONTRIBUTING.md](./CONTRIBUTING.md). Run `dealtrace validate` and `pytest` before a PR.
 
 ## License
 

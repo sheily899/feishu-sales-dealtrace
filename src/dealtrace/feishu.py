@@ -5,12 +5,13 @@ network access or Feishu credentials.
 """
 from __future__ import annotations
 
-from datetime import UTC, datetime
 import json
 import os
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from threading import Thread
-from typing import Any, Callable, Mapping
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -23,7 +24,7 @@ class FeishuConfig:
     group_allowlist: list[str]
 
     @classmethod
-    def from_env(cls, environment: Mapping[str, str] | None = None) -> "FeishuConfig":
+    def from_env(cls, environment: Mapping[str, str] | None = None) -> FeishuConfig:
         values = environment if environment is not None else os.environ
         app_id = values.get("FEISHU_APP_ID", "").strip()
         app_secret = values.get("FEISHU_APP_SECRET", "").strip()

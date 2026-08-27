@@ -1,7 +1,7 @@
 """CRM mapping is pure/offline — lock path resolution, transforms, and patch build."""
-from gtmsi.crm import build_crm_patch, get_writer, resolve_path
-from gtmsi.crm.writers import DryRunWriter, HubSpotWriter, SalesforceWriter
-from gtmsi.registry import load_registry
+from dealtrace.crm import build_crm_patch, get_writer, resolve_path
+from dealtrace.crm.writers import DryRunWriter, HubSpotWriter, SalesforceWriter
+from dealtrace.registry import load_registry
 
 
 def test_writer_endpoints_match_verified_docs():
@@ -62,7 +62,7 @@ def test_resolve_path_numeric_index_and_missing():
 
 
 def test_transforms_percent_and_skip_when_empty():
-    from gtmsi.crm.mapping import _apply_transform, build_crm_patch
+    from dealtrace.crm.mapping import _apply_transform, build_crm_patch
 
     assert _apply_transform(0.72, "percent") == "72%"
     assert _apply_transform(71.6, "round") == 72

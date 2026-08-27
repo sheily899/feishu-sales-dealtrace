@@ -1,7 +1,7 @@
 """Transcript adapters + auto-detection.
 
 ``load_transcript(path)`` sniffs the file against each adapter in priority order and
-returns a normalized :class:`~gtmsi.models.Transcript`. Vendor JSON adapters run
+returns a normalized :class:`~dealtrace.models.Transcript`. Vendor JSON adapters run
 before the generic JSON catch-all; plain text is the final fallback.
 """
 from __future__ import annotations

@@ -1,6 +1,6 @@
 """CLI wiring that runs offline (no API key)."""
-from gtmsi.adapters import load_transcript
-from gtmsi.cli import _apply_participants, build_parser, main
+from dealtrace.adapters import load_transcript
+from dealtrace.cli import _apply_participants, build_parser, main
 
 
 def test_apply_participants_overrides_sides(tmp_path):

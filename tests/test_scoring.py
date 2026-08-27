@@ -1,7 +1,7 @@
 """Cross-call rubric scoring (deal/account) with a stub LLM — offline."""
-from gtmsi.models import Classification, Coaching, CoachingReport, CriterionScore
-from gtmsi.registry import load_registry
-from gtmsi.scoring import score_account, score_deal
+from dealtrace.models import Classification, Coaching, CoachingReport, CriterionScore
+from dealtrace.registry import load_registry
+from dealtrace.scoring import score_account, score_deal
 
 
 class FakeLLM:

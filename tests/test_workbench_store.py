@@ -1,5 +1,12 @@
-from gtmsi.workbench_store import SQLiteWorkbenchStore
-from gtmsi.models import CustomerState, StateChange, StateChangeItem, StateItem, StateTodo
+from dealtrace.models import (
+    CustomerIssue,
+    CustomerState,
+    StateChange,
+    StateChangeItem,
+    StateItem,
+    StateTodo,
+)
+from dealtrace.workbench_store import SQLiteWorkbenchStore
 
 
 def test_store_keeps_messages_scoped_to_each_group_and_deduplicated(tmp_path):
@@ -59,6 +66,24 @@ def test_store_keeps_state_change_and_analyzed_message_boundary_per_version(tmp_
 
     assert store.load_state_change("oc-a", saved.version) == change
     assert store.load_analyzed_message_ids("oc-a", saved.version) == ["m-3", "m-4"]
+
+
+def test_store_round_trips_canonical_issue_identity_and_evidence_history(tmp_path):
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    issue = CustomerIssue(
+        issue_id="issue:concern:m-1:0",
+        category="concern",
+        business_object="接口兼容性",
+        status="open",
+        title="接口兼容性待验证",
+        evidence_history=[{"speaker": "客户", "text": "接口需要验证。", "message_id": "m-1"}],
+        created_message_id="m-1",
+        updated_message_id="m-1",
+    )
+
+    store.save_state_version("oc-a", CustomerState(issues=[issue]), StateChange(), ["m-1"])
+
+    assert store.load_latest_state("oc-a").issues == [issue]
 
 
 def test_store_returns_lightweight_summaries_scoped_to_requested_groups(tmp_path):

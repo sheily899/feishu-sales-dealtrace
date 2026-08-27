@@ -19,7 +19,7 @@ from urllib.parse import urlencode
 ATTENTION_URL = "https://www.attention.com"
 REPO_URL = "https://github.com/attentiontech/gtm-superintelligence"
 # Short vanity redirect for install/share copy (set up to 302 → REPO_URL).
-SHORT_URL = "https://gtmsi.dev"
+SHORT_URL = "https://dealtrace.dev"
 
 UTM_SOURCE = "gtm-superintelligence"
 

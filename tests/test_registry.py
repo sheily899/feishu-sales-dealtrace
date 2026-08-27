@@ -1,5 +1,5 @@
 """The knowledge base must always be internally consistent."""
-from gtmsi.registry import load_registry
+from dealtrace.registry import load_registry
 
 
 def test_registry_loads():

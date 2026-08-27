@@ -14,8 +14,8 @@ import json
 
 import pytest
 
-from gtmsi.adapters import load_transcript
-from gtmsi.cli import _apply_participants
+from dealtrace.adapters import load_transcript
+from dealtrace.cli import _apply_participants
 
 # Each fixture is the same logical 2-party call. The second turn starts at 9.5s
 # (or 9000–9500 ms in the recorder's own unit) so the ms->seconds conversion is

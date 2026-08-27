@@ -1,5 +1,5 @@
 """CRM stage classification is pure/offline — lock won/lost/open logic + 'where opps sit'."""
-from gtmsi.crm import classify_hubspot_pipelines, classify_salesforce_stages
+from dealtrace.crm import classify_hubspot_pipelines, classify_salesforce_stages
 
 
 def test_salesforce_classification_and_distribution():

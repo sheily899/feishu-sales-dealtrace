@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sqlite3
-from typing import Mapping
+from collections.abc import Mapping
 from datetime import UTC, datetime
+from pathlib import Path
 
 from .models import CustomerState, StateChange
 

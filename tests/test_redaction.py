@@ -1,5 +1,5 @@
 """Redaction must mask PII without eating quantified values (dates, prices, hours)."""
-from gtmsi.redaction import redact_text
+from dealtrace.redaction import redact_text
 
 
 def test_redacts_real_pii():

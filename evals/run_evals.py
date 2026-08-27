@@ -21,9 +21,9 @@ import yaml
 # Allow running from a checkout without installing.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from gtmsi.adapters import load_transcript  # noqa: E402
-from gtmsi.pipeline import classify  # noqa: E402
-from gtmsi.registry import load_registry  # noqa: E402
+from dealtrace.adapters import load_transcript  # noqa: E402
+from dealtrace.pipeline import classify  # noqa: E402
+from dealtrace.registry import load_registry  # noqa: E402
 
 
 def main() -> int:
@@ -40,7 +40,7 @@ def main() -> int:
     reg = load_registry()
 
     try:
-        from gtmsi.llm import AnthropicCoach
+        from dealtrace.llm import AnthropicCoach
 
         llm = AnthropicCoach(model=args.model) if args.model else AnthropicCoach()
     except Exception as e:  # noqa: BLE001

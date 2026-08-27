@@ -11,4 +11,4 @@ labels: bug
 **Repro steps** (command + transcript format; please use a SYNTHETIC transcript, never
 a real customer call)
 
-**Environment** (OS, Python version, `gtmsi --version`)
+**Environment** (OS, Python version, `dealtrace --version`)

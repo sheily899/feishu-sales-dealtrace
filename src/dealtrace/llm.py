@@ -52,6 +52,11 @@ class AnthropicCoach:
         self.client = Anthropic(api_key=key)
         self.model = model or os.environ.get("GTMSI_MODEL", DEFAULT_ANTHROPIC_MODEL)
         self.max_tokens = max_tokens
+        self.temperature = 0
+        self.top_p = 1
+        self.seed = _read_seed()
+        self.last_raw_response: str | None = None
+        self.last_call_meta: dict[str, Any] = {}
 
     def complete_json(
         self,
@@ -112,14 +117,30 @@ class AnthropicCoach:
                 raise LLMError(f"model did not return valid JSON: {retry_err}") from first_err
 
     def _call(self, system_blocks, content_blocks, max_tokens) -> tuple[str, str | None]:
-        resp = self.client.messages.create(
-            model=self.model,
-            max_tokens=max_tokens or self.max_tokens,
-            system=system_blocks,
-            messages=[{"role": "user", "content": content_blocks}],
-        )
+        temperature = getattr(self, "temperature", 0)
+        top_p = getattr(self, "top_p", 1)
+        request = {
+            "model": self.model,
+            "max_tokens": max_tokens or self.max_tokens,
+            "system": system_blocks,
+            "messages": [{"role": "user", "content": content_blocks}],
+        }
+        if hasattr(self, "temperature"):
+            request.update(temperature=temperature, top_p=top_p)
+        resp = self.client.messages.create(**request)
         text = "".join(b.text for b in resp.content if getattr(b, "type", None) == "text")
-        return text, getattr(resp, "stop_reason", None)
+        self.last_raw_response = text
+        stop_reason = getattr(resp, "stop_reason", None)
+        self.last_call_meta = {
+            "provider": "anthropic",
+            "model": self.model,
+            "temperature": temperature,
+            "top_p": top_p,
+            "seed": getattr(self, "seed", None),
+            "response_format": None,
+            "stop_reason": stop_reason,
+        }
+        return text, stop_reason
 
 
 class DeepSeekCoach:
@@ -139,6 +160,11 @@ class DeepSeekCoach:
         self.client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
         self.model = model or os.environ.get("GTMSI_MODEL", DEFAULT_DEEPSEEK_MODEL)
         self.max_tokens = max_tokens
+        self.temperature = 0
+        self.top_p = 1
+        self.seed = _read_seed()
+        self.last_raw_response: str | None = None
+        self.last_call_meta: dict[str, Any] = {}
 
     def complete_json(
         self,
@@ -169,16 +195,33 @@ class DeepSeekCoach:
                 raise LLMError(f"model did not return valid JSON: {retry_err}") from first_err
 
     def _call(self, system: str, user_text: str, max_tokens: int | None) -> tuple[str, str | None]:
+        temperature = getattr(self, "temperature", 0)
+        top_p = getattr(self, "top_p", 1)
+        seed = getattr(self, "seed", None)
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "system", "content": system}, {"role": "user", "content": user_text}],
             max_tokens=max_tokens or self.max_tokens,
+            temperature=temperature,
+            top_p=top_p,
+            seed=seed,
             response_format={"type": "json_object"},
             extra_body={"thinking": {"type": "disabled"}},
         )
         choice = response.choices[0]
         stop_reason = "max_tokens" if choice.finish_reason == "length" else choice.finish_reason
-        return choice.message.content or "", stop_reason
+        text = choice.message.content or ""
+        self.last_raw_response = text
+        self.last_call_meta = {
+            "provider": "deepseek",
+            "model": self.model,
+            "temperature": temperature,
+            "top_p": top_p,
+            "seed": seed,
+            "response_format": {"type": "json_object"},
+            "stop_reason": stop_reason,
+        }
+        return text, stop_reason
 
 
 def build_coach(provider: str | None = None, model: str | None = None):
@@ -225,6 +268,16 @@ def _normalize_deepseek_quote(value: Any) -> Any:
     if not separator:
         return {"speaker": "Unknown", "text": value.strip().strip("'\"")}
     return {"speaker": speaker.strip() or "Unknown", "text": text.strip().strip("'\"")}
+
+
+def _read_seed() -> int:
+    raw = os.environ.get("GTMSI_SEED")
+    if raw is None or raw == "":
+        return 42
+    try:
+        return int(raw)
+    except ValueError:
+        return 42
 
 
 def _extract_json(text: str) -> Any:

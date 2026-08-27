@@ -1,6 +1,6 @@
 import pytest
 
-from gtmsi.feishu import FeishuConfig, inbound_message_to_raw, parse_message_event
+from dealtrace.feishu import FeishuConfig, inbound_message_to_raw, parse_message_event
 
 
 def test_parse_message_event_converts_group_text_to_raw_message():

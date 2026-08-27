@@ -23,7 +23,7 @@ Before every PR:
 
 ```bash
 ruff check .                          # lint
-python -m gtmsi validate          # knowledge-base integrity (cross-refs)
+python -m dealtrace validate          # knowledge-base integrity (cross-refs)
 python .github/scripts/validate_schemas.py   # YAML conforms to JSON Schemas
 pytest -q                             # unit tests
 ```
@@ -38,7 +38,7 @@ CI runs all of the above on 3.10–3.12.
 3. Write 6–9 criteria. Each needs `what_great_looks_like` and a `weight`;
    `framework_refs` must be `framework_id.element_id` for real elements.
 4. Wire it into a call type in `config/call_types.yaml` (`scorecards: [...]`).
-5. `python -m gtmsi validate` until clean. Full guide:
+5. `python -m dealtrace validate` until clean. Full guide:
    [docs/writing-a-scorecard.md](./docs/writing-a-scorecard.md).
 
 ## Adding a framework
@@ -50,10 +50,10 @@ CI runs all of the above on 3.10–3.12.
 
 ## Adding an adapter (new recorder)
 
-1. New module in `src/gtmsi/adapters/` with a class exposing `name`, `sniff()`,
+1. New module in `src/dealtrace/adapters/` with a class exposing `name`, `sniff()`,
    and `parse() -> Transcript`. Keep it dependency-free. See
    [docs/adapters.md](./docs/adapters.md) for a skeleton.
-2. Register it in `src/gtmsi/adapters/__init__.py` (order matters: specific before
+2. Register it in `src/dealtrace/adapters/__init__.py` (order matters: specific before
    generic).
 3. Add a test in `tests/test_adapters.py` with a small synthetic sample.
 

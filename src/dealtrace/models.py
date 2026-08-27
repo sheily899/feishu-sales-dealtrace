@@ -165,6 +165,8 @@ class Quote(BaseModel):
     speaker: str
     text: str
     timestamp_seconds: float | None = None
+    message_id: str | None = None
+    occurred_at: str | None = None
 
 
 class Classification(BaseModel):
@@ -226,6 +228,7 @@ class GroupChatAnalysis(BaseModel):
 class StateItem(BaseModel):
     """An evidence-bound item retained in a customer's current sales state."""
 
+    issue_id: str | None = None
     title: str
     detail: str | None = None
     evidence: list[Quote] = Field(default_factory=list)
@@ -239,8 +242,61 @@ class StateChangeItem(StateItem):
     category: Literal["need", "concern", "commitment", "todo", "stakeholder", "risk", "next_step"]
 
 
+IssueCategory = Literal[
+    "need",
+    "concern",
+    "commitment",
+    "todo",
+    "stakeholder",
+    "risk",
+    "next_step",
+]
+IssueStatus = Literal["open", "accepted_workaround", "resolved"]
+IssueOperationKind = Literal["create", "update", "resolve", "reopen", "accept_workaround"]
+
+
+class CustomerIssue(BaseModel):
+    """Canonical, program-owned lifecycle record for one customer matter."""
+
+    issue_id: str
+    category: IssueCategory
+    business_object: str
+    status: IssueStatus = "open"
+    title: str
+    detail: str | None = None
+    evidence_history: list[Quote] = Field(default_factory=list)
+    created_at: str | None = None
+    updated_at: str | None = None
+    created_message_id: str
+    updated_message_id: str
+
+
+class IssueOperation(BaseModel):
+    """A model proposal. The application validates it before mutating state."""
+
+    operation: IssueOperationKind
+    issue_id: str | None = None
+    category: IssueCategory
+    business_object: str
+    title: str
+    detail: str | None = None
+    evidence: list[Quote] = Field(default_factory=list)
+    executor: str | None = None
+    action: str | None = None
+    temporal_status: str | None = None
+    source_type: str | None = None
+
+
+class AppliedIssueOperation(IssueOperation):
+    """An accepted operation with the stable identity assigned by the application."""
+
+    issue_id: str
+
+
 class StateTransition(BaseModel):
-    category: Literal["concern", "todo", "risk"]
+    """A material business-object state change, distinct from item resolution."""
+
+    category: Literal["opportunity", "customer_intent", "solution"]
     title: str
     from_status: str
     to_status: str
@@ -253,6 +309,7 @@ class StateChange(BaseModel):
     added: list[StateChangeItem] = Field(default_factory=list)
     resolved: list[StateChangeItem] = Field(default_factory=list)
     status_transitions: list[StateTransition] = Field(default_factory=list)
+    operations: list[AppliedIssueOperation] = Field(default_factory=list)
     current_focus: str | None = None
     evidence: list[Quote] = Field(default_factory=list)
 
@@ -266,6 +323,7 @@ class CustomerState(BaseModel):
 
     version: int = Field(default=0, ge=0)
     stage: str = "unknown"
+    issues: list[CustomerIssue] = Field(default_factory=list)
     needs: list[StateItem] = Field(default_factory=list)
     unresolved_concerns: list[StateItem] = Field(default_factory=list)
     commitments: list[StateItem] = Field(default_factory=list)

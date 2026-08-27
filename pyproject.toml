@@ -35,7 +35,7 @@ crm = ["requests>=2.31"]
 dev = ["anthropic>=0.40", "openai>=1.0", "jsonschema>=4.0", "pytest>=8.0", "ruff>=0.5"]
 
 [project.scripts]
-gtmsi = "gtmsi.cli:main"
+dealtrace = "dealtrace.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/attentiontech/gtm-superintelligence"
@@ -43,7 +43,7 @@ Documentation = "https://github.com/attentiontech/gtm-superintelligence/tree/mai
 Issues = "https://github.com/attentiontech/gtm-superintelligence/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/gtmsi"]
+packages = ["src/dealtrace"]
 # The editable YAML knowledge base lives at the repo root so it is easy to fork and
 # tune. Run from a checkout, or point GTMSI_HOME at your content directory.
 

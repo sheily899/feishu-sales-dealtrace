@@ -1,4 +1,4 @@
-"""``gtmsi`` command-line interface.
+"""``dealtrace`` command-line interface.
 
 Commands
   coach <transcript>     classify + coach one call -> markdown/json/text
@@ -431,8 +431,8 @@ def cmd_crm_stages(args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="gtmsi", description="Open-source, Claude-native sales coaching for any call transcript.")
-    p.add_argument("--version", action="version", version=f"gtmsi {__version__}")
+    p = argparse.ArgumentParser(prog="dealtrace", description="Open-source, Claude-native sales coaching for any call transcript.")
+    p.add_argument("--version", action="version", version=f"dealtrace {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     wb = sub.add_parser("workbench", help="run the local sales analysis workbench")
@@ -594,7 +594,7 @@ def cmd_telemetry(args) -> int:
 
     if args.action == "enable":
         telemetry.enable()
-        print("✓ anonymous usage stats enabled. Disable any time: `gtmsi telemetry disable`.")
+        print("✓ anonymous usage stats enabled. Disable any time: `dealtrace telemetry disable`.")
     elif args.action == "disable":
         telemetry.disable()
         print("✓ anonymous usage stats disabled.")

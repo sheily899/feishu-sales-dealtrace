@@ -4,10 +4,16 @@ We inject a fake ``llm`` whose ``complete_json`` returns canned, schema-shaped
 responses, so we can test orchestration, merging, weight back-fill, banding, and
 rendering deterministically.
 """
-from gtmsi.models import Transcript, Turn
-from gtmsi.pipeline import _localize_outcome_statements, _with_output_language, classify, coach, coach_transcript
-from gtmsi.registry import load_registry
-from gtmsi.render import to_markdown
+from dealtrace.models import Transcript, Turn
+from dealtrace.pipeline import (
+    _localize_outcome_statements,
+    _with_output_language,
+    classify,
+    coach,
+    coach_transcript,
+)
+from dealtrace.registry import load_registry
+from dealtrace.render import to_markdown
 
 
 class FakeLLM:
@@ -88,7 +94,7 @@ def test_coach_merges_and_backfills():
         "group_chat": {"customer_needs": [{"title": "CRM 对接", "detail": "客户询问集成可行性。"}],
                        "customer_concerns": [], "response_coverage": [], "sales_commitments": [], "todos": [], "next_steps": []},
     }
-    from gtmsi.models import Classification
+    from dealtrace.models import Classification
 
     fake = FakeLLM(report)
     r = coach(_transcript(), Classification(**classification), reg, fake)
@@ -119,7 +125,7 @@ def test_coach_handles_null_score_gracefully():
         "summary": "s",
         "coaching": {"strengths": [], "improvements": [], "next_call_focus": []},
     }
-    from gtmsi.models import Classification
+    from dealtrace.models import Classification
 
     r = coach(_transcript(), Classification(**classification), reg, FakeLLM(report))
     assert r.scores[0].score == 0

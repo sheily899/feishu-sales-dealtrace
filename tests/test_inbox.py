@@ -1,7 +1,7 @@
 """Inbox aggregation is deterministic — lock its behavior offline."""
-from gtmsi.inbox import build_inbox
-from gtmsi.models import Classification, Coaching, CoachingPoint, CoachingReport, CriterionScore
-from gtmsi.registry import load_registry
+from dealtrace.inbox import build_inbox
+from dealtrace.models import Classification, Coaching, CoachingPoint, CoachingReport, CriterionScore
+from dealtrace.registry import load_registry
 
 
 def _report(call_type, scores, improvements):

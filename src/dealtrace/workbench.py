@@ -1,10 +1,11 @@
 """Local demo workbench for normalized Feishu-style sales chat events."""
 from __future__ import annotations
 
+import json
 from collections.abc import Iterable, Mapping
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-import json
 from pathlib import Path
 from threading import RLock
 from urllib.parse import parse_qs, urlparse
@@ -13,8 +14,6 @@ from .customer_state import generate_customer_state
 from .llm import build_coach
 from .models import Transcript, Turn
 from .pipeline import coach_transcript
-from datetime import datetime, timedelta, timezone
-
 
 # China Standard Time is UTC+8 year-round; a fixed offset avoids relying on
 # an operating-system time-zone database in local Windows virtualenvs.
@@ -128,10 +127,14 @@ class DemoWorkbench:
         self.evidence_map: dict[str, list[str]] = {}
 
     def snapshot(self) -> dict:
-        return {"customerName": self.name, "sourceLabel": "飞书测试数据", "messages": self.messages,
+        return {"chatId": "demo-customer-a", "customerName": self.name, "sourceLabel": "飞书测试数据", "messages": self.messages,
                 "segments": self.segments, "analysis": self.analysis, "evidenceMap": self.evidence_map,
                 "callTypeLabel": display_call_type(self.analysis["classification"]["call_type"])
                 if self.analysis else None}
+
+    def chat_summaries(self) -> list[dict]:
+        return [{"chatId": "demo-customer-a", "displayName": self.name,
+                 "stage": "已加载演示数据", "todoCount": 0}]
 
     def analyze(self) -> dict:
         turns = [Turn(speaker="客户" if m["role"] == "customer" else "销售",
@@ -169,6 +172,7 @@ class LiveWorkbench:
         self.state_change = None
         self.state_history: list = []
         self.rejected_state_changes: list[str] = []
+        self.state_conflicts: list[str] = []
         self.no_new_messages = False
         self._lock = RLock()
         if self.store and self.chat_id:
@@ -252,6 +256,7 @@ class LiveWorkbench:
                     for state in self.state_history
                 ],
                 "rejectedStateChanges": list(self.rejected_state_changes),
+                "stateConflicts": list(self.state_conflicts),
                 "noNewMessages": self.no_new_messages,
             }
 
@@ -292,6 +297,7 @@ class LiveWorkbench:
                 self.state_change = state_result.change
                 self.state_history = self.store.list_state_versions(self.chat_id)
                 self.rejected_state_changes = state_result.rejected_changes
+                self.state_conflicts = state_result.conflicts
             self.no_new_messages = False
         return self.snapshot()
 
@@ -371,7 +377,7 @@ def create_workbench_server(host: str, port: int, feishu_config=None, store=None
             path = request.path
             chat_id = parse_qs(request.query).get("chatId", [None])[0]
             if path == "/api/chats":
-                chats = state.chat_summaries() if feishu_config else []
+                chats = state.chat_summaries()
                 self._json({"chats": chats})
             elif path == "/api/workbench":
                 try:
@@ -430,7 +436,7 @@ function show(d){state=d;currentChatId=d.chatId||currentChatId;q("#go").disabled
 function followEvidence(x){let button=x.target.closest("[data-message-id]");if(button)focusMessage(button.dataset.messageId)}q("#report").onclick=followEvidence;q("#customer-state").onclick=followEvidence;
 q("#chat-list").onclick=async x=>{let button=x.target.closest("[data-chat-id]");if(!button)return;currentChatId=button.dataset.chatId;await refresh()};
 q("#go").onclick=async()=>{let b=q("#go");b.disabled=true;b.textContent="分析中…";q("#status").textContent="DeepSeek 分析中";try{let r=await fetch("/api/analyze"+chatQuery(),{method:"POST"}),d=await r.json();if(!r.ok)throw Error(d.error);show(d);q("#status").textContent="分析完成";b.textContent="重新分析";await loadChats()}catch(x){q("#report").className="error";q("#report").textContent="分析失败："+x.message;q("#status").textContent="分析失败"}finally{b.disabled=false}};
-async function loadChats(){let r=await fetch("/api/chats");if(!r.ok)return;renderChatList((await r.json()).chats||[])}
+async function loadChats(){let r=await fetch("/api/chats");if(!r.ok)return;let chats=(await r.json()).chats||[];if(!currentChatId&&chats.length)currentChatId=chats[0].chatId;renderChatList(chats)}
 async function load(){if(!currentChatId){emptyChat();return}try{let r=await fetch("/api/workbench"+chatQuery());if(!r.ok)throw Error("群聊同步失败");show(await r.json())}catch(x){q("#status").textContent="同步失败"}}
 async function refresh(){try{await loadChats();await load()}catch(x){q("#status").textContent="同步失败"}}
 refresh();setInterval(refresh, 3000)

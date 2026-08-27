@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import functools
 
-# Repo root resolves to the package's grandparent (src/gtmsi -> src -> repo).
+# Repo root resolves to the package's grandparent (src/dealtrace -> src -> repo).
 # When installed, GTMSI_HOME can point at a custom content directory.
 import os
 from pathlib import Path
@@ -65,24 +65,24 @@ class Registry:
 
     def _load_frameworks(self) -> None:
         for f in sorted((self.root / "frameworks").glob("*.yaml")):
-            data = yaml.safe_load(f.read_text())
+            data = yaml.safe_load(f.read_text(encoding="utf-8"))
             fw = Framework(**data)
             self.frameworks[fw.id] = fw
 
     def _load_scorecards(self) -> None:
         for f in sorted((self.root / "scorecards").glob("*.yaml")):
-            data = yaml.safe_load(f.read_text())
+            data = yaml.safe_load(f.read_text(encoding="utf-8"))
             sc = Scorecard(**data)
             self.scorecards[sc.id] = sc
 
     def _load_call_types(self) -> None:
-        data = yaml.safe_load((self.root / "config" / "call_types.yaml").read_text())
+        data = yaml.safe_load((self.root / "config" / "call_types.yaml").read_text(encoding="utf-8"))
         for ct in data["call_types"]:
             obj = CallType(**ct)
             self.call_types[obj.id] = obj
 
     def _load_outcomes(self) -> None:
-        data = yaml.safe_load((self.root / "config" / "outcomes.yaml").read_text())
+        data = yaml.safe_load((self.root / "config" / "outcomes.yaml").read_text(encoding="utf-8"))
         for o in data["outcomes"]:
             obj = Outcome(**o)
             self.outcomes[obj.id] = obj
@@ -92,7 +92,7 @@ class Registry:
         if not rdir.is_dir():
             return
         for f in sorted(rdir.glob("*.yaml")):
-            data = yaml.safe_load(f.read_text())
+            data = yaml.safe_load(f.read_text(encoding="utf-8"))
             rb = Rubric(**data)
             self.rubrics[rb.id] = rb
 
@@ -114,7 +114,7 @@ class Registry:
         path = self.root / "config" / "crm" / f"{crm}.yaml"
         if not path.is_file():
             raise FileNotFoundError(f"No CRM mapping '{crm}' at {path}")
-        return yaml.safe_load(path.read_text())
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
     def scorecard_for(self, call_type_id: str) -> Scorecard | None:
         ct = self.call_types.get(call_type_id)
         if not ct or not ct.scorecards:

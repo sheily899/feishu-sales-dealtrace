@@ -11,7 +11,7 @@ import types
 
 import pytest
 
-from gtmsi.llm import AnthropicCoach, DeepSeekCoach, LLMError, _normalize_deepseek_response, build_coach
+from dealtrace.llm import AnthropicCoach, DeepSeekCoach, LLMError, _normalize_deepseek_response, build_coach
 
 
 class _FakeBlock:
@@ -115,7 +115,7 @@ def test_build_coach_defaults_to_deepseek(monkeypatch):
         def __init__(self, model=None):
             captured["model"] = model
 
-    monkeypatch.setattr("gtmsi.llm.DeepSeekCoach", FakeDeepSeekCoach)
+    monkeypatch.setattr("dealtrace.llm.DeepSeekCoach", FakeDeepSeekCoach)
     assert isinstance(build_coach(), FakeDeepSeekCoach)
     assert captured["model"] is None
 
@@ -128,7 +128,7 @@ def test_build_coach_rejects_unknown_provider():
 def test_build_coach_loads_local_dotenv_without_overriding_environment(monkeypatch):
     calls = []
     monkeypatch.setitem(sys.modules, "dotenv", types.SimpleNamespace(load_dotenv=lambda **kwargs: calls.append(kwargs)))
-    monkeypatch.setattr("gtmsi.llm.DeepSeekCoach", lambda model=None: object())
+    monkeypatch.setattr("dealtrace.llm.DeepSeekCoach", lambda model=None: object())
     build_coach()
     assert calls == [{"override": False}]
 

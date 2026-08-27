@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-from gtmsi.adapters import load_transcript
-from gtmsi.adapters.plaintext import PlaintextAdapter
+from dealtrace.adapters import load_transcript
+from dealtrace.adapters.plaintext import PlaintextAdapter
 
 PLAINTEXT = """\
 Rep (Jordan): Thanks for hopping on. Here's what I hoped to cover — does that work?

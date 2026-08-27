@@ -1,23 +1,23 @@
 import json
-import pytest
 from threading import Thread
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
-from gtmsi.workbench import (
+import pytest
+
+from dealtrace.feishu import FeishuConfig
+from dealtrace.models import CustomerState, StateChange, StateItem
+from dealtrace.workbench import (
     _PAGE,
+    LiveWorkbench,
+    MultiChatWorkbench,
     build_evidence_map,
     build_standard_transcript,
     create_workbench_server,
     display_call_type,
-    LiveWorkbench,
-    MultiChatWorkbench,
     normalize_events,
 )
-from gtmsi.feishu import FeishuConfig
-from gtmsi.workbench_store import SQLiteWorkbenchStore
-from gtmsi.models import CustomerState, StateChange, StateTodo
-
+from dealtrace.workbench_store import SQLiteWorkbenchStore
 
 ROLE_MAP = {"customer-1": "customer", "sales-1": "sales", "bot-1": "bot"}
 
@@ -190,6 +190,62 @@ def test_live_workbench_saves_a_new_state_version_only_when_new_messages_arrive(
     assert [state.version for state in store.list_state_versions("oc-live")] == [1]
 
 
+def test_live_workbench_exposes_state_change_conflicts(tmp_path):
+    class ConflictStateLLM:
+        def complete_json(self, system, cached_blocks, user_text, max_tokens=None):
+            return {
+                "state": {
+                    "unresolved_concerns": [
+                        {"title": "客户内部审批报价", "issue_id": "price_confirmation_001"}
+                    ]
+                },
+                "change": {
+                    "resolved": [
+                        {
+                            "category": "concern",
+                            "title": "客户内部审批报价",
+                            "issue_id": "price_confirmation_001",
+                            "evidence": [{"speaker": "客户", "text": "报价审批已确认，行，那就先签一年。"}],
+                        }
+                    ]
+                },
+            }
+
+    store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
+    store.save_state_version(
+        "oc-live",
+        CustomerState(
+            unresolved_concerns=[
+                StateItem(title="客户内部审批报价", issue_id="price_confirmation_001")
+            ]
+        ),
+        StateChange(),
+        ["m-old"],
+    )
+    workbench = LiveWorkbench(
+        {"ou-customer": "customer"},
+        store=store,
+        chat_id="oc-live",
+        coach_runner=lambda _: _Report(),
+        state_llm=ConflictStateLLM(),
+    )
+    workbench.ingest(
+        {
+            "message_id": "m-new",
+            "chat_id": "oc-live",
+            "sender_id": "ou-customer",
+            "sender_name": "客户",
+            "timestamp": "2026-08-22T10:01:00+08:00",
+            "text": "报价审批已确认，行，那就先签一年。",
+        }
+    )
+
+    snapshot = workbench.analyze()
+
+    assert snapshot["customerState"]["unresolved_concerns"] == []
+    assert any("legacy adapter" in item for item in snapshot["stateConflicts"])
+
+
 def test_multi_chat_workbench_keeps_messages_reports_and_state_versions_isolated(tmp_path):
     store = SQLiteWorkbenchStore(tmp_path / "workbench.sqlite3")
     workbench = MultiChatWorkbench(
@@ -256,7 +312,7 @@ def test_workbench_http_api_reads_only_the_requested_configured_group(tmp_path):
 
 
 def test_workbench_page_includes_customer_state_and_change_timeline():
-    from gtmsi.workbench import _PAGE
+    from dealtrace.workbench import _PAGE
 
     assert 'id="customer-state"' in _PAGE
     assert "当前客户状态" in _PAGE

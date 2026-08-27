@@ -79,7 +79,7 @@ def maybe_first_run_notice(emit) -> None:
         return
     emit(
         "▸ Anonymous usage stats are OFF. If you'd like to help improve this project, "
-        "enable them with `gtmsi telemetry enable` (no transcript content is ever sent). "
+        "enable them with `dealtrace telemetry enable` (no transcript content is ever sent). "
         "See docs/telemetry.md."
     )
     cfg["notice_shown"] = True
@@ -91,7 +91,7 @@ def maybe_first_run_notice(emit) -> None:
 
 def _machine_id() -> str:
     seed = f"{os.environ.get('USER','')}@{os.uname().nodename if hasattr(os,'uname') else ''}"
-    return hashlib.sha256(("gtmsi-salt:" + seed).encode()).hexdigest()[:16]
+    return hashlib.sha256(("dealtrace-salt:" + seed).encode()).hexdigest()[:16]
 
 
 def account_ref() -> str | None:
@@ -118,7 +118,7 @@ def record(event: str, **props) -> None:
             req = urllib.request.Request(
                 _ENDPOINT,
                 data=json.dumps(payload).encode(),
-                headers={"Content-Type": "application/json", "User-Agent": f"gtmsi/{__version__}"},
+                headers={"Content-Type": "application/json", "User-Agent": f"dealtrace/{__version__}"},
             )
             urllib.request.urlopen(req, timeout=2)  # noqa: S310
         except Exception:  # noqa: BLE001 - telemetry must never affect the user

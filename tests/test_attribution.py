@@ -1,10 +1,10 @@
 """Attribution footer (the viral loop) + share card + telemetry defaults — offline."""
 import json
 
-from gtmsi import telemetry
-from gtmsi.attribution import attention_link, attribution_footer
-from gtmsi.models import CoachingReport, RubricReport
-from gtmsi.render import to_markdown, to_share_card
+from dealtrace import telemetry
+from dealtrace.attribution import attention_link, attribution_footer
+from dealtrace.models import CoachingReport, RubricReport
+from dealtrace.render import to_markdown, to_share_card
 
 
 def test_attention_link_has_tracking_params():
@@ -24,7 +24,7 @@ def test_footer_on_by_default_and_off_via_env(monkeypatch):
 
 
 def test_footer_includes_tracked_demo_cta(monkeypatch):
-    from gtmsi.attribution import demo_link
+    from dealtrace.attribution import demo_link
 
     monkeypatch.delenv("GTMSI_NO_ATTRIBUTION", raising=False)
     link = demo_link(content="coaching")
@@ -35,8 +35,8 @@ def test_footer_includes_tracked_demo_cta(monkeypatch):
     # The user's public share card stays a pure post — NO demo pitch in it.
     import json
 
-    from gtmsi.models import CoachingReport
-    from gtmsi.render import to_share_card
+    from dealtrace.models import CoachingReport
+    from dealtrace.render import to_share_card
     card = to_share_card(CoachingReport(**json.load(open("examples/reports/discovery_acme.json"))))
     assert "/book?" not in card
 
@@ -64,7 +64,7 @@ def test_telemetry_off_by_default(monkeypatch, tmp_path):
     monkeypatch.delenv("GTMSI_TELEMETRY", raising=False)
     import importlib
 
-    import gtmsi.telemetry as tmod
+    import dealtrace.telemetry as tmod
     importlib.reload(tmod)
     assert tmod.is_enabled() is False
     tmod.record("test")  # must not raise / must not send

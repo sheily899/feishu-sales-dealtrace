@@ -11,7 +11,7 @@
 
 ## Checklist
 - [ ] `ruff check .` passes
-- [ ] `python -m gtmsi validate` is clean
+- [ ] `python -m dealtrace validate` is clean
 - [ ] `python .github/scripts/validate_schemas.py` passes
 - [ ] `pytest -q` passes
 - [ ] No proprietary content or real customer transcripts (synthetic only)

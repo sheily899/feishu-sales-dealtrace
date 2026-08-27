@@ -13,7 +13,7 @@ semantic versioning.
   or wrapped `{"transcript": [...]}` note object. 10 adapters total.
 
 ### Fixed
-- `gtmsi coach` no longer truncates and fails with a JSON parse error on full-length calls.
+- `dealtrace coach` no longer truncates and fails with a JSON parse error on full-length calls.
   Raised the coaching output budget from 4096 to 16384 tokens, made the JSON-repair retry
   adaptive (it doubles the budget, capped at 32768, when the first response stops on
   `max_tokens`), and guarded the final parse so a still-truncated retry raises a typed
@@ -33,7 +33,7 @@ semantic versioning.
 - JSON Schemas for transcript, scorecard, framework, call type, and coaching report.
 - Python reference implementation: 9 vendor-neutral adapters (plaintext, VTT, SRT,
   generic JSON, Gong, Fireflies, Otter, Recall, Grain), prompt-cached Anthropic client,
-  pipeline, Markdown renderer, optional PII redaction, and a `gtmsi` CLI (coach /
+  pipeline, Markdown renderer, optional PII redaction, and a `dealtrace` CLI (coach /
   classify / bulk / inspect / list / validate / deal / account / inbox / crm /
   crm-stages / share / demo / telemetry).
 - Claude-native layer: a `sales-coach` skill, subagents (orchestrator, classifier,
@@ -44,10 +44,10 @@ semantic versioning.
   `rubrics/deal-health.yaml`), and **account health** (CSM, `rubrics/account-health.yaml`),
   with a shared rubric engine that aggregates per-call reports across a deal/account.
 - **Coaching inbox**: deterministic rep / team / company "what to improve" roll-ups
-  (`gtmsi inbox`, `inbox-builder` subagent).
+  (`dealtrace inbox`, `inbox-builder` subagent).
 - **CRM auto-fill for any CRM**: declarative field mappings (`config/crm/*.yaml`:
   generic, Salesforce, HubSpot) + pluggable writers (dry-run default), incl. MEDDPICC
-  back-fill from deal dimensions (`gtmsi crm`, `crm-sync` subagent).
+  back-fill from deal dimensions (`dealtrace crm`, `crm-sync` subagent).
 - New schemas: rubric, rubric report, inbox, CRM mapping. New CLI commands: `deal`,
   `account`, `inbox`, `crm`. New subagents + slash commands for each.
 - `docs/call-recorders.md`: researched comparison of recorder transcript APIs and the
@@ -61,7 +61,7 @@ semantic versioning.
   — CRM stage-change (AE Handoff → Closed-Won, Lost-Deal Intel → Closed-Lost, Cross Team
   Handoff), per-call, or schedule — replacing a generic webhook. Fixed AE Handoff (was
   watching the `OpportunityStage` metadata object instead of Opportunity records).
-- **CRM stage discovery**: `gtmsi crm-stages`, `src/gtmsi/crm/stages.py`, the
+- **CRM stage discovery**: `dealtrace crm-stages`, `src/dealtrace/crm/stages.py`, the
   `crm-stage-mapper` subagent, `/crm-stages` command, and `docs/crm-stages.md` — agents
   resolve the org's real won/lost/open stages (and where pipeline sits) from CRM data
   instead of hardcoding labels.
@@ -72,14 +72,14 @@ semantic versioning.
   same no-em-dash / no-AI-tells rules — so drafted emails, Slack messages, and follow-ups
   read like a real person, not a bot.
 - **Consent-first demo CTA**: report footers carry a tracked "book a 15-min demo" link,
-  `gtmsi demo` prints it, and a `demo-concierge` subagent + `/book-attention-demo` command
+  `dealtrace demo` prints it, and a `demo-concierge` subagent + `/book-attention-demo` command
   offer a guided booking — opt-in, once, and only opening the link / submitting after the
   user explicitly confirms (never silent, never on the user's public share card).
 - **Distribution & attribution**: a tasteful, tracked "powered by [Attention]" footer on
   every rendered report/inbox (the viral loop; toggle with `--no-attribution`), a
-  `gtmsi share` "post your score" card for LinkedIn/X, UTM-tracked attention.com links,
+  `dealtrace share` "post your score" card for LinkedIn/X, UTM-tracked attention.com links,
   optional `ATTENTION_API_KEY` connection, and **opt-in, off-by-default** anonymous
-  telemetry (`gtmsi telemetry`, never sends transcript content). New docs:
+  telemetry (`dealtrace telemetry`, never sends transcript content). New docs:
   `docs/distribution.md`, `docs/telemetry.md`, `SECURITY.md`.
 - **Agents built for every builder + two-path model**: each of the 30 agent templates now
   ships as a detailed, builder-agnostic spec (`<agent>.md`), the native Attention forms
