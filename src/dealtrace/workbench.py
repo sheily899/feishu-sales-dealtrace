@@ -136,6 +136,23 @@ class DemoWorkbench:
         return [{"chatId": "demo-customer-a", "displayName": self.name,
                  "stage": "已加载演示数据", "todoCount": 0}]
 
+    def offline_demo(self) -> dict:
+        """Return a bundled report without calling an LLM provider."""
+        self.analysis = {
+            "summary": "客户担心 CRM 对接复杂，并希望查看类似客户案例；销售已承诺下周一前发送案例。",
+            "classification": {"call_type": "discovery"},
+            "group_chat": {
+                "customer_needs": [{"title": "确认 CRM 对接可行性", "detail": "客户希望确认对接过程是否复杂。", "evidence": [{"speaker": "客户", "text": "我们主要担心 CRM 对接会不会很麻烦。"}]}, {"title": "参考类似客户案例", "detail": "客户希望了解类似客户的实施效果。", "evidence": [{"speaker": "客户", "text": "还有类似客户案例吗？"}]}],
+                "customer_concerns": [{"title": "CRM 对接复杂性", "detail": "客户担心技术难度和实施成本。", "evidence": [{"speaker": "客户", "text": "我们主要担心 CRM 对接会不会很麻烦。"}]}],
+                "response_coverage": [{"title": "安排技术确认", "detail": "销售提出安排技术同事确认接口。", "evidence": [{"speaker": "销售", "text": "可以先安排技术同事确认接口。"}]}],
+                "sales_commitments": [{"title": "发送客户案例", "detail": "销售承诺下周一前发送案例。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
+                "todos": [{"title": "发送客户案例", "detail": "下周一前发送相关客户案例。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
+                "next_steps": [{"title": "跟进案例反馈", "detail": "发送案例后跟进客户反馈。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
+            },
+        }
+        self.evidence_map = build_evidence_map(self.analysis, self.messages)
+        return self.snapshot()
+
     def analyze(self) -> dict:
         turns = [Turn(speaker="客户" if m["role"] == "customer" else "销售",
                       side="prospect" if m["role"] == "customer" else "rep", text=m["text"])
@@ -379,6 +396,8 @@ def create_workbench_server(host: str, port: int, feishu_config=None, store=None
             if path == "/api/chats":
                 chats = state.chat_summaries()
                 self._json({"chats": chats})
+            elif path == "/api/demo" and not feishu_config:
+                self._json(state.offline_demo())
             elif path == "/api/workbench":
                 try:
                     self._json(state.snapshot(chat_id) if feishu_config else state.snapshot())
@@ -416,7 +435,7 @@ def run_workbench(host: str = "127.0.0.1", port: int = 8765, feishu_config=None)
 
 _PAGE = """<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>AI 销售沟通分析</title>
 <style>:root{--i:#17232c;--m:#6b7984;--l:#dce4e8;--a:#13756b}*{box-sizing:border-box}body{margin:0;background:#f4f7f6;color:var(--i);font:15px Arial,"Microsoft YaHei",sans-serif}main{max-width:1400px;margin:auto;padding:32px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.eyebrow{font-size:11px;font-weight:bold;letter-spacing:1px;color:var(--a)}h1{margin:4px 0;font-size:28px}h2{font-size:18px}button{background:var(--a);color:#fff;border:0;border-radius:6px;padding:11px 16px;font-weight:bold;cursor:pointer}.workspace{display:grid;grid-template-columns:35% 65%;background:#fffefa;border:1px solid var(--l);min-height:600px}aside{padding:20px;border-right:1px solid var(--l)}article{padding:24px}.chat-list{margin:8px 0 20px}.chat-button{display:block;width:100%;margin:8px 0;padding:10px;text-align:left;color:var(--i);background:#f4f8f7;border:1px solid var(--l)}.chat-button[aria-current="true"]{border-color:var(--a);box-shadow:inset 3px 0 var(--a)}.chat-button small{display:block;color:var(--m);margin-top:4px}.message{padding:14px 0;border-bottom:1px solid #edf0f1}.who{font-weight:bold}.customer .who{color:#885918}.time{color:var(--m);font-size:12px;margin-left:8px}.highlight{background:#fff0b8;margin:0 -8px;padding:14px 8px;outline:2px solid #e2ae38}.item{border-left:3px solid #79aaa3;background:#f4f8f7;padding:10px 12px;margin:8px 0}.evidence-link{all:unset;color:#13756b;cursor:pointer;font-size:13px;text-decoration:underline}.muted{color:var(--m)}.error{color:#a12d2d}@media(max-width:800px){main{padding:16px}.workspace{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--l)}}</style>
-<main><header><div><p class="eyebrow">SALES INTELLIGENCE</p><h1 id="name">加载中…</h1><p id="meta" class="muted"></p></div><button id="go">生成分析</button></header><section class="workspace"><aside><h2>客户群</h2><div id="chat-list" class="chat-list" aria-label="客户群列表"></div><h2>群聊记录</h2><div id="messages"></div></aside><article><p class="eyebrow">AI ANALYSIS</p><h2>销售沟通分析</h2><p id="status" class="muted">待分析</p><div id="customer-state"></div><div id="report" class="muted">点击“生成分析”，由 DeepSeek 基于群聊生成客户沟通分析报告。</div></article></section></main>
+<main><header><div><p class="eyebrow">SALES INTELLIGENCE</p><h1 id="name">加载中…</h1><p id="meta" class="muted"></p></div><div><button id="offline">离线演示</button> <button id="go">生成分析</button></div></header><section class="workspace"><aside><h2>客户群</h2><div id="chat-list" class="chat-list" aria-label="客户群列表"></div><h2>群聊记录</h2><div id="messages"></div></aside><article><p class="eyebrow">AI ANALYSIS</p><h2>销售沟通分析</h2><p id="status" class="muted">待分析</p><div id="customer-state"></div><div id="report" class="muted">点击“离线演示”查看预置报告（不调用模型），或点击“生成分析”调用 DeepSeek。</div></article></section></main>
 <script>
 let state,currentChatId;
 const q=s=>document.querySelector(s),e=v=>String(v||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -436,6 +455,7 @@ function show(d){state=d;currentChatId=d.chatId||currentChatId;q("#go").disabled
 function followEvidence(x){let button=x.target.closest("[data-message-id]");if(button)focusMessage(button.dataset.messageId)}q("#report").onclick=followEvidence;q("#customer-state").onclick=followEvidence;
 q("#chat-list").onclick=async x=>{let button=x.target.closest("[data-chat-id]");if(!button)return;currentChatId=button.dataset.chatId;await refresh()};
 q("#go").onclick=async()=>{let b=q("#go");b.disabled=true;b.textContent="分析中…";q("#status").textContent="DeepSeek 分析中";try{let r=await fetch("/api/analyze"+chatQuery(),{method:"POST"}),d=await r.json();if(!r.ok)throw Error(d.error);show(d);q("#status").textContent="分析完成";b.textContent="重新分析";await loadChats()}catch(x){q("#report").className="error";q("#report").textContent="分析失败："+x.message;q("#status").textContent="分析失败"}finally{b.disabled=false}};
+q("#offline").onclick=async()=>{let b=q("#offline");b.disabled=true;q("#status").textContent="加载离线报告";try{let r=await fetch("/api/demo"+chatQuery());let d=await r.json();if(!r.ok)throw Error(d.error);show(d);q("#status").textContent="离线演示（未调用模型）"}finally{b.disabled=false}};
 async function loadChats(){let r=await fetch("/api/chats");if(!r.ok)return;let chats=(await r.json()).chats||[];if(!currentChatId&&chats.length)currentChatId=chats[0].chatId;renderChatList(chats)}
 async function load(){if(!currentChatId){emptyChat();return}try{let r=await fetch("/api/workbench"+chatQuery());if(!r.ok)throw Error("群聊同步失败");show(await r.json())}catch(x){q("#status").textContent="同步失败"}}
 async function refresh(){try{await loadChats();await load()}catch(x){q("#status").textContent="同步失败"}}

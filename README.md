@@ -17,7 +17,7 @@ pip install -e ".[llm]"
 python -m dealtrace workbench --port 8765
 ```
 
-Open <http://127.0.0.1:8765/>. The demo uses bundled anonymized messages; live analysis requires a working DeepSeek API key.
+Open <http://127.0.0.1:8765/>. The demo uses bundled anonymized messages. Click **Offline demo** to load a bundled report without calling a model or consuming API quota; **Generate analysis** calls DeepSeek.
 
 ## Workflow
 
@@ -48,6 +48,17 @@ python -m dealtrace workbench --feishu --port 8766
 ```
 
 Live mode stores messages and state in `data/workbench.sqlite3`. It is a single-machine prototype without authentication, multi-tenancy, full CRM permissions, or automatic task dispatch.
+
+### Feishu setup
+
+1. Create a Feishu enterprise app and record its `App ID` and `App Secret`.
+2. Enable group-message permissions and publish a testable app version.
+3. Add the app to a test group and note its group ID (usually starts with `oc_`).
+4. Copy `.env.example` to `.env` and fill in `FEISHU_APP_ID`, `FEISHU_APP_SECRET`, `FEISHU_GROUP_ALLOWLIST`, and `FEISHU_ROLE_MAP`.
+5. Set `DEEPSEEK_API_KEY` only if live analysis is needed. The Offline demo never calls the model.
+6. Run `python -m dealtrace workbench --feishu --port 8766`, open <http://127.0.0.1:8766/>, and click **Generate analysis** after messages arrive.
+
+Keep all secrets in the local `.env`; never commit them.
 
 ## Evaluation
 

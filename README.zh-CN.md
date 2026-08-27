@@ -17,7 +17,7 @@ pip install -e ".[llm]"
 python -m dealtrace workbench --port 8765
 ```
 
-打开 <http://127.0.0.1:8765/>。演示模式使用内置脱敏消息；点击“生成分析”需要可用的 DeepSeek API Key。
+打开 <http://127.0.0.1:8765/>。演示模式使用内置脱敏消息。点击“离线演示”会直接加载预置报告，不调用模型、不消耗 API 额度；点击“生成分析”才会调用 DeepSeek。
 
 ## 核心流程
 
@@ -47,6 +47,17 @@ python -m dealtrace workbench --feishu --port 8766
 ```
 
 真实模式将消息和状态保存到本地 `data/workbench.sqlite3`。当前版本是单机原型，不包含登录、多租户、完整 CRM 权限和自动任务派发，不应直接暴露到公网。
+
+### 飞书配置步骤
+
+1. 在飞书开放平台创建企业自建应用，记录 `App ID` 和 `App Secret`。
+2. 为应用开启群聊消息接收权限，并发布一个可用于测试的版本。
+3. 将应用加入测试群，准备群 ID（通常以 `oc_` 开头）。
+4. 复制 `.env.example` 为 `.env`，填写 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、`FEISHU_GROUP_ALLOWLIST` 和 `FEISHU_ROLE_MAP`。
+5. 仅在需要实时分析时填写 `DEEPSEEK_API_KEY`；“离线演示”不会调用模型。
+6. 启动 `python -m dealtrace workbench --feishu --port 8766`，打开 <http://127.0.0.1:8766/>，收到消息后点击“生成分析”。
+
+密钥只保存在本机 `.env`，不要提交到 GitHub。
 
 ## 评测结果
 
