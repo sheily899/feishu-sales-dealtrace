@@ -30,17 +30,28 @@ Internal collaboration and data flow:
 
 ```mermaid
 flowchart LR
-    A[Feishu event listener\nfeishu.py] --> B[Message normalization and role filtering\nworkbench.py]
+    A[New Feishu message] --> B[Message normalization and role filtering\nworkbench.py]
     B --> C[Analysis agent\npipeline.py + llm.py]
     C --> D[Issue and change parsing\ncustomer_state.py]
     D --> E[Historical issue linking\nissue_id]
     E --> F[State merge and evidence checks\ncustomer_state.py]
-    F --> G[State snapshots and change log\nworkbench_store.py]
-    G --> H[Workbench UI\nworkbench.py]
-    H --> I[Source-message navigation]
+    F --> G[Persist state snapshot and changes\nworkbench_store.py]
+    G --> H[Workbench UI and source navigation\nworkbench.py]
+    H -. wait for next messages .-> A
 ```
 
-The model proposes analysis results; the state module validates and persists the canonical state. The UI reads snapshots and evidence mappings rather than mutating model output.
+| Module | Responsibility |
+|---|---|
+| Feishu event listener | Receives group messages and triggers a new processing cycle |
+| Message normalization and role filtering | Standardizes time, text, and customer/sales roles |
+| Analysis agent | Extracts needs, concerns, risks, todos, commitments, and next steps |
+| Issue and change parsing | Converts model output into structured issue operations |
+| Historical issue linking | Links cross-round issues using existing issue IDs and evidence |
+| State merge and evidence checks | Merges old and new state and rejects unsupported changes |
+| State storage | Saves versions, changes, and rejection reasons |
+| Workbench UI | Shows customer state and navigates to source messages |
+
+The model proposes analysis results; the state module validates and persists the canonical state. The next message batch reads the previous snapshot and starts the cycle again.
 
 ## Features
 
