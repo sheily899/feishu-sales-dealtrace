@@ -52,11 +52,25 @@ Live mode stores messages and state in `data/workbench.sqlite3`. It is a single-
    - `FEISHU_GROUP_ALLOWLIST` with one or more comma-separated group IDs;
    - `FEISHU_ROLE_MAP` to map group members to customer or sales roles;
    - `DEEPSEEK_API_KEY` only for live analysis; the Offline demo never reads it.
-6. In PowerShell at the project root, verify Python 3.10 or newer with `python --version`.
-7. (Recommended) Create and activate a virtual environment: `python -m venv .venv`, then `.venv\Scripts\Activate.ps1`.
-8. Install the base package, DeepSeek clients, and Feishu connector: `python -m pip install --upgrade pip`, then `python -m pip install -e ".[llm,feishu]"`.
+6. In PowerShell at the project root, verify Python 3.10 or newer:
+   ```powershell
+   python --version
+   ```
+7. (Recommended) Create and activate a virtual environment:
+   ```powershell
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1
+   ```
+8. Install the base package, DeepSeek clients, and Feishu connector:
+   ```powershell
+   python -m pip install --upgrade pip
+   python -m pip install -e ".[llm,feishu]"
+   ```
 9. Copy `.env.example` to `.env` and fill in `FEISHU_APP_ID`, `FEISHU_APP_SECRET`, `FEISHU_GROUP_ALLOWLIST`, `FEISHU_ROLE_MAP`, and `DEEPSEEK_API_KEY`.
-10. Start live mode with `python -m dealtrace workbench --feishu --port 8766`.
+10. Start live mode:
+   ```powershell
+   python -m dealtrace workbench --feishu --port 8766
+   ```
 11. Open <http://127.0.0.1:8766/>, send a message in the test group, and click **Generate analysis**.
 
 Troubleshooting: an empty chat list usually means the group ID is not allowlisted; a missing report usually means the model key or network is unavailable. Use the port-8765 Offline demo when you only want to explore the UI.
