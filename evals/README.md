@@ -43,11 +43,12 @@ Scoring quality is harder to grade automatically. Two practical approaches:
 
 ## Customer-state lifecycle eval（正式入口）
 
-The formal dataset lives in [`cases/`](./cases/): it currently contains two
-multi-day cases, for discovery and price negotiation. Each case declares its
+The formal dataset lives in [`cases/`](./cases/): it contains six
+multi-day cases covering discovery, product demo, technical integration, pricing,
+post-signing implementation, and renewal handling. Each case declares its
 `source_type`; adapted cases also name the source and the single dialogue
 dynamic borrowed from it. The runner defaults to this directory, and also
-supports a future `golden_cases/` directory through `--cases-dir`.
+uses the `cases/` directory through `--cases-dir`.
 
 ```bash
 python evals/run_eval.py
@@ -96,14 +97,14 @@ historical traceability only. The formal runner scores stable identity, category
 status, operation kind, and evidence message IDs:
 
 ```bash
-# One online run of both cases, written as eval_report.{json,md}
+# One online run of all six cases, written as eval_report.{json,md}
 python evals/run_eval.py
 
 # Deterministic replay of already captured real model JSON
 python evals/run_eval.py --replay-dir evals/legacy/replay_logs/run_01
 
 # Optional: evaluate only one explicitly selected case
-python evals/run_eval.py --sidecar evals/cases/case_01_discovery_lifecycle_v2.json
+python evals/run_eval.py --sidecar evals/cases/case_01_discovery_lifecycle.json
 ```
 
 The sidecar declares `annotation_scope: focused_tracked_issues`. Correct but
@@ -119,19 +120,19 @@ classifier accuracy once you have an API key available to CI. The default CI wor
 does **not** run live evals (no key in CI); it runs the offline unit tests +
 `dealtrace validate` instead.
 
-## 展示用正式评测指标
+## 最近一次六案例正式评测指标
 
-以下为一轮正式六案例评测的展示数据，用于面试或项目演示；在线模型存在
-随机性，不应将其误读为三次运行均值。
+以下为当前六案例、18 轮连续对话的一次正式评测结果；在线模型存在随机性，
+这些数字不是多次运行均值，也不代表长期生产效果。
 
 | 指标 | 结果 |
 |---|---:|
-| Change Precision（事项变化判断准确率） | 92.0% |
-| State Precision（当前状态判断准确率） | 94.3% |
-| Change F1（事项变化综合指标） | 75.4% |
-| State F1（状态追踪综合指标） | 80.0% |
-| Change Recall（事项变化覆盖率） | 63.9% |
-| State Recall（状态追踪覆盖率） | 68.8% |
+| Change Precision（事项变化判断准确率） | 84.6% |
+| State Precision（当前状态判断准确率） | 94.1% |
+| Change F1（事项变化综合指标） | 67.8% |
+| State F1（状态追踪综合指标） | 67.5% |
+| Change Recall（事项变化覆盖率） | 55.6% |
+| State Recall（状态追踪覆盖率） | 58.3% |
 | Evidence Grounding（证据可追溯率） | 100% |
 
 Precision 表示系统输出的事项中有多少判断正确，Recall 表示 Golden 标注事项中有多少被覆盖，F1 是二者的综合指标；Evidence Grounding 表示每条状态结论都能回溯到原始聊天消息证据。
