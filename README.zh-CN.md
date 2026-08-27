@@ -36,12 +36,7 @@ DealTrace 面向企业销售团队，从飞书群聊中提取客户需求、顾�
 
 ## 接入真实飞书群
 
-复制 `.env.example` 为 `.env`，填写飞书应用凭证、群聊白名单和角色映射：
-
-```powershell
-pip install -e ".[llm,feishu]"
-python -m dealtrace workbench --feishu --port 8766
-```
+真实飞书模式需要安装飞书连接和模型调用依赖；离线 Demo 不需要安装这些依赖。
 
 真实模式将消息和状态保存到本地 `data/workbench.sqlite3`。当前版本是单机原型，不包含登录、多租户、完整 CRM 权限和自动任务派发，不应直接暴露到公网。
 
@@ -57,8 +52,12 @@ python -m dealtrace workbench --feishu --port 8766
    - `FEISHU_GROUP_ALLOWLIST`：允许接入的群 ID，多个群用逗号分隔；
    - `FEISHU_ROLE_MAP`：把群成员映射为客户或销售角色；
    - `DEEPSEEK_API_KEY`：仅实时分析需要，离线演示不读取它。
-6. 安装依赖并启动：`pip install -e ".[llm,feishu]"`，再运行 `python -m dealtrace workbench --feishu --port 8766`。
-7. 打开 <http://127.0.0.1:8766/>，在测试群发送消息，回到页面点击“生成分析”。
+6. 在项目根目录打开 PowerShell，确认 Python 版本为 3.10 或更高：`python --version`。
+7. （推荐）创建并启用虚拟环境：`python -m venv .venv`，然后运行 `.venv\Scripts\Activate.ps1`。
+8. 安装项目基础依赖、DeepSeek 客户端和飞书连接 SDK：`python -m pip install --upgrade pip`，再运行 `python -m pip install -e ".[llm,feishu]"`。
+9. 复制 `.env.example` 为 `.env`，填写 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、`FEISHU_GROUP_ALLOWLIST`、`FEISHU_ROLE_MAP` 和 `DEEPSEEK_API_KEY`。
+10. 启动真实模式：`python -m dealtrace workbench --feishu --port 8766`。
+11. 打开 <http://127.0.0.1:8766/>，在测试群发送消息，回到页面点击“生成分析”。
 
 新手排查：左侧没有群时先检查群 ID 是否在白名单；没有分析结果时检查模型 Key 和网络；只想体验页面时使用 8765 端口的“离线演示”。
 
