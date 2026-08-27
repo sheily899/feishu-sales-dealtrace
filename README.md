@@ -108,6 +108,13 @@ evals/             Golden cases and evaluators
 tests/             Automated tests
 ```
 
+## Future improvements
+
+- Expand the evaluation set with real, multi-industry conversations over longer sales cycles;
+- Add item-level review and edit history so sales teams can correct analyses quickly;
+- Add access control, sensitive-data redaction, and retention policies before wider deployment;
+- Reduce model cost and latency while keeping every result traceable to source messages.
+
 ## Privacy and security
 
 Never commit `.env`, API keys, or real customer conversations. Add authentication, authorization, retention, and redaction controls before production use.
