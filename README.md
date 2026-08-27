@@ -14,6 +14,12 @@ DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments 
 
 The public demo uses ten bundled anonymized sales messages and a precomputed report. It never calls a model and does not consume API quota.
 
+### Anonymized Feishu conversation
+
+The screenshot below is a real Feishu group-chat exchange supplied for this project and anonymized for privacy: participant names are replaced with **Customer** and **Sales**, and personal avatars are replaced with generic avatars. It is included to show the actual input form the workbench is designed to process; it is not part of the public evaluation set.
+
+![Anonymized real Feishu conversation](docs/assets/feishu-chat-anonymized.png)
+
 Demo path: open the public link → inspect issues, state, and source evidence.
 
 ## Workflow
