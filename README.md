@@ -35,27 +35,29 @@ Unresolved issues are not removed merely because the next conversation changes t
 Internal collaboration and data flow:
 
 ```mermaid
-flowchart LR
-    A[New Feishu message] --> B[Message normalization and role filtering\nworkbench.py]
-    B --> C[Analysis agent\npipeline.py + llm.py]
-    C --> D[Issue and change parsing\ncustomer_state.py]
-    D --> E[Historical issue linking\nissue_id]
-    E --> F[State merge and evidence checks\ncustomer_state.py]
-    F --> G[Persist state snapshot and changes\nworkbench_store.py]
-    G --> H[Workbench UI and source navigation\nworkbench.py]
-    H -. wait for next messages .-> A
+flowchart TD
+    A[Feishu group event] --> B[Workbench: filter, normalize, store]
+    B --> C[Full conversation analysis]
+    B --> D[Incremental issue tracking]
+    C --> E[Classification, scoring, sales guidance]
+    D --> F[Model-proposed issue operations]
+    F --> G[Evidence and historical-state validation]
+    G --> H[SQLite state version]
+    H -. read prior state next round .-> D
 ```
 
-| Module | Responsibility |
-|---|---|
-| Feishu event listener | Receives group messages and triggers a new processing cycle |
-| Message normalization and role filtering | Standardizes time, text, and customer/sales roles |
-| Analysis agent | Extracts needs, concerns, risks, todos, commitments, and next steps |
-| Issue and change parsing | Converts model output into structured issue operations |
-| Historical issue linking | Links cross-round issues using existing issue IDs and evidence |
-| State merge and evidence checks | Merges old and new state and rejects unsupported changes |
-| State storage | Saves versions, changes, and rejection reasons |
-| Workbench UI | Shows customer state and navigates to source messages |
+### Core modules
+
+| Module | Input | Output | Why it exists | Failure impact |
+|---|---|---|---|---|
+| Feishu integration | Feishu group events | Normalized messages | Isolates external-system formats | Messages cannot be received or are misread |
+| Role identification | Sender IDs and role config | Customer/sales roles | The same words mean different things by speaker | Customer needs and sales commitments get mixed |
+| Conversation analysis | Full chat history | Classification, scoring, guidance | Provides a sales-oriented overview | Report is inaccurate, but should not directly mutate state |
+| Issue extraction | Prior state and new messages | IssueOperation | Natural language cannot be covered by rules alone | Issues are missed or incorrect changes are proposed |
+| State validation | Model operations, history, evidence | Accepted or rejected results | The model is not trusted blindly | Invalid state enters the customer record |
+| SQLite storage | Messages, reports, changes | Versioned state history | Supports cross-round tracking and recovery | History is lost after restart |
+| Workbench | Messages, reports, state, evidence | Visual page | Lets sales inspect conclusions and sources | The system remains a backend-only result |
+| Evaluation | Golden issues and actual output | P/R/F1 and evidence rate | Tests whether changes really work | Prompt changes become guesswork |
 
 The model proposes analysis results; the state module validates and persists the canonical state. The next message batch reads the previous snapshot and starts the cycle again.
 
