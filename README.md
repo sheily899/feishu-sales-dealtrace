@@ -24,12 +24,6 @@ Demo path: open the public link → inspect issues, state, and source evidence.
 
 ## Workflow
 
-```text
-Feishu chat → message and role normalization → issue extraction
-            → historical linking → state merge and evidence checks
-            → customer snapshot with source-message links
-```
-
 Unresolved issues are not removed merely because the next conversation changes topic. Unsupported state changes are rejected and the previous state is preserved.
 
 Internal collaboration and data flow:
