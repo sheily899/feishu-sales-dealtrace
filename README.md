@@ -85,11 +85,11 @@ Current internal evaluation (`deepseek-v4-flash`, seed 42, single run):
 
 | Metric | Result | Meaning |
 |---|---:|---|
-| Change precision | 84.6% | Correct accepted changes among predictions |
-| Change recall | 61.1% | Gold changes that were identified |
-| State precision | 94.1% | Correct entries among saved state items |
-| State recall | 66.7% | Gold state items that were saved |
-| Evidence traceability | 100% | Accepted results linked to source messages |
+| Change precision | 84.6% | How often each recorded addition or resolution matches the conversation |
+| Change recall | 61.1% | How many real changes in the conversation were captured in time |
+| State precision | 94.1% | How many items kept in the customer record are supported by chat evidence |
+| State recall | 66.7% | How many items that should be kept in the customer record were retained |
+| Evidence traceability | 100% | Whether every analysis result links back to its source message |
 
 These figures come from a small internal set and validate short-horizon multi-turn tracking, not months-long production conversations.
 
