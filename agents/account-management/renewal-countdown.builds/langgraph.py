@@ -47,7 +47,7 @@ def fetch_renewals(state: State) -> State:
 
 def fetch_calls(state: State) -> State:
     # TODO: for each renewing account, fetch its calls over the last ~90 days from your recorder, or
-    # load transcripts via the gtmsi adapters: from gtmsi.adapters import load_transcript
+    # load transcripts via the dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"calls": []}
 
 

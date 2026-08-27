@@ -12,7 +12,7 @@ into `.claude/agents/` in the project, then invoke it per analyzed call (e.g. vi
 webhook handler that passes the call id).
 
 Resolve data through whatever is connected this session: your call recorder's MCP/API for the
-triggering call and the deal's prior calls (or ingest exports with the gtmsi adapters: `gtmsi inspect
+triggering call and the deal's prior calls (or ingest exports with the dealtrace adapters: `dealtrace inspect
 <file>` / `load_transcript`), and your chat tool's MCP to post. If something isn't connected, say
 what to connect and continue with what's available.
 

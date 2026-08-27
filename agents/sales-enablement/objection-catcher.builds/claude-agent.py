@@ -40,8 +40,8 @@ Humanizer rules on the email: no em dashes, no AI throat-clearing, no hype adjec
 
 @tool("search_calls", "Collect the week's calls that have transcripts.", {"since_days": int})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("query_crm", "Read deal outcomes (stage/advanced/won/lost) to weight rebuttal scores.", {"soql_or_filter": str})

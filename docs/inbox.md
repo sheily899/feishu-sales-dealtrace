@@ -54,7 +54,7 @@ Because no LLM is called, an inbox run is cheap enough to schedule daily.
 ### Rep inbox
 
 ```bash
-gtmsi inbox <folder> --scope rep --for "Jordan"
+dealtrace inbox <folder> --scope rep --for "Jordan"
 ```
 
 `<folder>` can contain raw transcripts, existing coaching-report JSONs, or
@@ -64,7 +64,7 @@ rep. The `--for` name is stored in `generated_for` in the output.
 ### Team inbox
 
 ```bash
-gtmsi inbox <team-folder> --scope team --for "AE Team"
+dealtrace inbox <team-folder> --scope team --for "AE Team"
 ```
 
 For team and company scope, **each subfolder is treated as one rep** (the
@@ -75,7 +75,7 @@ correctly.
 ### Company inbox
 
 ```bash
-gtmsi inbox <company-folder> --scope company --for "company"
+dealtrace inbox <company-folder> --scope company --for "company"
 ```
 
 For both `team` and `company` scope, each **immediate** subdirectory of the path
@@ -141,7 +141,7 @@ schedule and deliver each rep their personal digest automatically.
 
 A few patterns that work:
 
-- **Cron / CI job** — schedule `gtmsi inbox rep-folder/ --scope rep --for
+- **Cron / CI job** — schedule `dealtrace inbox rep-folder/ --scope rep --for
   "Jordan"` for each rep, then pipe the output to a DM, email, or Slack message.
 - **Claude Code `/loop`** — use the `/loop` skill to re-run the inbox on an
   interval and surface the result in your current session.
@@ -184,4 +184,4 @@ The inbox output conforms to `schemas/inbox.schema.json`. Key fields:
 - Deal and account health (the other aggregations): [scoring-layers.md](./scoring-layers.md)
 - CRM auto-fill: [crm.md](./crm.md)
 - Schema: `schemas/inbox.schema.json`
-- Source: `src/gtmsi/inbox.py`
+- Source: `src/dealtrace/inbox.py`

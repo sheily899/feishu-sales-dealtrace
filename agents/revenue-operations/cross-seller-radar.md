@@ -35,7 +35,7 @@ For each existing-customer call, surface expansion opportunities the account tea
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Score the five signal categories from the transcript | `ask_attention` | an LLM step over the transcript |
 | `query_records` | Read current products / ACV / renewal for the account | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `send_message` | Post the alert to a channel | Slack/Teams tool | your chat tool's API/MCP |

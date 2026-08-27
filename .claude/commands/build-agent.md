@@ -28,7 +28,7 @@ Read the agent's `.md` spec and `.json` instructions, then produce a working imp
 
 1. **Map the generic actions** the agent uses to that builder's connectors/nodes:
    - `query_records` → the builder's CRM node (Salesforce/HubSpot/…),
-   - `search_calls` / `get_call_details` → the recorder's node/API, or ingest exports via the **gtmsi adapters** (`gtmsi inspect` / `load_transcript`) when the recorder only exports transcripts,
+   - `search_calls` / `get_call_details` → the recorder's node/API, or ingest exports via the **dealtrace adapters** (`dealtrace inspect` / `load_transcript`) when the recorder only exports transcripts,
    - `analyze_calls` → an LLM node (Anthropic/OpenAI) running the agent's operating prompt over the transcript,
    - `send_message` / `send_direct_message` / `send_email` → the chat/email node.
 2. **Emit native config when you know the builder's format**, ready to import:

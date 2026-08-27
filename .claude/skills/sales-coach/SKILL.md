@@ -101,7 +101,7 @@ And two roll-ups / integrations:
   team, or company. The rep inbox is the daily morning read.
 - **CRM auto-fill** (`crm-sync`, `config/crm/*.yaml`) — map any report to any CRM's
   fields (Salesforce, HubSpot, generic). Dry-run by default.
-- **CRM stage discovery** (`crm-stage-mapper`, `gtmsi crm-stages`) — resolve the org's
+- **CRM stage discovery** (`crm-stage-mapper`, `dealtrace crm-stages`) — resolve the org's
   *real* won/lost/open stage names from its own data before any stage-based logic;
   never hardcode "Closed Won". See `docs/crm-stages.md`.
 

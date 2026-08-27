@@ -13,7 +13,7 @@ modules.
    webhook here; the payload should carry the call id and the account (and CSM/owner).
 2. **HTTP → Make a request** to your call recorder's API to fetch the analyzed call (transcript +
    participants). (Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.) If no transcript, stop.
+   pre-ingest via the dealtrace adapters.) If no transcript, stop.
 3. **HTTP → Make a request** to your recorder for the same account's recent calls (last ~60 days), to
    build the last-30d vs prior-30d engagement baseline.
 4. **Your CRM** (Salesforce "Search Records" / HubSpot "Search", or **HTTP → Make a request**) —

@@ -21,7 +21,7 @@ Each run, produce one structured report that:
 ## When it fires
 
 - **Type:** schedule. **Default:** `0 8 * * 1-5` (weekdays 08:00, workspace timezone). **Lookback:** trailing 7 days.
-- **Alternative trigger:** if your CRM emits stage-change events, you can instead fire per-deal on entry to a Closed-Lost stage (resolve your real lost stage with `gtmsi crm-stages` rather than hardcoding the label). The scheduled digest is the default because it also produces the cross-deal pattern analysis, which a single-deal trigger cannot.
+- **Alternative trigger:** if your CRM emits stage-change events, you can instead fire per-deal on entry to a Closed-Lost stage (resolve your real lost stage with `dealtrace crm-stages` rather than hardcoding the label). The scheduled digest is the default because it also produces the cross-deal pattern analysis, which a single-deal trigger cannot.
 
 ## Inputs / data required
 
@@ -36,7 +36,7 @@ Each run, produce one structured report that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read lost opportunities from the CRM | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find the calls linked to a deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the calls linked to a deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Classify the loss and reconstruct the deal from transcripts | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

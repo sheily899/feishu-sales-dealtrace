@@ -13,7 +13,7 @@ into `.claude/agents/` in the project, then invoke it per analyzed call (e.g. fr
 "conversation analyzed" webhook, passing the call id).
 
 Resolve data through whatever is connected this session: your call recorder's MCP/API for the
-transcript (or ingest the export with the gtmsi adapters: `gtmsi inspect <file>` / `load_transcript`),
+transcript (or ingest the export with the dealtrace adapters: `dealtrace inspect <file>` / `load_transcript`),
 your CRM's MCP/API for current products / ACV / renewal date, and your chat tool's MCP to post. If
 something isn't connected, say what to connect and continue with what's available.
 

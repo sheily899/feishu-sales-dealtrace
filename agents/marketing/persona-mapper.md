@@ -33,7 +33,7 @@ Turn each analyzed call into a usable read on the buying group:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `get_call_details` | Pull the full call record when needed | Attention `get_call_details` | recorder API |
 | `analyze_calls` | Identify personas + extract priorities and marketing needs | `ask_attention` | an LLM step over the transcript |
 | `send_message` | Post the persona brief to a channel | Slack/Teams tool | your chat tool's API/MCP |

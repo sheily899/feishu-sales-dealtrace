@@ -35,7 +35,7 @@ Each run, produce targeted coaching that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Find each rep's calls in the window | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find each rep's calls in the window | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `get_call_details` | Pull the exact coaching moment from a specific call | Attention `get_call_details` | your recorder's transcript fetch |
 | `analyze_calls` | Evaluate the five selling skills per rep | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the coaching alerts to a channel | Slack/Teams tool | your chat tool's API/MCP |

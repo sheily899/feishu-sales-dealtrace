@@ -210,7 +210,7 @@ Frameworks are plain YAML. To add one:
 
 1. Create `frameworks/<id>.yaml` conforming to `schemas/framework.schema.json`.
 2. Reference it from scorecard criteria via `framework_refs: [<id>.<element_id>]`.
-3. Run `gtmsi validate` to check the YAML.
+3. Run `dealtrace validate` to check the YAML.
 
 Frameworks are purely additive — you can add them without changing the pipeline.
 

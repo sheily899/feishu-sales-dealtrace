@@ -23,7 +23,7 @@ GTMSI 分析引擎，并在本地 Web 页面展示带原文证据的分析报告
 3. 启动工作台：
 
    ```bash
-   python -m gtmsi workbench --feishu --port 8766
+   python -m dealtrace workbench --feishu --port 8766
    ```
 
 打开 `http://127.0.0.1:8766`。页面每 3 秒同步一次本地状态；群内新消息到达后会显示为“客户”或“销售”，而不会展示飞书 Open ID。

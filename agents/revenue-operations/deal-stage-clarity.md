@@ -22,7 +22,7 @@ Each run, produce one audit report that:
 
 - **Type:** schedule. **Default:** `0 7 * * 1-5` (weekdays 07:00, workspace timezone). **Lookback:** trailing 7 days of calls (expand to 14 on a first run or weekly summary).
 - **Alternative trigger:** if your CRM emits stage-change events, you can fire per-deal on a stage move to validate it. The scheduled audit is the default because it sweeps the whole open pipeline and produces the net forecast adjustment, which a single-deal trigger cannot.
-- **Uses real CRM stages:** resolve this org's actual pipeline stages and where its open pipeline sits via [CRM stage discovery](../../docs/crm-stages.md) (`gtmsi crm-stages`) rather than assuming the stage labels in the framework below.
+- **Uses real CRM stages:** resolve this org's actual pipeline stages and where its open pipeline sits via [CRM stage discovery](../../docs/crm-stages.md) (`dealtrace crm-stages`) rather than assuming the stage labels in the framework below.
 
 ## Inputs / data required
 
@@ -37,7 +37,7 @@ Each run, produce one audit report that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read open opportunities and their stages from the CRM | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find the calls linked to a deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the calls linked to a deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Compare each deal's call evidence against its CRM stage | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the audit report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

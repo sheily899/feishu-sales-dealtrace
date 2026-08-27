@@ -34,7 +34,7 @@ Qualify every inbound conversation while intent is fresh, so hot leads reach an 
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `get_call_details` | Fetch the analyzed call by id (transcript + metadata) | Attention `get_call_details` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Fetch the analyzed call by id (transcript + metadata) | Attention `get_call_details` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `search_calls` | Find recent inbound calls on a manual run | Attention `search_calls` | recorder API / exports |
 | `query_records` | Read firmographics / existing-customer flag for ICP fit | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `send_message` | Post the qualification report to a channel | Slack/Teams tool | your chat tool's API/MCP |

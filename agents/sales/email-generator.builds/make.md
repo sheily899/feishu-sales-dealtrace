@@ -12,7 +12,7 @@ export). Until then, assemble the scenario from these modules.
    webhook here; the payload should carry the call id and the deal owner (rep).
 2. **HTTP → Make a request** to your call recorder's API to fetch the analyzed call (transcript +
    attendees). (Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.)
+   pre-ingest via the dealtrace adapters.)
 3. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,
      `max_tokens: 1500`, a single user message = the **Email Generator operating prompt**

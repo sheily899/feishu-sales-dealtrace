@@ -10,7 +10,7 @@
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
       "id": "node-call", "name": "Recorder - fetch call",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
-      "notes": "Fetch the analyzed call (transcript + attendees). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters." },
+      "notes": "Fetch the analyzed call (transcript + attendees). No Gong? Swap for your recorder's API, or ingest the export via the dealtrace adapters." },
 
     { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",

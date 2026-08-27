@@ -33,8 +33,8 @@ no AI throat-clearing, no hype adjectives."""
 
 @tool("get_call", "Read a call's transcript, speakers, and metadata by id.", {"call_id": str})
 async def get_call(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_slack_message", "Post the persona brief to a Slack channel.", {"channel": str, "text": str})

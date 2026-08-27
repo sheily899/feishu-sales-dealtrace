@@ -10,7 +10,7 @@
         "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 7 }).toISO() }}" } ] } },
       "id": "node-calls", "name": "Recorder - this week's calls",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
-      "notes": "Team calls in the last 7 days, grouped by rep downstream. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+      "notes": "Team calls in the last 7 days, grouped by rep downstream. No Gong? Swap for your recorder's API, or ingest exports via the dealtrace adapters." },
 
     { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",

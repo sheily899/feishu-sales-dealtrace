@@ -14,7 +14,7 @@ assemble the scenario from these modules.
    participants, rep) by id.
 3. **HTTP → Make a request** to your recorder for every prior call on the same deal/account (to build
    the cumulative stakeholder map). Recorder that only exports transcripts? Pull from where you store
-   them, or pre-ingest via the gtmsi adapters.
+   them, or pre-ingest via the dealtrace adapters.
 4. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,
      `max_tokens: 2000`, a single user message = the **Multi-Thread-Detector operating prompt**

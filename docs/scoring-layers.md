@@ -78,7 +78,7 @@ Both are editable in `rubrics/deal-health.yaml`, which conforms to
 ### CLI
 
 ```bash
-gtmsi deal <folder> --name "Acme — Platform" --owner Jordan \
+dealtrace deal <folder> --name "Acme — Platform" --owner Jordan \
   --stage Discovery --amount 80000 --date 2026-09-30
 ```
 
@@ -159,7 +159,7 @@ label, and recommended plays.
 ### CLI
 
 ```bash
-gtmsi account <folder> --name "Initech"
+dealtrace account <folder> --name "Initech"
 ```
 
 As with deal health, the folder can contain transcripts, existing coaching-report
@@ -192,14 +192,14 @@ From `examples/reports/account_initech.md`:
 
 ## How call coaching feeds deal / account health
 
-The `score_rubric` engine (in `src/gtmsi/scoring/__init__.py`) takes a list
+The `score_rubric` engine (in `src/dealtrace/scoring/__init__.py`) takes a list
 of `(call_id, CoachingReport)` pairs and sends a compact summary of each to the
 model — overall score, call type, outcomes, low-scoring criteria, top
 improvements, and key evidence quotes. This keeps token usage low while
 preserving the signal the rubric needs.
 
 Call coaching therefore feeds deal and account scoring automatically: run
-`gtmsi coach` on each call in a deal, then run `gtmsi deal` on the same
+`dealtrace coach` on each call in a deal, then run `dealtrace deal` on the same
 folder. No separate data pipeline is required.
 
 ### Customizing rubrics

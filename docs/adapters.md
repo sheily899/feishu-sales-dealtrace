@@ -62,7 +62,7 @@ There are **10** built-in adapters:
 
 ### Auto-detection
 
-When you run `gtmsi coach <file>`, `load_transcript()` resolves the adapter
+When you run `dealtrace coach <file>`, `load_transcript()` resolves the adapter
 like this:
 
 1. If you pass an explicit `--adapter <id>` flag, that adapter is used directly
@@ -106,26 +106,26 @@ The adapter infers `side` from heuristics (turn order, keyword detection) unless
 you provide a `--participants` mapping flag:
 
 ```bash
-gtmsi coach call.txt --participants '{"Alex": "rep", "Sam": "prospect"}'
+dealtrace coach call.txt --participants '{"Alex": "rep", "Sam": "prospect"}'
 ```
 
 ---
 
 ## Writing a new adapter
 
-An adapter is a small **class** (see `src/gtmsi/adapters/base.py` and any
+An adapter is a small **class** (see `src/dealtrace/adapters/base.py` and any
 existing adapter such as `plaintext.py`). The interface is:
 
 - a `name` string attribute (the adapter id, e.g. used by `--adapter`),
 - `sniff(self, path, text) -> bool` — return `True` if this adapter can parse
   the file (auto-detection calls this),
 - `parse(self, path, text) -> Transcript` — return a normalized
-  `Transcript` (from `gtmsi.models`).
+  `Transcript` (from `dealtrace.models`).
 
 The skeleton below shows the minimum interface:
 
 ```python
-# src/gtmsi/adapters/my_recorder.py
+# src/dealtrace/adapters/my_recorder.py
 
 import json
 
@@ -172,7 +172,7 @@ def _map_side(role: str | None) -> str:
 ```
 
 **Registration:** add an **instance** of your adapter to the `ADAPTERS` list in
-`src/gtmsi/adapters/__init__.py`. List position is priority order — put
+`src/dealtrace/adapters/__init__.py`. List position is priority order — put
 specific recorders before the generic JSON and plaintext fallbacks:
 
 ```python

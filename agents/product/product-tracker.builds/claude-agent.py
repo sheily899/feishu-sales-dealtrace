@@ -38,8 +38,8 @@ dashes, no AI throat-clearing, no hype adjectives, one clear ask."""
 
 @tool("search_calls", "Find customer-facing calls in a window and their transcripts.", {"window": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_slack_message", "Post the product-feedback digest to a Slack channel.", {"channel": str, "text": str})

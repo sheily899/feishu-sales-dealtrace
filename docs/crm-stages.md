@@ -6,11 +6,11 @@ breaks in most orgs. So any agent whose trigger or logic keys off a pipeline sta
 **resolve the org's actual stages from its own CRM data first** — and understand *where
 the opportunities actually sit* — rather than assuming labels.
 
-GTM Superintelligence ships this as `gtmsi crm-stages` and `src/gtmsi/crm/stages.py`.
+GTM Superintelligence ships this as `dealtrace crm-stages` and `src/dealtrace/crm/stages.py`.
 
 ```bash
-gtmsi crm-stages --crm salesforce      # dry-run prints the queries; add creds to run live
-gtmsi crm-stages --crm hubspot --access-token $HUBSPOT_ACCESS_TOKEN
+dealtrace crm-stages --crm salesforce      # dry-run prints the queries; add creds to run live
+dealtrace crm-stages --crm hubspot --access-token $HUBSPOT_ACCESS_TOKEN
 ```
 
 Output (live):
@@ -79,7 +79,7 @@ Team Handoff**, **Deal Stage Clarity**, **Revenue Sentry**, **Win Loss Insights*
 - Pipeline-health agents rank risk against the org's *real* open stages and where its
   pipeline concentrates.
 
-In code: call `gtmsi.crm.fetch_salesforce_stages(...)` / `fetch_hubspot_stages(...)`
+In code: call `dealtrace.crm.fetch_salesforce_stages(...)` / `fetch_hubspot_stages(...)`
 (or the pure `classify_*` functions on data you already have) and use `.won`, `.lost`,
 `.open`, and `.busiest_open_stages()`.
 

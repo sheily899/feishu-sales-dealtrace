@@ -42,7 +42,7 @@ class State(TypedDict, total=False):
 
 
 def fetch_call(state: State) -> State:
-    # TODO: fetch the analyzed call by state["call_id"] from your recorder, or load_transcript via gtmsi adapters.
+    # TODO: fetch the analyzed call by state["call_id"] from your recorder, or load_transcript via dealtrace adapters.
     return {"call": {}}
 
 

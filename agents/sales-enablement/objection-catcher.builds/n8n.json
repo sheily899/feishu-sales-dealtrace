@@ -10,7 +10,7 @@
         "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 7 }).toISO() }}" } ] } },
       "id": "node-calls", "name": "Recorder - week's calls",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
-      "notes": "Pull every call from the last 7 days that has a transcript. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+      "notes": "Pull every call from the last 7 days that has a transcript. No Gong? Swap for your recorder's API, or ingest exports via the dealtrace adapters." },
 
     { "parameters": { "method": "GET", "url": "={{ $env.SF_INSTANCE_URL }}/services/data/v60.0/query",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "salesforceOAuth2Api",

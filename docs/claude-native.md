@@ -140,27 +140,27 @@ export ANTHROPIC_API_KEY=sk-ant-…
 
 | Command | Description |
 |---|---|
-| `gtmsi coach <transcript>` | Full pipeline on one transcript (`--format md\|json\|text`, `--out`, `--redact`, `--adapter`, `--model`) |
-| `gtmsi classify <transcript>` | Classify only (`--json`) |
-| `gtmsi bulk <directory>` | Coach a folder → md + json per call + `index.md` (`--out`, `--glob`) |
-| `gtmsi deal <folder>` | Deal-health across a folder of one deal's calls (`--name`, `--owner`, `--stage`, `--amount`, `--date`) |
-| `gtmsi account <folder>` | Account-health across a folder of one account's calls |
-| `gtmsi inbox <path>` | Rep/team/company inbox (`--scope`, `--for`; subfolders = reps) |
-| `gtmsi crm <report.json>` | Map a report to CRM fields (`--crm`, `--writer`) |
-| `gtmsi crm-stages` | Resolve the org's real CRM stages + where pipeline sits (`--crm`) |
-| `gtmsi share <report.json>` | Render a paste-ready "post your score" card for LinkedIn/X |
-| `gtmsi demo` | Print the tracked Attention demo booking link (no data collected) |
-| `gtmsi inspect <transcript>` | Show the normalized transcript (debug adapters) |
-| `gtmsi list frameworks\|scorecards\|call-types\|rubrics` | List the knowledge base |
-| `gtmsi validate` | Check knowledge-base integrity (no argument — validates everything) |
-| `gtmsi telemetry status\|enable\|disable` | Opt-in anonymous usage stats (off by default) |
+| `dealtrace coach <transcript>` | Full pipeline on one transcript (`--format md\|json\|text`, `--out`, `--redact`, `--adapter`, `--model`) |
+| `dealtrace classify <transcript>` | Classify only (`--json`) |
+| `dealtrace bulk <directory>` | Coach a folder → md + json per call + `index.md` (`--out`, `--glob`) |
+| `dealtrace deal <folder>` | Deal-health across a folder of one deal's calls (`--name`, `--owner`, `--stage`, `--amount`, `--date`) |
+| `dealtrace account <folder>` | Account-health across a folder of one account's calls |
+| `dealtrace inbox <path>` | Rep/team/company inbox (`--scope`, `--for`; subfolders = reps) |
+| `dealtrace crm <report.json>` | Map a report to CRM fields (`--crm`, `--writer`) |
+| `dealtrace crm-stages` | Resolve the org's real CRM stages + where pipeline sits (`--crm`) |
+| `dealtrace share <report.json>` | Render a paste-ready "post your score" card for LinkedIn/X |
+| `dealtrace demo` | Print the tracked Attention demo booking link (no data collected) |
+| `dealtrace inspect <transcript>` | Show the normalized transcript (debug adapters) |
+| `dealtrace list frameworks\|scorecards\|call-types\|rubrics` | List the knowledge base |
+| `dealtrace validate` | Check knowledge-base integrity (no argument — validates everything) |
+| `dealtrace telemetry status\|enable\|disable` | Opt-in anonymous usage stats (off by default) |
 
 ```bash
-gtmsi coach call.vtt --adapter gong --format json --out report.json
-gtmsi bulk calls/ --out reports/ --glob "*.vtt"
-gtmsi deal ./acme_deal --name "Acme — Platform" --owner Jordan
-gtmsi inbox ./team --scope team --for "AE Team"
-gtmsi crm reports/deal_acme.json --crm salesforce        # dry-run patch
+dealtrace coach call.vtt --adapter gong --format json --out report.json
+dealtrace bulk calls/ --out reports/ --glob "*.vtt"
+dealtrace deal ./acme_deal --name "Acme — Platform" --owner Jordan
+dealtrace inbox ./team --scope team --for "AE Team"
+dealtrace crm reports/deal_acme.json --crm salesforce        # dry-run patch
 ```
 
 ---

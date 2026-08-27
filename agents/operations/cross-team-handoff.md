@@ -21,7 +21,7 @@ Each run, post a handoff for every account that just transitioned that:
 ## When it fires
 
 - **Type:** schedule. **Default:** `0 * * * *` (hourly, workspace timezone). **Lookback:** trailing 2 hours for the transition scan.
-- **Alternative trigger:** if your CRM emits stage-change or owner-change events, fire per-account on the transition instead of polling. Resolve your real stages with `gtmsi crm-stages` rather than hardcoding labels. The hourly schedule is the portable default because every builder supports a clock.
+- **Alternative trigger:** if your CRM emits stage-change or owner-change events, fire per-account on the transition instead of polling. Resolve your real stages with `dealtrace crm-stages` rather than hardcoding labels. The hourly schedule is the portable default because every builder supports a clock.
 
 ## Inputs / data required
 
@@ -36,7 +36,7 @@ Each run, post a handoff for every account that just transitioned that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read accounts that changed stage/owner | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find the account's calls and transition-signal calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the account's calls and transition-signal calls | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Build the stakeholder map, history, and commitment list from transcripts | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the handoff to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

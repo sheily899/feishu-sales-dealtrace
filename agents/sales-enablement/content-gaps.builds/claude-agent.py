@@ -39,8 +39,8 @@ ask."""
 
 @tool("search_calls", "Pull the week's analyzed calls (with metadata).", {"since_days": int})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_channel_message", "Post the content-gap report to a team channel.", {"channel": str, "text": str})

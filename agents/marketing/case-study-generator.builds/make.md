@@ -12,7 +12,7 @@ scenario from these modules.
    The payload carries the call id.
 2. **Your call recorder** (or **HTTP → Make a request**) → fetch the call's transcript and metadata
    by id, and confirm it reads as a success story. (Recorder that only exports transcripts? Pull from
-   where you store them, or pre-ingest via the gtmsi adapters.)
+   where you store them, or pre-ingest via the dealtrace adapters.)
 3. **Your CRM** (Salesforce "Search Records" / HubSpot "Search Deals", or **HTTP → Make a request**)
    → pull the deal facts: account, industry, size, deal value, contacts, dates.
 4. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`

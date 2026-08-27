@@ -11,7 +11,7 @@ scenario from these modules.
 1. **Schedule** (scenario clock) → run *Every week*, Monday 08:00.
 2. **Your call recorder** (**HTTP → Make a request**)
    - Fetch all team calls from the last 7 days. Output: call ids + metadata (rep, account).
-   - (Recorder that only exports transcripts? Pull from where you store them, or pre-ingest via the gtmsi adapters.)
+   - (Recorder that only exports transcripts? Pull from where you store them, or pre-ingest via the dealtrace adapters.)
 3. **Your call recorder** (**HTTP → Make a request**) again
    - Fetch the prior 7-day window's calls for the trend comparison.
 4. **Aggregator** to collect both windows into one bundle.

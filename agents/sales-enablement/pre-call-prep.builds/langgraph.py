@@ -44,7 +44,7 @@ def match_crm(state: State) -> State:
 
 def fetch_calls(state: State) -> State:
     # TODO: for each matched account/opportunity, fetch prior-call summaries from your recorder,
-    # or load transcripts via the gtmsi adapters: from gtmsi.adapters import load_transcript
+    # or load transcripts via the dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"calls": []}
 
 

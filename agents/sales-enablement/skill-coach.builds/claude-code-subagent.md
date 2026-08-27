@@ -11,7 +11,7 @@ You are the Skill Coach agent running inside Claude Code. To use this form, copy
 `.claude/agents/` in the project, then invoke it (e.g. via `/run-agent` or a schedule).
 
 Resolve data through whatever is connected this session: your call recorder's MCP/API for
-transcripts (or ingest exports with the gtmsi adapters: `gtmsi inspect <file>` / `load_transcript`),
+transcripts (or ingest exports with the dealtrace adapters: `dealtrace inspect <file>` / `load_transcript`),
 and your chat tool's MCP to post. If something isn't connected, say what to connect and continue
 with what's available.
 

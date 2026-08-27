@@ -43,7 +43,7 @@ frameworks: [spiced]      # frameworks you'll reference in criteria (can be empt
 
 **Rules:**
 - `id` must match `^[a-z0-9-]+$` and be unique across `scorecards/`.
-- `applies_to` must reference real call-type IDs (run `gtmsi list call-types`
+- `applies_to` must reference real call-type IDs (run `dealtrace list call-types`
   to see them).
 - `frameworks` is optional but enables the coach to cite framework elements in
   feedback.
@@ -226,7 +226,7 @@ Run the validator to catch problems before your scorecard is used in production.
 checks the whole knowledge base (so it picks up your new file automatically):
 
 ```bash
-gtmsi validate
+dealtrace validate
 # also run the JSON-Schema check used in CI:
 python .github/scripts/validate_schemas.py
 ```
@@ -247,7 +247,7 @@ Together they check:
 Run the pipeline on a real or synthetic transcript to see the scorecard in action:
 
 ```bash
-gtmsi coach samples/discovery-example.txt
+dealtrace coach samples/discovery-example.txt
 ```
 
 Review the output JSON:

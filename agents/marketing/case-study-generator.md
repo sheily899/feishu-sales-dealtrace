@@ -35,7 +35,7 @@ Turn a winning customer call into a case study draft the marketing team can poli
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read the account / deal facts from the CRM | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `get_call_details` | Pull the full call record when needed | Attention `get_call_details` | recorder API |
 | `analyze_calls` | Extract challenge / solution / results + quotes | `ask_attention` | an LLM step over the transcript |
 | `send_direct_message` | DM the draft to the marketing owner | Slack/Teams tool | your chat tool's API/MCP |

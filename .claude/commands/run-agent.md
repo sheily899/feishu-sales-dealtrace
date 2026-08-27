@@ -33,8 +33,8 @@ Target: $ARGUMENTS
    - **Here, via Claude:** if Attention's MCP is connected, call `ask_attention` (NL query/analysis over calls + CRM), `search_calls`, and `get_call_details` directly as the instructions say.
 
    **B) any other `call_recorder` (gong / chorus / fireflies / otter / grain / recall / …) → managed-agent path.** `ask_attention` doesn't exist off-Attention, so translate it using each tool's `generic_action` (in `template.agent.tools`):
-   - `ask_attention` (`generic_action: analyze_calls` / `query_records`) → do the equivalent yourself: read pipeline/deal data from the configured **CRM** (Salesforce/HubSpot/… MCP or API), and retrieve transcripts from the configured recorder — or, if it only exports transcripts, ingest the export with the **gtmsi adapters** (`gtmsi inspect <file>` / `load_transcript`) — then **Claude analyzes the normalized turns** to produce the same result.
-   - `search_calls` / `get_call_details` → the recorder's own search/fetch tools, or the gtmsi adapters. Any recorder works this way.
+   - `ask_attention` (`generic_action: analyze_calls` / `query_records`) → do the equivalent yourself: read pipeline/deal data from the configured **CRM** (Salesforce/HubSpot/… MCP or API), and retrieve transcripts from the configured recorder — or, if it only exports transcripts, ingest the export with the **dealtrace adapters** (`dealtrace inspect <file>` / `load_transcript`) — then **Claude analyzes the normalized turns** to produce the same result.
+   - `search_calls` / `get_call_details` → the recorder's own search/fetch tools, or the dealtrace adapters. Any recorder works this way.
 
    For both paths, communication/email/calendar resolve the same: `communication: slack` → `mcp__claude_ai_Slack__` (`slack_send_message`); `teams` → Teams MCP; `email: gmail` → `mcp__claude_ai_Gmail__` (`create_draft`); `outlook` → Outlook MCP; `calendar` → that calendar's MCP (`list_events`, `get_event`). If a needed integration isn't connected, tell the user what to connect and continue with what's available.
 
@@ -47,7 +47,7 @@ Target: $ARGUMENTS
 4. **Execute the agent.**
    - Use the agent's `instructions` as your primary guide for what to do
    - Fetch data from the resolved MCP tools as the instructions require
-   - For call_recorder data: on Attention, use `ask_attention` / `search_calls` / `get_call_details` directly; on any other recorder, translate per step 2B — read CRM data from the configured CRM and retrieve transcripts via the recorder's tools or the gtmsi adapters, then analyze with Claude
+   - For call_recorder data: on Attention, use `ask_attention` / `search_calls` / `get_call_details` directly; on any other recorder, translate per step 2B — read CRM data from the configured CRM and retrieve transcripts via the recorder's tools or the dealtrace adapters, then analyze with Claude
    - For CRM data: query the CRM for accounts, opportunities, contacts as needed
    - For communication output: send messages via the resolved communication MCP
    - For email output: draft/send via the resolved email MCP

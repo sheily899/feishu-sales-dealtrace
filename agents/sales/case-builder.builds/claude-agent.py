@@ -42,14 +42,14 @@ draft for the rep to refine and share, never sent to the customer."""
 
 @tool("get_call_details", "Fetch a call's transcript, participants, and metadata by id.", {"call_id": str})
 async def get_call_details(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("search_calls", "Find prior calls tied to the same deal or account.", {"deal_or_account": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters.
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters.
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_channel_message", "Post the business case to a team channel.", {"channel": str, "text": str})

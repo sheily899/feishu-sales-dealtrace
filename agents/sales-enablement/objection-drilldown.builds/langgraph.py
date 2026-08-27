@@ -35,7 +35,7 @@ class State(TypedDict, total=False):
 
 def fetch_calls(state: State) -> State:
     # TODO: fetch this week's team calls from your recorder, or load transcripts via the
-    # gtmsi adapters: from gtmsi.adapters import load_transcript
+    # dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"calls": []}
 
 

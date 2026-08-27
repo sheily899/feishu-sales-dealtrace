@@ -48,8 +48,8 @@ objects:
 | Source | Report it reads |
 |---|---|
 | `coaching_report` | A single per-call coaching report |
-| `deal_report` | A deal health report (from `gtmsi deal`) |
-| `account_report` | An account health report (from `gtmsi account`) |
+| `deal_report` | A deal health report (from `dealtrace deal`) |
+| `account_report` | An account health report (from `dealtrace account`) |
 
 ### `from` path syntax
 
@@ -117,7 +117,7 @@ in the result.
 ### Dry run (default — nothing is sent)
 
 ```bash
-gtmsi crm report.json --crm salesforce
+dealtrace crm report.json --crm salesforce
 ```
 
 Prints the JSON patch that *would* be sent. Safe to run at any time.
@@ -146,7 +146,7 @@ Example dry-run output for a deal report with the Salesforce mapping:
 ### Live write — Salesforce
 
 ```bash
-gtmsi crm report.json --crm salesforce \
+dealtrace crm report.json --crm salesforce \
   --writer salesforce \
   --instance-url https://yourorg.my.salesforce.com \
   --access-token $SF_TOKEN
@@ -176,7 +176,7 @@ Field notes:
 ### Live write — HubSpot
 
 ```bash
-gtmsi crm report.json --crm hubspot \
+dealtrace crm report.json --crm hubspot \
   --writer hubspot \
   --access-token $HS_TOKEN
 ```
@@ -230,7 +230,7 @@ not CRM structure.
 ### Step 2 — Run a dry-run to verify the patch
 
 ```bash
-gtmsi crm report.json --crm mycrm
+dealtrace crm report.json --crm mycrm
 ```
 
 Inspect the JSON output. Every field should resolve to the value you expect.
@@ -238,7 +238,7 @@ Inspect the JSON output. Every field should resolve to the value you expect.
 ### Step 3 — Implement a writer (optional)
 
 If your CRM exposes a REST endpoint, implement a writer in
-`src/gtmsi/crm/writers.py`. The interface is a single method; mirror the shipped
+`src/dealtrace/crm/writers.py`. The interface is a single method; mirror the shipped
 writers' create-or-update behavior — PATCH when a record id is present, POST to
 create when it is absent:
 
@@ -260,7 +260,7 @@ class MyCRMWriter:
 ```
 
 Register it in `get_writer()` and pass `--writer mycrm` on the CLI. See
-`src/gtmsi/crm/writers.py` for the full `DryRunWriter`, `SalesforceWriter`,
+`src/dealtrace/crm/writers.py` for the full `DryRunWriter`, `SalesforceWriter`,
 and `HubSpotWriter` implementations.
 
 ---
@@ -270,7 +270,7 @@ and `HubSpotWriter` implementations.
 **Dry-run is always the default.** The `DryRunWriter` is used unless you
 explicitly pass `--writer salesforce` or `--writer hubspot` along with valid
 credentials. Live writes are an explicit, credentialed action — you will never
-accidentally modify CRM records by running `gtmsi crm` without the writer
+accidentally modify CRM records by running `dealtrace crm` without the writer
 flag.
 
 The recommended workflow is:
@@ -287,5 +287,5 @@ The recommended workflow is:
 - Per-call coaching reports: [scorecards.md](./scorecards.md)
 - Schema reference: `schemas/crm_mapping.schema.json`
 - Mapping source: `config/crm/`
-- Writer source: `src/gtmsi/crm/writers.py`
-- Mapping engine: `src/gtmsi/crm/mapping.py`
+- Writer source: `src/dealtrace/crm/writers.py`
+- Mapping engine: `src/dealtrace/crm/mapping.py`

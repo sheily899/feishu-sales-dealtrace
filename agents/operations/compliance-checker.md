@@ -33,7 +33,7 @@ Turn each analyzed customer call into a compliance check that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `get_call_details` | Fetch the analyzed call's transcript by id | Attention `get_call_details` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Fetch the analyzed call's transcript by id | Attention `get_call_details` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Scan against the checklist and assign severity | `ask_attention` | an LLM step over the transcript |
 | `send_message` | Post the alert to the compliance channel | Slack/Teams tool | your chat tool's API/MCP |
 

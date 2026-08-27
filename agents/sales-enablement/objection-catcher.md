@@ -34,7 +34,7 @@ Each run, produce one coaching digest that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Pull the week's calls that have transcripts | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Pull the week's calls that have transcripts | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Extract and cluster objections, score rebuttals | `ask_attention` | an LLM step over the transcripts |
 | `query_records` | Read deal outcomes to weight rebuttal scores | CRM tool | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `send_email` | Email the digest to enablement | Email tool | your email tool's API/MCP |

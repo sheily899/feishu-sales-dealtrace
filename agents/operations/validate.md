@@ -34,7 +34,7 @@ Turn each analyzed customer call into CRM updates the rep can approve in seconds
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Extract CRM-impacting fields with confidence + evidence | `ask_attention` | an LLM step over the transcript |
 | `query_records` | Read current CRM record state to build the diff | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `update_records` | Write the approved fields back to the CRM | CRM tool | your CRM's API/MCP |

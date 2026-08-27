@@ -12,7 +12,7 @@ export). Until then, assemble the scenario from these modules.
    webhook here; the payload should carry the call id and the account.
 2. **HTTP → Make a request** to your call recorder's API to fetch the analyzed call (transcript +
    attendees). (Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.)
+   pre-ingest via the dealtrace adapters.)
 3. **Your CRM** (Salesforce "Search Records" / HubSpot "Search Companies", or **HTTP → Make a request**)
    - Read what the account already owns: current products, current ACV, and renewal date.
 4. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`

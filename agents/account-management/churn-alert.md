@@ -35,7 +35,7 @@ Each run, produce one structured retention report that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Scope the active-customer set and read health signals | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find each account's recent calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find each account's recent calls | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Score sentiment, engagement, and churn signals per account | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

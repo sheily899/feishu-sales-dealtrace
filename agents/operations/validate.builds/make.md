@@ -12,7 +12,7 @@ assemble the scenario from these modules.
    webhook here; the payload should carry the call id, the call owner, and any known CRM record ids.
 2. **HTTP → Make a request** to your call recorder's API to fetch the analyzed call (transcript +
    participants). (Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.)
+   pre-ingest via the dealtrace adapters.)
 3. **Your CRM** (Salesforce "Search Records" / HubSpot "Search", or **HTTP → Make a request**) —
    read current state. Resolve the Account/Contact/Opportunity by participant email, domain, or
    provided id, and read the current values of the fields you might update.

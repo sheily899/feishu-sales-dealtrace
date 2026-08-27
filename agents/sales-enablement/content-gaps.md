@@ -34,7 +34,7 @@ Each run, produce one report that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Pull the week's analyzed calls | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Pull the week's analyzed calls | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Extract questions, answers, and uncertainty signals; cluster themes | `ask_attention` | an LLM step over the transcripts |
 | `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

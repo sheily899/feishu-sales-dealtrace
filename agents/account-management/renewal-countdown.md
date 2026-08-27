@@ -20,7 +20,7 @@ Each run, produce one tiered renewal digest that:
 ## When it fires
 
 - **Type:** schedule. **Default:** `0 7 * * *` (daily 07:00, workspace timezone). **Horizons:** renewals due in the next 30 / 60 / 90 days. **Lookback per account:** roughly the trailing 90 days of calls.
-- **Renewal date resolution:** resolve the real renewal-date field in your CRM (use `gtmsi crm-fields` or your CRM's schema) rather than hardcoding a label. The CSM is the rep-equivalent here; the customer is the account on the other side.
+- **Renewal date resolution:** resolve the real renewal-date field in your CRM (use `dealtrace crm-fields` or your CRM's schema) rather than hardcoding a label. The CSM is the rep-equivalent here; the customer is the account on the other side.
 
 ## Inputs / data required
 
@@ -35,7 +35,7 @@ Each run, produce one tiered renewal digest that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Build the renewal pipeline across the 30/60/90-day horizons | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find each renewing account's recent calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find each renewing account's recent calls | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Grade each renewal HEALTHY / AT RISK / CRITICAL from its calls | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the digest to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

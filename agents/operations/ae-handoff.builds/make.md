@@ -16,7 +16,7 @@ these modules.
      opportunity team, products/line items, custom fields (tier, region, segment).
 3. **Iterator** over the returned deals, then **HTTP → Make a request** to your call recorder's API
    for each deal's opportunity/account calls. (Recorder that only exports transcripts? Pull from
-   where you store them, or pre-ingest via the gtmsi adapters.)
+   where you store them, or pre-ingest via the dealtrace adapters.)
 4. **Aggregator** to collect the per-deal data back into one bundle.
 5. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,

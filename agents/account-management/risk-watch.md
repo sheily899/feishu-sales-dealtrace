@@ -35,7 +35,7 @@ Turn each analyzed customer call into an account-risk read the CSM team can act 
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call and the account's recent history | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call and the account's recent history | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Score risk indicators and the engagement-drop baseline | `ask_attention` | an LLM step over the transcripts |
 | `query_records` | Enrich the alert with account metadata (owner, value, renewal, cases) | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `send_message` | Post the tiered alert to a channel | Slack/Teams tool | your chat tool's API/MCP |

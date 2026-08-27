@@ -11,7 +11,7 @@ then, assemble the scenario from these modules.
    The payload should carry the call id.
 2. **HTTP → Make a request** to your call recorder's API — fetch the transcript + metadata for that
    call. (Recorder that only exports transcripts? Pull from where you store them, or pre-ingest via
-   the gtmsi adapters.)
+   the dealtrace adapters.)
 3. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,
      `max_tokens: 2000`, a single user message = the **Team Collab operating prompt**

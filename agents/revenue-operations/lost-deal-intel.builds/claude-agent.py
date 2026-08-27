@@ -42,8 +42,8 @@ async def query_crm(args):
 
 @tool("search_calls", "Find the calls/transcripts tied to a deal or account.", {"deal_or_account": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_slack_message", "Post the report to a Slack channel.", {"channel": str, "text": str})

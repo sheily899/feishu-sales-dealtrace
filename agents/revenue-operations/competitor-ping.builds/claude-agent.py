@@ -44,14 +44,14 @@ throat-clearing, no hype adjectives, one clear ask."""
 
 @tool("get_call_details", "Fetch a call's transcript, attendees, and metadata by id.", {"call_id": str})
 async def get_call_details(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("search_calls", "Find recent calls (manual or backfill runs).", {"query": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters.
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters.
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_channel_message", "Post the competitive-intel alert to a team channel.", {"channel": str, "text": str})

@@ -17,7 +17,7 @@
         "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 14 }).toISO() }}" } ] } },
       "id": "node-calls", "name": "Recorder - fetch calls (14d)",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [440, 0],
-      "notes": "Group calls by deal/account. For many deals, precede with a Split In Batches loop. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+      "notes": "Group calls by deal/account. For many deals, precede with a Split In Batches loop. No Gong? Swap for your recorder's API, or ingest exports via the dealtrace adapters." },
 
     { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",

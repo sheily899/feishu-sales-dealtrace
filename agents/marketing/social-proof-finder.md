@@ -34,7 +34,7 @@ Each run, produce one report that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Find the week's customer-facing calls | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the week's customer-facing calls | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `get_call_details` | Pull a full call record for context | Attention `get_call_details` | recorder API |
 | `analyze_calls` | Flag genuine social proof and pull the best quotes | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |

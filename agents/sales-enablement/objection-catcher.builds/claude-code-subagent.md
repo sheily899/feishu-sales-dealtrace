@@ -11,7 +11,7 @@ You are the Objection Catcher agent running inside Claude Code. To use this form
 `.claude/agents/` in the project, then invoke it (e.g. via `/run-agent` or a schedule).
 
 Resolve data through whatever is connected this session: your call recorder's MCP/API for the week's
-transcripts (or ingest exports with the gtmsi adapters: `gtmsi inspect <file>` / `load_transcript`),
+transcripts (or ingest exports with the dealtrace adapters: `dealtrace inspect <file>` / `load_transcript`),
 your CRM's MCP/API for deal outcomes (optional, for weighting), and your email tool's MCP to send. If
 something isn't connected, say what to connect and continue with what's available.
 

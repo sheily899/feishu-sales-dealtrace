@@ -121,7 +121,7 @@ The taxonomy is plain YAML. To add a call type:
 1. Add an entry to `config/call_types.yaml` following the schema.
 2. Create (or reuse) a scorecard in `scorecards/`.
 3. Add outcomes to `config/outcomes.yaml` if needed.
-4. Run `gtmsi validate` to check the YAML is valid.
+4. Run `dealtrace validate` to check the YAML is valid.
 
 ---
 

@@ -36,7 +36,7 @@ class State(TypedDict, total=False):
 
 def fetch_call(state: State) -> State:
     # TODO: fetch the transcript + metadata for state["call_id"] from your recorder,
-    # or load it via the gtmsi adapters: from gtmsi.adapters import load_transcript
+    # or load it via the dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"call": {}}
 
 

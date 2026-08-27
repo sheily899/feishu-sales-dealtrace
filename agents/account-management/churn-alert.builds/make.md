@@ -15,7 +15,7 @@ confirmed from a real export). Until then, assemble the scenario from these modu
 3. **Iterator** over the returned accounts (so each account's calls are fetched), then
    **HTTP → Make a request** to your call recorder's API for that account's calls over the last ~90
    days. (Recorder that only exports transcripts? Pull from where you store them, or pre-ingest via
-   the gtmsi adapters.)
+   the dealtrace adapters.)
 4. **Aggregator** to collect the per-account data back into one bundle.
 5. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,

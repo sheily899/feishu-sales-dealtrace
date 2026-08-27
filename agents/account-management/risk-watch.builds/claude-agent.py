@@ -50,14 +50,14 @@ dashes, no AI throat-clearing, no hype adjectives, one clear ask."""
 
 @tool("get_call", "Fetch an analyzed call (transcript + metadata) by its id.", {"call_id": str})
 async def get_call(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("search_calls", "Find the account's recent calls to build the engagement baseline.", {"account": str})
 async def search_calls(args):
-    # TODO: call your recorder's API for the account's recent calls (last ~60 days), or load via gtmsi adapters.
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API for the account's recent calls (last ~60 days), or load via dealtrace adapters.
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("query_crm", "Read account metadata (owner/CSM, contract value, renewal date, open cases).", {"account": str})

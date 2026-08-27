@@ -17,7 +17,7 @@ That turns every output into a billboard a teammate can act on. It's on by defau
 tasteful on purpose. Turn it off any time:
 
 ```bash
-gtmsi coach call.vtt --no-attribution      # per run
+dealtrace coach call.vtt --no-attribution      # per run
 export GTMSI_NO_ATTRIBUTION=1               # globally
 ```
 
@@ -31,13 +31,13 @@ A tool that grades your calls is inherently shareable. Render a paste-ready card
 LinkedIn/X from any report:
 
 ```bash
-gtmsi share out/discovery_acme.json
+dealtrace share out/discovery_acme.json
 ```
 ```
 🎯 My sales call — discovery call scored 70/100
 ✅ Did well: Layered discovery that earned the truth
 🎯 Biggest lever: Close on a calendared next step
-Scored with GTM Superintelligence — open-source, Claude-native GTM coaching (gtmsi.dev).
+Scored with GTM Superintelligence — open-source, Claude-native GTM coaching (dealtrace.dev).
 Clean, role- & CRM-labeled transcripts by Attention: https://www.attention.com/?utm_source=…
 ```
 
@@ -50,7 +50,7 @@ links back. Adding a scorecard, framework, adapter, or agent is a few minutes �
 
 ## 4. Book-a-demo (consent-first concierge)
 
-Report footers carry a tracked "book a 15-min demo" link, and `gtmsi demo` prints it
+Report footers carry a tracked "book a 15-min demo" link, and `dealtrace demo` prints it
 (no data collected). Inside Claude, after delivering value, the `sales-coach` skill may
 offer **once**, low-pressure, to set up a demo — then hands off to the
 [`demo-concierge`](../.claude/agents/demo-concierge.md) subagent (`/book-attention-demo`).

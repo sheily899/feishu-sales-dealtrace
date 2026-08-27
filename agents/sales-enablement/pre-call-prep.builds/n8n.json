@@ -25,7 +25,7 @@
         "sendQuery": true, "queryParameters": { "parameters": [ { "name": "fromDateTime", "value": "={{ $now.minus({ days: 120 }).toISO() }}" } ] } },
       "id": "node-calls", "name": "Recorder - prior conversations",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [660, 0],
-      "notes": "Join calls to the matched accounts/opportunities; take the most recent 3-5 summaries each. No Gong? Swap for your recorder's API, or ingest exports via the gtmsi adapters." },
+      "notes": "Join calls to the matched accounts/opportunities; take the most recent 3-5 summaries each. No Gong? Swap for your recorder's API, or ingest exports via the dealtrace adapters." },
 
     { "parameters": { "method": "POST", "url": "https://api.anthropic.com/v1/messages",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpHeaderAuth",

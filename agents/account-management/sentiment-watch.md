@@ -33,7 +33,7 @@ Turn each analyzed call into a fast, evidence-backed signal of emotional risk or
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `get_call_details` | Pull the full call record when needed | Attention `get_call_details` | recorder API |
 | `analyze_calls` | Read sentiment, emotion tags, and the proving quote | `ask_attention` | an LLM step over the transcript |
 | `send_direct_message` | DM the alert to the account owner | Slack/Teams tool | your chat tool's API/MCP |

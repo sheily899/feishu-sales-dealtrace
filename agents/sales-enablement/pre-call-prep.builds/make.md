@@ -17,7 +17,7 @@ these modules.
      else most recent closed): stage, amount, close date, forecast category.
 4. **HTTP → Make a request** to your call recorder's API for that account's/opportunity's prior
    conversations; keep the most recent 3-5 summaries. (Recorder that only exports transcripts? Pull
-   from where you store them, or pre-ingest via the gtmsi adapters.)
+   from where you store them, or pre-ingest via the dealtrace adapters.)
 5. **Aggregator** to collect each meeting's data back into one bundle.
 6. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,

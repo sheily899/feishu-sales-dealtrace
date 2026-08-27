@@ -43,7 +43,7 @@ def fetch_open_deals(state: State) -> State:
 
 def fetch_calls(state: State) -> State:
     # TODO: for each deal, fetch its recent calls from your recorder, or load transcripts via the
-    # gtmsi adapters: from gtmsi.adapters import load_transcript
+    # dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"calls": []}
 
 

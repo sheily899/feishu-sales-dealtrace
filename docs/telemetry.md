@@ -22,9 +22,9 @@ contents, file paths, CRM data, or any PII.
 ## Turning it on / off
 
 ```bash
-gtmsi telemetry status     # show current state (default: disabled)
-gtmsi telemetry enable     # opt in
-gtmsi telemetry disable    # opt out
+dealtrace telemetry status     # show current state (default: disabled)
+dealtrace telemetry enable     # opt in
+dealtrace telemetry disable    # opt out
 ```
 
 Or via environment (env wins over the saved setting):

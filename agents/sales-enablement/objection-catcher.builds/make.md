@@ -11,7 +11,7 @@ these modules.
 1. **Schedule** (scenario clock) → run *Every week*, Monday 08:00.
 2. **Your call recorder** (or **HTTP → Make a request**) — pull every call from the last 7 days that
    has a transcript. Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.
+   pre-ingest via the dealtrace adapters.
 3. **Your CRM** (optional, Salesforce "Search Records" / HubSpot "Search Deals", or **HTTP → Make a
    request**) — fetch deal outcomes (stage/advanced/won/lost) to weight rebuttal scores. Skip if you
    have no CRM; the prompt handles missing outcome data.

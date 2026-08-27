@@ -15,7 +15,7 @@ scenario from these modules.
    - Output: account, prev/new stage, prev/new owner, deal value.
 3. **Iterator** over the returned accounts, then **HTTP → Make a request** to your call recorder's API
    for each account's calls in the last 90 days. (Recorder that only exports transcripts? Pull from
-   where you store them, or pre-ingest via the gtmsi adapters.)
+   where you store them, or pre-ingest via the dealtrace adapters.)
 4. **Aggregator** to collect the per-account data back into one bundle.
 5. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,

@@ -36,7 +36,7 @@ Each run, produce one report that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read closed opportunities and outcomes from the CRM | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find the calls linked to a closed deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the calls linked to a closed deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Extract themes, competitors, and pricing signals from transcripts | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the report to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

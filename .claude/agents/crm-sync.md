@@ -31,8 +31,8 @@ You translate GTM Superintelligence's output into CRM field updates, for ANY CRM
 ## Programmatic path
 You can also run it via the CLI:
 ```
-gtmsi crm path/to/report.json --crm salesforce            # dry-run
-gtmsi crm path/to/deal.json  --crm hubspot --writer hubspot   # live (needs token)
+dealtrace crm path/to/report.json --crm salesforce            # dry-run
+dealtrace crm path/to/deal.json  --crm hubspot --writer hubspot   # live (needs token)
 ```
 
 ## Rules

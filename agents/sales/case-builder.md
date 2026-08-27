@@ -34,7 +34,7 @@ Turn each substantive sales call into a business case the rep can refine and sha
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `get_call_details` | Fetch the triggering call's transcript and metadata | Attention `get_call_details` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Fetch the triggering call's transcript and metadata | Attention `get_call_details` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `search_calls` | Find the deal's prior calls | Attention `search_calls` | recorder API / adapters |
 | `analyze_calls` | Extract the six business-case sections | `ask_attention` | an LLM step over the transcripts |
 | `send_message` | Post the business case to a channel | Slack/Teams tool | your chat tool's API/MCP |

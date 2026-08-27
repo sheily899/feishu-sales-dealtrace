@@ -12,9 +12,9 @@ You are the Deal Stage Clarity agent running inside Claude Code. To use this for
 into `.claude/agents/` in the project, then invoke it (e.g. via `/run-agent` or a schedule).
 
 Resolve data through whatever is connected this session: your CRM's MCP/API for open opportunities
-and their stages, your call recorder's MCP/API for transcripts (or ingest exports with the gtmsi
-adapters: `gtmsi inspect <file>` / `load_transcript`), and your chat tool's MCP to post. Resolve the
-org's real pipeline stages (`gtmsi crm-stages`) rather than assuming the labels below. If something
+and their stages, your call recorder's MCP/API for transcripts (or ingest exports with the dealtrace
+adapters: `dealtrace inspect <file>` / `load_transcript`), and your chat tool's MCP to post. Resolve the
+org's real pipeline stages (`dealtrace crm-stages`) rather than assuming the labels below. If something
 isn't connected, say what to connect and continue with what's available.
 
 ## Steps

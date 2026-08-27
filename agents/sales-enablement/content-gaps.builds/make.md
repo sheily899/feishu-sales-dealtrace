@@ -11,7 +11,7 @@ modules.
 1. **Schedule** (scenario clock) → run *Every week*, Monday 08:00.
 2. **Your call recorder** (or **HTTP → Make a request**) — pull every analyzed call from the last 7
    days across all reps (with account, product line, rep, sentiment). Recorder that only exports
-   transcripts? Pull from where you store them, or pre-ingest via the gtmsi adapters.
+   transcripts? Pull from where you store them, or pre-ingest via the dealtrace adapters.
 3. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,
      `max_tokens: 3000`, a single user message = the **Content Gaps operating prompt**

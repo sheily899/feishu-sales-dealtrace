@@ -46,8 +46,8 @@ throat-clearing, no hype adjectives, one clear ask. Never contact the customer."
 
 @tool("get_call_details", "Fetch the analyzed call's transcript and metadata by id.", {"call_id": str})
 async def get_call_details(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_slack_message", "Post a team alert to a Slack channel.", {"channel": str, "text": str})

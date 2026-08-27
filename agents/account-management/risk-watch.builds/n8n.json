@@ -10,7 +10,7 @@
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth" },
       "id": "node-call", "name": "Recorder - fetch call",
       "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [220, 0],
-      "notes": "Fetch the analyzed call (transcript + participants). No Gong? Swap for your recorder's API, or ingest the export via the gtmsi adapters. If no transcript, stop." },
+      "notes": "Fetch the analyzed call (transcript + participants). No Gong? Swap for your recorder's API, or ingest the export via the dealtrace adapters. If no transcript, stop." },
 
     { "parameters": { "method": "GET", "url": "https://api.gong.io/v2/calls",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "httpBasicAuth",

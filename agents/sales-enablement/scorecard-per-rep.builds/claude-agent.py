@@ -36,8 +36,8 @@ no em dashes, no AI throat-clearing, no hype adjectives, one clear ask."""
 
 @tool("search_calls", "Find team calls in a date window. Returns call ids + metadata (rep, account).", {"date_range": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("get_call_details", "Fetch the transcript/details for one call id (for coaching examples).", {"call_id": str})

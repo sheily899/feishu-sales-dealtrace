@@ -12,7 +12,7 @@ You are the Pre-Call Prep agent running inside Claude Code. To use this form, co
 
 Resolve data through whatever is connected this session: your calendar's MCP/API for today's
 meetings, your CRM's MCP/API for accounts and opportunities, your call recorder's MCP/API for prior
-conversations (or ingest exports with the gtmsi adapters: `gtmsi inspect <file>` / `load_transcript`),
+conversations (or ingest exports with the dealtrace adapters: `dealtrace inspect <file>` / `load_transcript`),
 and your chat tool's MCP to DM. If something isn't connected, say what to connect and continue with
 what's available.
 

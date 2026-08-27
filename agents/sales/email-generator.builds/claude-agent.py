@@ -40,8 +40,8 @@ step was agreed, propose one from the call type and label it clearly as proposed
 
 @tool("get_call", "Fetch an analyzed call (transcript + metadata) by its id.", {"call_id": str})
 async def get_call(args):
-    # TODO: call your recorder's API, or load the transcript via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load the transcript via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("send_slack_direct_message", "DM the draft to the rep (never to the customer).", {"user_id": str, "text": str})

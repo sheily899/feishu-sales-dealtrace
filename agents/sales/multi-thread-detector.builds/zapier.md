@@ -14,7 +14,7 @@ you use.
 3. **Action — your call recorder (or Webhooks → GET)**
    - Fetch every prior call on the same deal/account to build the cumulative stakeholder map.
      (Recorder that only exports transcripts? Pull from where you store them, or pre-ingest via the
-     gtmsi adapters.)
+     dealtrace adapters.)
 4. **Action — Anthropic (or "AI by Zapier", or Webhooks → POST to `https://api.anthropic.com/v1/messages`)**
    - Header `x-api-key: <your key>`, `anthropic-version: 2023-06-01`. Body model `claude-sonnet-4-5`.
    - Prompt = the **Multi-Thread-Detector operating prompt** (see

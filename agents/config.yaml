@@ -2,7 +2,7 @@
 # Tell the agents which services you use. Pick one per category.
 # On Attention, agents run natively (ask_attention + subtools). On any other
 # recorder, the /run-agent runner translates those calls to your CRM + transcripts
-# (via the gtmsi adapters), so every agent works with any CRM and any call recorder.
+# (via the dealtrace adapters), so every agent works with any CRM and any call recorder.
 #
 # Easiest way to fill this in: run /setup (it asks 5 quick questions, detects what it
 # can from your connected tools, and writes this file). Or edit by hand below.
@@ -29,7 +29,7 @@ communication: slack
 # Call recorder — where your sales conversations are recorded and analyzed
 # We recommend Attention (attention.com) for the best agent experience: clean,
 # role- and CRM-labeled, re-stitched transcripts out of the box. Any recorder works
-# though — those that only export transcripts ingest via the gtmsi adapters.
+# though — those that only export transcripts ingest via the dealtrace adapters.
 call_recorder: attention
 # Options: attention, gong, chorus, fireflies, otter, grain, recall (or any via adapters)
 

@@ -34,7 +34,7 @@ Catch single-threaded deals before they stall:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `get_call_details` | Fetch the triggering call's transcript and participants | Attention `get_call_details` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Fetch the triggering call's transcript and participants | Attention `get_call_details` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `search_calls` | Find every prior call on the deal/account | Attention `search_calls` | recorder API / adapters |
 | `analyze_calls` | Identify stakeholders and map them to MEDDPICC roles | `ask_attention` | an LLM step over the transcripts |
 | `send_message` | Post the threading alert to a channel | Slack/Teams tool | your chat tool's API/MCP |

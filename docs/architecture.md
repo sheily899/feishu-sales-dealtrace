@@ -29,7 +29,7 @@ flowchart TB
   RPT -. humanize .-> HUM
 ```
 
-The four stages are **conceptual**: in the Python pipeline (`src/gtmsi/pipeline.py`)
+The four stages are **conceptual**: in the Python pipeline (`src/dealtrace/pipeline.py`)
 they collapse into exactly **two LLM calls** — `classify()` (stage 1), then a single
 combined `coach()` call that infers outcomes, scores, and produces coaching together
 (stages 2–4). This page explains each stage, where the LLM is actually called, how
@@ -233,7 +233,7 @@ gtm-superintelligence/
 ├── rubrics/                       # Deal-health + account-health rubrics
 ├── schemas/                       # JSON Schemas for every data type
 ├── scorecards/                    # Per-call-type scorecard YAML
-└── src/gtmsi/                 # Python reference implementation
+└── src/dealtrace/                 # Python reference implementation
     ├── adapters/                  # Adapter package (plaintext, vtt, srt, gong, …)
     ├── pipeline.py                # Two-call pipeline (classify, then combined coach)
     ├── llm.py                     # Anthropic wrapper + prompt caching (no cache.py)
@@ -243,7 +243,7 @@ gtm-superintelligence/
     ├── registry.py                # Loads/validates the YAML knowledge base
     ├── render.py                  # Markdown / terminal rendering
     ├── models.py                  # Pydantic data models
-    └── cli.py                     # `gtmsi` CLI entry point
+    └── cli.py                     # `dealtrace` CLI entry point
 ```
 
 ---
@@ -258,18 +258,18 @@ ambient Claude model. No extra configuration. See [claude-native.md](./claude-na
 ### Python CLI (Anthropic API key required)
 
 ```
-gtmsi coach transcript.vtt
-gtmsi classify transcript.vtt
-gtmsi bulk /path/to/calls/
-gtmsi deal /path/to/one-deals-calls/ --name "Acme — Platform"
-gtmsi account /path/to/one-accounts-calls/ --name "Initech"
-gtmsi inbox /path/to/calls/ --scope rep --for "Jordan"
-gtmsi crm report.json --crm salesforce
-gtmsi list frameworks|scorecards|call-types|rubrics
-gtmsi validate          # checks the whole knowledge base (no argument)
+dealtrace coach transcript.vtt
+dealtrace classify transcript.vtt
+dealtrace bulk /path/to/calls/
+dealtrace deal /path/to/one-deals-calls/ --name "Acme — Platform"
+dealtrace account /path/to/one-accounts-calls/ --name "Initech"
+dealtrace inbox /path/to/calls/ --scope rep --for "Jordan"
+dealtrace crm report.json --crm salesforce
+dealtrace list frameworks|scorecards|call-types|rubrics
+dealtrace validate          # checks the whole knowledge base (no argument)
 ```
 
-The CLI (`src/gtmsi/cli.py`) is a thin wrapper over the pipeline. It resolves the
+The CLI (`src/dealtrace/cli.py`) is a thin wrapper over the pipeline. It resolves the
 adapter, runs the stages, and writes the report to stdout or a file (`--out`). Coaching,
 deal, account, and inbox commands need `ANTHROPIC_API_KEY` (except `inbox` when reading
 existing report JSONs); `crm` dry-run and `validate`/`list`/`inspect` need no key.

@@ -11,7 +11,7 @@ these modules.
 1. **Schedule** (scenario clock) → run *Every week*, Monday 08:00.
 2. **Your call recorder** (or **HTTP → Make a request**) → fetch the customer-facing calls from the
    last 7 days. (Recorder that only exports transcripts? Pull from where you store them, or
-   pre-ingest via the gtmsi adapters.)
+   pre-ingest via the dealtrace adapters.)
 3. **Iterator** over the returned calls (optional, for large volumes), then an **Aggregator** to
    collect them into one bundle (frequency and trends need the full set).
 4. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`

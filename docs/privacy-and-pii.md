@@ -84,7 +84,7 @@ guarantee.
 To enable redaction:
 
 ```bash
-gtmsi coach call.vtt --redact
+dealtrace coach call.vtt --redact
 ```
 
 Or set `redact: true` in your project configuration.

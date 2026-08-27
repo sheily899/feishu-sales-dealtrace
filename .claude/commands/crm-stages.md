@@ -17,7 +17,7 @@ Steps:
    per-stage `deals/search` count.
 4. Report won / lost / open stage labels and the busiest open stages (count + amount).
 
-You can run the implemented version directly: `gtmsi crm-stages --crm salesforce`
+You can run the implemented version directly: `dealtrace crm-stages --crm salesforce`
 (dry-run prints the queries; add `--instance-url`/`--access-token` or env creds to run
 live). Full reference: docs/crm-stages.md. Use the result to configure stage-triggered
 agents (e.g. "AE Handoff fires when StageName enters {resolved won stages}").

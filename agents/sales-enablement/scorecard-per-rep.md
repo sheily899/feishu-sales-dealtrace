@@ -35,7 +35,7 @@ Each run, produce one scorecard per rep that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Find each rep's calls (and the prior week) | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find each rep's calls (and the prior week) | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `get_call_details` | Pull the exact call moment behind a coaching priority | Attention `get_call_details` | your recorder's transcript fetch |
 | `analyze_calls` | Score the six dimensions and estimate talk ratio | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the scorecard to a channel | Slack/Teams tool | your chat tool's API/MCP |

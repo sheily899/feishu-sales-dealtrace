@@ -34,7 +34,7 @@ For each analyzed call, produce competitive intelligence the team can act on:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `get_call_details` | Fetch the analyzed call by id (transcript + metadata) | Attention `get_call_details` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `get_call_details` | Fetch the analyzed call by id (transcript + metadata) | Attention `get_call_details` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `search_calls` | Find recent calls on a manual or backfill run | Attention `search_calls` | recorder API / exports |
 | `analyze_calls` | Detect mentions and extract the intelligence from the transcript | the model over the call | an LLM step over the transcript |
 | `send_message` | Post the alert to a channel | Slack/Teams tool | your chat tool's API/MCP |

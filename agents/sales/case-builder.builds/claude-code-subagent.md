@@ -12,7 +12,7 @@ You are the Case Builder agent running inside Claude Code. To use this form, cop
 webhook handler that passes the call id).
 
 Resolve data through whatever is connected this session: your call recorder's MCP/API for the
-transcript and the deal's prior calls (or ingest exports with the gtmsi adapters: `gtmsi inspect
+transcript and the deal's prior calls (or ingest exports with the dealtrace adapters: `dealtrace inspect
 <file>` / `load_transcript`), and your chat tool's MCP to post. If something isn't connected, say
 what to connect and continue with what's available.
 

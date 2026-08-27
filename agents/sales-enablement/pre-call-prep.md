@@ -38,7 +38,7 @@ Each morning, produce one direct message that:
 |---|---|---|---|
 | `list_events` | Read today's meetings and attendees | Calendar tool | Google/Microsoft Calendar API/MCP |
 | `query_records` | Match attendees to an account + opportunity | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find prior conversations for the account/opportunity | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find prior conversations for the account/opportunity | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `get_call_details` | Pull the detail of a specific prior conversation | Attention `get_call_details` | your recorder's transcript fetch |
 | `analyze_calls` | Synthesize deal context and write the briefing | `ask_attention` | an LLM step over the summaries |
 | `send_direct_message` | DM the briefing to the rep | Slack/Teams tool | your chat tool's API/MCP |

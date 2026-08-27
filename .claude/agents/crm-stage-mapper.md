@@ -29,10 +29,10 @@ Classify: **won** = `IsWon = true`; **lost** = `IsClosed = true AND IsWon = fals
 ## How to run
 Use the CLI, which implements exactly this:
 ```
-gtmsi crm-stages --crm salesforce      # dry-run shows the queries; add creds to run live
-gtmsi crm-stages --crm hubspot --access-token $HUBSPOT_ACCESS_TOKEN
+dealtrace crm-stages --crm salesforce      # dry-run shows the queries; add creds to run live
+dealtrace crm-stages --crm hubspot --access-token $HUBSPOT_ACCESS_TOKEN
 ```
-Or call `gtmsi.crm.fetch_salesforce_stages(...)` / `fetch_hubspot_stages(...)` (live) or the
+Or call `dealtrace.crm.fetch_salesforce_stages(...)` / `fetch_hubspot_stages(...)` (live) or the
 pure `classify_salesforce_stages(...)` / `classify_hubspot_pipelines(...)` on data you already have.
 
 ## Output

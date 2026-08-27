@@ -117,7 +117,7 @@ configuration, hashes, and scores remain under `legacy/`.
 `run_evals.py` exits non-zero if any case is misclassified, so you can gate merges on
 classifier accuracy once you have an API key available to CI. The default CI workflow
 does **not** run live evals (no key in CI); it runs the offline unit tests +
-`gtmsi validate` instead.
+`dealtrace validate` instead.
 
 ## 展示用正式评测指标
 

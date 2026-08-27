@@ -34,7 +34,7 @@ class State(TypedDict, total=False):
 
 def fetch_calls(state: State) -> State:
     # TODO: pull the last 7 days of analyzed calls from your recorder (with account/product/rep/
-    # sentiment), or load transcripts via the gtmsi adapters: from gtmsi.adapters import load_transcript
+    # sentiment), or load transcripts via the dealtrace adapters: from dealtrace.adapters import load_transcript
     return {"calls": []}
 
 

@@ -51,8 +51,8 @@ async def query_crm(args):
 
 @tool("search_calls", "Find prior calls for an account/opportunity.", {"account_or_opportunity": str})
 async def search_calls(args):
-    # TODO: call your recorder's API, or load transcripts via the gtmsi adapters (load_transcript).
-    raise NotImplementedError("Wire to your call recorder / gtmsi adapters")
+    # TODO: call your recorder's API, or load transcripts via the dealtrace adapters (load_transcript).
+    raise NotImplementedError("Wire to your call recorder / dealtrace adapters")
 
 
 @tool("get_call_details", "Fetch the summary/details for one prior call id.", {"call_id": str})

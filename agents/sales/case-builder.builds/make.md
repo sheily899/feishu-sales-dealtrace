@@ -14,7 +14,7 @@ these modules.
    metadata by id.
 3. **HTTP → Make a request** to your recorder for the deal's/account's prior calls (cumulative
    context). Recorder that only exports transcripts? Pull from where you store them, or pre-ingest
-   via the gtmsi adapters.
+   via the dealtrace adapters.
 4. **HTTP → Make a request** to `https://api.anthropic.com/v1/messages`
    - Headers: `x-api-key`, `anthropic-version: 2023-06-01`. Body: `model: claude-sonnet-4-5`,
      `max_tokens: 3000`, a single user message = the **Case Builder operating prompt**

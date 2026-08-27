@@ -21,7 +21,7 @@ Each time a deal closes won, post one structured handoff that:
 ## When it fires
 
 - **Type:** schedule. **Default:** `0 * * * *` (hourly, workspace timezone). Each run picks up deals that reached Closed-Won since the last run.
-- **Alternative trigger:** if your CRM emits stage-change events, fire per-deal on entry to a Closed-Won stage instead of polling. This is the better setup; resolve your real won stage with `gtmsi crm-stages` rather than hardcoding the label. The hourly schedule is the portable default because every builder supports a clock.
+- **Alternative trigger:** if your CRM emits stage-change events, fire per-deal on entry to a Closed-Won stage instead of polling. This is the better setup; resolve your real won stage with `dealtrace crm-stages` rather than hardcoding the label. The hourly schedule is the portable default because every builder supports a clock.
 
 ## Inputs / data required
 
@@ -36,7 +36,7 @@ Each time a deal closes won, post one structured handoff that:
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
 | `query_records` | Read Closed-Won opportunities and their fields | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
-| `search_calls` | Find the calls linked to the deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [gtmsi adapters](../../docs/adapters.md) |
+| `search_calls` | Find the calls linked to the deal/account | Attention `search_calls` | your recorder's API, or ingest exports via the [dealtrace adapters](../../docs/adapters.md) |
 | `analyze_calls` | Reconstruct goals, commitments, scope, and risks from transcripts | `ask_attention` | an LLM step over the normalized transcripts |
 | `send_message` | Post the handoff to a channel | Slack/Teams tool | your chat tool's API/MCP |
 

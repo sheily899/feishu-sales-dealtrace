@@ -12,7 +12,7 @@ Zapier has no import file, so this is the exact Zap to assemble. It mirrors the 
    - Get the triggering call's transcript + metadata by its id.
 3. **Action — your call recorder (or Webhooks → GET)**
    - Fetch the deal's/account's prior calls for cumulative context. (Recorder that only exports
-     transcripts? Pull them however you store them, or pre-ingest via the gtmsi adapters.)
+     transcripts? Pull them however you store them, or pre-ingest via the dealtrace adapters.)
 4. **Action — Anthropic (or "AI by Zapier", or Webhooks → POST to `https://api.anthropic.com/v1/messages`)**
    - Header `x-api-key: <your key>`, `anthropic-version: 2023-06-01`. Body model `claude-sonnet-4-5`.
    - Prompt = the **Case Builder operating prompt** (see [`../case-builder.md`](../case-builder.md) →

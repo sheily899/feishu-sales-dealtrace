@@ -34,7 +34,7 @@ For each analyzed customer call, produce at most one alert that:
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Detect and classify the expansion signal | `ask_attention` | an LLM step over the transcript |
 | `query_records` | Confirm the speaker, account, ACV, and owner | CRM tool / `ask_attention` | your CRM's API/MCP (Salesforce, HubSpot, ...) |
 | `send_message` | Post the alert to the team channel | Slack/Teams tool | your chat tool's API/MCP |

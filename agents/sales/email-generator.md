@@ -33,7 +33,7 @@ Turn each analyzed customer call into a follow-up the rep can send in under a mi
 
 | Generic action | What it does here | On Attention | On any other stack |
 |---|---|---|---|
-| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [gtmsi adapters](../../docs/adapters.md) over the export |
+| `search_calls` | Fetch the analyzed call by id | Attention `search_calls` | recorder API, or the [dealtrace adapters](../../docs/adapters.md) over the export |
 | `analyze_calls` | Extract recap / actions / next step | `ask_attention` | an LLM step over the transcript |
 | `send_direct_message` | DM the draft to the rep | Slack/Teams tool | your chat tool's API/MCP |
 

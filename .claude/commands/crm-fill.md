@@ -17,4 +17,4 @@ Steps:
 Do NOT write to a live CRM unless the user explicitly asks AND provides credentials —
 treat live writes as confirmation-required. Never invent CRM field names; if theirs
 isn't mapped, help them copy `generic.yaml`. You may also run
-`gtmsi crm <report.json> --crm <crm>` for the dry-run patch.
+`dealtrace crm <report.json> --crm <crm>` for the dry-run patch.
