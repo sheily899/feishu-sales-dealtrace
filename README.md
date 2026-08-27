@@ -12,7 +12,7 @@ DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments 
 
 ![DealTrace workbench overview](docs/assets/demo-workbench-overview.png)
 
-The public demo uses bundled anonymized messages and a precomputed report. It never calls a model and does not consume API quota.
+The public demo uses ten bundled anonymized sales messages and a precomputed report. It never calls a model and does not consume API quota.
 
 Demo path: open the public link → inspect issues, state, and source evidence.
 
