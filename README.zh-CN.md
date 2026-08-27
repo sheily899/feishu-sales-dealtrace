@@ -6,6 +6,8 @@ DealTrace 面向企业销售团队，从飞书群聊中提取客户需求、顾�
 
 ## Demo
 
+> **[点击启动本地 Demo](http://127.0.0.1:8765/)**（需先按下方命令启动）
+
 ![DealTrace 工作台](docs/assets/demo-workbench.png)
 
 ![工作台总览](docs/assets/demo-workbench-overview.png)
@@ -18,6 +20,8 @@ python -m dealtrace workbench --port 8765
 ```
 
 打开 <http://127.0.0.1:8765/>。演示模式使用内置脱敏消息。点击“离线演示”会直接加载预置报告，不调用模型、不消耗 API 额度；点击“生成分析”才会调用 DeepSeek。
+
+完整体验路径：启动服务 → 打开页面 → 左侧选择“演示客户 A” → 点击“离线演示” → 查看事项、状态和原文依据。
 
 ## 核心流程
 
@@ -50,12 +54,20 @@ python -m dealtrace workbench --feishu --port 8766
 
 ### 飞书配置步骤
 
-1. 在飞书开放平台创建企业自建应用，记录 `App ID` 和 `App Secret`。
-2. 为应用开启群聊消息接收权限，并发布一个可用于测试的版本。
-3. 将应用加入测试群，准备群 ID（通常以 `oc_` 开头）。
-4. 复制 `.env.example` 为 `.env`，填写 `FEISHU_APP_ID`、`FEISHU_APP_SECRET`、`FEISHU_GROUP_ALLOWLIST` 和 `FEISHU_ROLE_MAP`。
-5. 仅在需要实时分析时填写 `DEEPSEEK_API_KEY`；“离线演示”不会调用模型。
-6. 启动 `python -m dealtrace workbench --feishu --port 8766`，打开 <http://127.0.0.1:8766/>，收到消息后点击“生成分析”。
+1. 打开[飞书开放平台](https://open.feishu.cn/app)，使用企业管理员账号登录。
+2. 创建“企业自建应用”，进入应用详情页复制 `App ID` 和 `App Secret`。
+3. 在“权限管理”中开启群聊消息读取/接收相关权限，在“事件订阅”中开启群消息事件，并发布一个测试版本。
+4. 把应用添加到一个专用测试群，复制该群 ID（通常以 `oc_` 开头）。
+5. 复制 `.env.example` 为 `.env`，逐项填写：
+   - `FEISHU_APP_ID`：应用详情中的 App ID；
+   - `FEISHU_APP_SECRET`：应用详情中的 App Secret；
+   - `FEISHU_GROUP_ALLOWLIST`：允许接入的群 ID，多个群用逗号分隔；
+   - `FEISHU_ROLE_MAP`：把群成员映射为客户或销售角色；
+   - `DEEPSEEK_API_KEY`：仅实时分析需要，离线演示不读取它。
+6. 安装依赖并启动：`pip install -e ".[llm,feishu]"`，再运行 `python -m dealtrace workbench --feishu --port 8766`。
+7. 打开 <http://127.0.0.1:8766/>，在测试群发送消息，回到页面点击“生成分析”。
+
+新手排查：左侧没有群时先检查群 ID 是否在白名单；没有分析结果时检查模型 Key 和网络；只想体验页面时使用 8765 端口的“离线演示”。
 
 密钥只保存在本机 `.env`，不要提交到 GitHub。
 

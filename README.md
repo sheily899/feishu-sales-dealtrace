@@ -6,6 +6,8 @@ DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments 
 
 ## Demo
 
+> **[Launch the local demo](http://127.0.0.1:8765/)** (start the command below first)
+
 ![DealTrace workbench](docs/assets/demo-workbench.png)
 
 ![DealTrace workbench overview](docs/assets/demo-workbench-overview.png)
@@ -18,6 +20,8 @@ python -m dealtrace workbench --port 8765
 ```
 
 Open <http://127.0.0.1:8765/>. The demo uses bundled anonymized messages. Click **Offline demo** to load a bundled report without calling a model or consuming API quota; **Generate analysis** calls DeepSeek.
+
+Demo path: start the server → open the page → select “演示客户 A” → click **离线演示** → inspect issues, state, and source evidence.
 
 ## Workflow
 
@@ -51,12 +55,19 @@ Live mode stores messages and state in `data/workbench.sqlite3`. It is a single-
 
 ### Feishu setup
 
-1. Create a Feishu enterprise app and record its `App ID` and `App Secret`.
-2. Enable group-message permissions and publish a testable app version.
-3. Add the app to a test group and note its group ID (usually starts with `oc_`).
-4. Copy `.env.example` to `.env` and fill in `FEISHU_APP_ID`, `FEISHU_APP_SECRET`, `FEISHU_GROUP_ALLOWLIST`, and `FEISHU_ROLE_MAP`.
-5. Set `DEEPSEEK_API_KEY` only if live analysis is needed. The Offline demo never calls the model.
-6. Run `python -m dealtrace workbench --feishu --port 8766`, open <http://127.0.0.1:8766/>, and click **Generate analysis** after messages arrive.
+1. Open the [Feishu Open Platform](https://open.feishu.cn/app) and sign in as an enterprise administrator.
+2. Create an enterprise app. Copy its `App ID` and `App Secret` from the app details page.
+3. Enable the group-message read/receive permissions and group-message event subscription, then publish a testable app version.
+4. Add the app to a dedicated test group and note its group ID (usually starts with `oc_`).
+5. Copy `.env.example` to `.env` and fill in:
+   - `FEISHU_APP_ID` and `FEISHU_APP_SECRET` from the app details;
+   - `FEISHU_GROUP_ALLOWLIST` with one or more comma-separated group IDs;
+   - `FEISHU_ROLE_MAP` to map group members to customer or sales roles;
+   - `DEEPSEEK_API_KEY` only for live analysis; the Offline demo never reads it.
+6. Install dependencies and run `pip install -e ".[llm,feishu]"`, then `python -m dealtrace workbench --feishu --port 8766`.
+7. Open <http://127.0.0.1:8766/>, send a message in the test group, and click **Generate analysis**.
+
+Troubleshooting: an empty chat list usually means the group ID is not allowlisted; a missing report usually means the model key or network is unavailable. Use the port-8765 Offline demo when you only want to explore the UI.
 
 Keep all secrets in the local `.env`; never commit them.
 
