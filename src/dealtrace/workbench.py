@@ -142,15 +142,15 @@ class DemoWorkbench:
     def offline_demo(self) -> dict:
         """Return a bundled report without calling an LLM provider."""
         self.analysis = {
-            "summary": "客户担心 CRM 对接复杂，并希望查看类似客户案例；销售已承诺下周一前发送案例。",
+            "summary": "客户希望集中管理销售沟通记录，并关注 CRM 对接、数据安全和内部试用安排；销售已承诺发送部署说明并安排技术评估。",
             "classification": {"call_type": "discovery"},
             "group_chat": {
-                "customer_needs": [{"title": "确认 CRM 对接可行性", "detail": "客户希望确认对接过程是否复杂。", "evidence": [{"speaker": "客户", "text": "我们主要担心 CRM 对接会不会很麻烦。"}]}, {"title": "参考类似客户案例", "detail": "客户希望了解类似客户的实施效果。", "evidence": [{"speaker": "客户", "text": "还有类似客户案例吗？"}]}],
-                "customer_concerns": [{"title": "CRM 对接复杂性", "detail": "客户担心技术难度和实施成本。", "evidence": [{"speaker": "客户", "text": "我们主要担心 CRM 对接会不会很麻烦。"}]}],
-                "response_coverage": [{"title": "安排技术确认", "detail": "销售提出安排技术同事确认接口。", "evidence": [{"speaker": "销售", "text": "可以先安排技术同事确认接口。"}]}],
-                "sales_commitments": [{"title": "发送客户案例", "detail": "销售承诺下周一前发送案例。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
-                "todos": [{"title": "发送客户案例", "detail": "下周一前发送相关客户案例。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
-                "next_steps": [{"title": "跟进案例反馈", "detail": "发送案例后跟进客户反馈。", "evidence": [{"speaker": "销售", "text": "有，我下周一前发给您。"}]}],
+                "customer_needs": [{"title": "集中管理销售沟通记录", "detail": "客户希望减少个人聊天造成的信息遗漏。", "evidence": [{"speaker": "客户", "text": "我们现在主要想解决销售沟通记录分散的问题，很多信息都留在个人聊天里。"}]}],
+                "customer_concerns": [{"title": "CRM 对接与数据安全", "detail": "客户需要确认 CRM 同步方式和数据是否留在内网。", "evidence": [{"speaker": "客户", "text": "我比较关心和现有 CRM 的对接，能不能同步客户和跟进记录？"},{"speaker": "客户", "text": "另外，聊天内容涉及客户信息，数据能不能不出内网？"}]}],
+                "response_coverage": [{"title": "安排技术确认", "detail": "销售提出安排技术同事确认接口。", "evidence": [{"speaker": "销售", "text": "可以安排技术同事确认接口，先了解你们 CRM 的字段和同步方式。"}]},{"title": "说明私有化部署", "detail": "销售说明支持私有化部署，但需要进一步评估环境。", "evidence": [{"speaker": "销售", "text": "支持私有化部署方案，具体部署方式和费用需要结合你们的环境评估。"}]}],
+                "sales_commitments": [{"title": "发送部署说明和试用方案", "detail": "销售承诺明天发送材料。", "evidence": [{"speaker": "销售", "text": "好的，我明天发送部署说明和试用方案，并安排技术同事参加下周的评估会议。"}]}],
+                "todos": [{"title": "发送部署说明和试用方案", "detail": "明天发送部署说明和试用方案。", "evidence": [{"speaker": "销售", "text": "好的，我明天发送部署说明和试用方案，并安排技术同事参加下周的评估会议。"}]},{"title": "安排技术同事参加评估会议", "detail": "安排技术同事参加下周的评估会议。", "evidence": [{"speaker": "销售", "text": "好的，我明天发送部署说明和试用方案，并安排技术同事参加下周的评估会议。"}]}],
+                "next_steps": [{"title": "下周评估会议", "detail": "安排技术同事参加下周的评估会议。", "evidence": [{"speaker": "销售", "text": "好的，我明天发送部署说明和试用方案，并安排技术同事参加下周的评估会议。"}]}],
             },
         }
         self.evidence_map = build_evidence_map(self.analysis, self.messages)
