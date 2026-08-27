@@ -107,14 +107,17 @@ _CALL_TYPE_LABELS = {
     "discovery": "需求探索（Discovery）",
     "demo": "产品演示（Demo）",
     "technical-evaluation": "技术评估",
+    "technical-validation": "技术验证",
     "negotiation": "商务谈判",
+    "pricing": "价格商谈",
+    "implementation": "签约后实施",
     "renewal": "续约沟通",
 }
 
 
 def display_call_type(call_type: str) -> str:
     """Keep canonical stage IDs in the engine while showing sales-friendly labels."""
-    return _CALL_TYPE_LABELS.get(call_type, call_type)
+    return _CALL_TYPE_LABELS.get(call_type, "未识别" if call_type in {None, "", "unknown"} else call_type)
 
 
 class DemoWorkbench:
@@ -261,7 +264,8 @@ class LiveWorkbench:
                 "evidenceMap": evidence_map,
                 "callTypeLabel": display_call_type(self.analysis["classification"]["call_type"])
                 if self.analysis else None,
-                "customerState": self.customer_state.model_dump() if self.customer_state else None,
+                "customerState": ({**self.customer_state.model_dump(), "stage": display_call_type(self.customer_state.stage)}
+                                   if self.customer_state else None),
                 "stateChange": self.state_change.model_dump() if self.state_change else None,
                 "stateHistory": [
                     {
