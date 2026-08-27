@@ -25,6 +25,22 @@ DealTrace 面向企业销售团队，从飞书群聊中提取客户需求、顾�
 
 每个事项拥有独立身份、类别、状态、更新时间和证据历史。未解决事项不会因为本轮没有被提到就自动消失；状态变化必须引用真实聊天消息，证据不足的变化会被拒绝并保留旧状态。
 
+内部协作与数据流：
+
+```mermaid
+flowchart LR
+    A[飞书事件监听器\nfeishu.py] --> B[消息规范化与角色过滤\nworkbench.py]
+    B --> C[分析 Agent\npipeline.py + llm.py]
+    C --> D[事项与变化解析\ncustomer_state.py]
+    D --> E[历史事项关联\nissue_id]
+    E --> F[状态合并与证据校验\ncustomer_state.py]
+    F --> G[状态快照与变化记录\nworkbench_store.py]
+    G --> H[工作台展示\nworkbench.py]
+    H --> I[原文证据定位]
+```
+
+模型只提出分析结果，最终状态由状态模块统一校验和保存；前端读取快照和证据映射，不直接修改模型结果。
+
 ## 能做什么
 
 - 规范化飞书群聊事件，区分客户、销售等角色；

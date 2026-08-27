@@ -26,6 +26,22 @@ Feishu chat → message and role normalization → issue extraction
 
 Unresolved issues are not removed merely because the next conversation changes topic. Unsupported state changes are rejected and the previous state is preserved.
 
+Internal collaboration and data flow:
+
+```mermaid
+flowchart LR
+    A[Feishu event listener\nfeishu.py] --> B[Message normalization and role filtering\nworkbench.py]
+    B --> C[Analysis agent\npipeline.py + llm.py]
+    C --> D[Issue and change parsing\ncustomer_state.py]
+    D --> E[Historical issue linking\nissue_id]
+    E --> F[State merge and evidence checks\ncustomer_state.py]
+    F --> G[State snapshots and change log\nworkbench_store.py]
+    G --> H[Workbench UI\nworkbench.py]
+    H --> I[Source-message navigation]
+```
+
+The model proposes analysis results; the state module validates and persists the canonical state. The UI reads snapshots and evidence mappings rather than mutating model output.
+
 ## Features
 
 - Normalize Feishu events and identify customer/sales roles;
