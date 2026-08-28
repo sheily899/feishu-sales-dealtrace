@@ -2,17 +2,17 @@
 
 [中文说明](README.zh-CN.md)
 
-DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments from Feishu group chats, then preserves each issue’s status and source evidence across conversations.
+DealTrace extracts customer needs, concerns, risks, follow-ups, and commitments from Feishu group chats. It preserves each issue’s status and source evidence across conversations so that changes can be reviewed against the original messages.
 
 ## Demo
 
-> **[Try the offline demo](https://sheily899.github.io/feishu-sales-dealtrace/)** — opens directly in the browser; no setup or API key required.
+> **[Open the offline demo](https://sheily899.github.io/feishu-sales-dealtrace/)** — opens directly in the browser; no setup or API key required.
 
 ![DealTrace workbench](docs/assets/demo-workbench.png)
 
 ![DealTrace workbench overview](docs/assets/demo-workbench-overview.png)
 
-The public demo uses ten bundled anonymized sales messages and a precomputed report. It never calls a model and does not consume API quota.
+The public demo uses ten bundled anonymized sales messages and a precomputed report. It does not call a model or consume API quota.
 
 ### Anonymized Feishu conversation
 
@@ -20,13 +20,13 @@ The screenshot below is a real Feishu group-chat exchange supplied for this proj
 
 ![Anonymized real Feishu conversation](docs/assets/feishu-chat-anonymized.png)
 
-Demo path: open the public link → inspect issues, state, and source evidence.
+Demo path: open the public link, then inspect issues, state, and source evidence.
 
 ## Workflow
 
 Unresolved issues are not removed merely because the next conversation changes topic. Unsupported state changes are rejected and the previous state is preserved.
 
-Internal collaboration and data flow:
+Data flow:
 
 ```mermaid
 flowchart TD
@@ -53,14 +53,13 @@ flowchart TD
 | Workbench | Messages, reports, state, evidence | Visual page | Lets sales inspect conclusions and sources | The system remains a backend-only result |
 | Evaluation | Golden issues and actual output | P/R/F1 and evidence rate | Tests whether changes really work | Prompt changes become guesswork |
 
-The model proposes analysis results; the state module validates and persists the canonical state. The next message batch reads the previous snapshot and starts the cycle again.
+The model proposes analysis results. The state module validates and persists the canonical state, and the next message batch reads the previous snapshot.
 
 ## Features
 
-- Normalize Feishu events and identify customer/sales roles;
+- Normalize Feishu events and identify customer and sales roles;
 - Extract needs, concerns, risks, stakeholders, commitments, todos, and next steps;
-- Preserve unresolved issues across days;
-- Support create, update, accepted-workaround, and resolved states;
+- Preserve unresolved issues across days and support create, update, accepted-workaround, and resolved states;
 - Link accepted changes to source messages;
 - Save state versions, analysis output, and rejection reasons.
 
@@ -102,7 +101,7 @@ Live mode stores messages and state in `data/workbench.sqlite3`. It is a single-
    ```
 11. Open <http://127.0.0.1:8766/>, send a message in the test group, and click **Generate analysis**.
 
-Troubleshooting: an empty chat list usually means the group ID is not allowlisted; a missing report usually means the model key or network is unavailable. Use the port-8765 Offline demo when you only want to explore the UI.
+Troubleshooting: an empty chat list usually means the group ID is not allowlisted; a missing report usually means the model key or network is unavailable. Use the port-8765 Offline demo to explore the UI without a live connection.
 
 Keep all secrets in the local `.env`; never commit them.
 
@@ -120,7 +119,7 @@ Current internal evaluation (`deepseek-v4-flash`, seed 42, single run):
 | State recall | 66.7% | How many items that should be kept in the customer record were retained |
 | Evidence traceability | 100% | Whether every analysis result links back to its source message |
 
-These figures come from a small internal set and validate short-horizon multi-turn tracking, not months-long production conversations.
+These figures come from a small internal set. They validate short-horizon multi-turn tracking, not months-long production conversations.
 
 ```bash
 python evals/run_eval.py
@@ -137,7 +136,7 @@ evals/             Golden cases and evaluators
 tests/             Automated tests
 ```
 
-## Future improvements
+## Next steps
 
 - Expand the evaluation set with real, multi-industry conversations over longer sales cycles;
 - Add item-level review and edit history so sales teams can correct analyses quickly;
