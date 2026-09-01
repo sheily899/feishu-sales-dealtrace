@@ -1,0 +1,106 @@
+# BANT — lightweight early-qualification framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: bant
+name: BANT
+acronym: BANT
+origin: >
+  Developed by IBM in the 1950s–60s as a structured filter for early lead qualification.
+  One of the oldest formalized sales qualification frameworks still in widespread use.
+summary: >
+  A four-element rapid qualification framework: Budget, Authority, Need, Timeline.
+  BANT is designed as a quick filter to separate viable opportunities from non-starters
+  at the top of the funnel. It is deliberately lightweight, which makes it fast to apply
+  but insufficient for complex, multi-stakeholder enterprise deals where SPICED or
+  MEDDPICC are more appropriate. Use BANT to qualify whether a conversation is worth
+  pursuing, not to deeply understand a deal.
+best_for: [cold-call, discovery]
+
+elements:
+  - id: budget
+    name: Budget
+    question: Does the buyer have allocated or available budget for a solution like this?
+    why_it_matters: >
+      Budget separates a genuine buying situation from exploratory research. Without it,
+      even a perfectly qualified deal on every other dimension can evaporate when
+      procurement gets involved. That said, absent budget today doesn't always mean
+      no deal — budget can be created when pain is acute enough.
+    good_signals:
+      - "Buyer references an existing budget line or approved spend envelope."
+      - "Buyer has purchased something comparable before, establishing a budget precedent."
+      - "Buyer can name a rough range they have authority over."
+    missing_signals:
+      - "Buyer is 'just exploring' with no initiative or spend connected to it."
+      - "Buyer defers all budget discussion to someone not in the conversation."
+    example_questions:
+      - "Is there an approved budget for this initiative, or would this need to go through a new approval?"
+      - "What have you spent on solutions in this category before — does that give us a starting range?"
+      - "If we found the right solution today, is budget something we'd need to build a case for, or is it ready to go?"
+      - "What's the ballpark investment your team is comfortable considering for this?"
+
+  - id: authority
+    name: Authority
+    question: Is the person we're speaking with the decision-maker, or do we need to reach someone higher?
+    why_it_matters: >
+      Selling to someone without buying authority creates a relay race where the rep's
+      message gets filtered and diluted. Knowing authority early determines whether
+      to deepen the current relationship or multi-thread upward.
+    good_signals:
+      - "Contact explicitly confirms they are the decision-maker or clearly names who is."
+      - "Contact has made similar purchase decisions before without escalation."
+      - "Contact is a champion who actively facilitates introductions to the economic buyer."
+    missing_signals:
+      - "Contact says 'I'll pass this along' or 'the committee will decide' without specifics."
+      - "Rep has never spoken to anyone with signing authority after multiple calls."
+    example_questions:
+      - "When a purchase decision like this gets made, are you the one who signs off, or is someone else involved?"
+      - "Who else would need to be part of this conversation before your team moves forward?"
+      - "Have you made purchases at this price point before on your own authority?"
+      - "Would it make sense to bring your manager or CFO into a future call so they hear this firsthand?"
+
+  - id: need
+    name: Need
+    question: Does the buyer have a genuine, specific problem this solution addresses?
+    why_it_matters: >
+      Need confirms that the buyer is not just curious — they have a real problem and
+      an intent to address it. Without confirmed need, budget and authority are moot.
+      This is the qualifying element most reps skip because it requires the buyer to
+      say something uncomfortable.
+    good_signals:
+      - "Buyer describes a specific, recurring problem in their own words."
+      - "Problem is tied to a business goal or KPI they are held accountable for."
+      - "Buyer has already tried to solve it, confirming it is a real priority."
+    missing_signals:
+      - "Buyer is vague ('we might need something like this at some point')."
+      - "Need is rep-invented rather than buyer-confirmed."
+    example_questions:
+      - "What's the specific problem your team is trying to solve right now?"
+      - "How long has this been an issue, and what have you tried so far?"
+      - "Is this a top priority for your team this quarter, or more of a longer-horizon initiative?"
+      - "What happens to your business if this stays unsolved for another six months?"
+
+  - id: timeline
+    name: Timeline
+    question: Is there a realistic timeframe for a decision, and what is driving it?
+    why_it_matters: >
+      Timeline reveals urgency and determines how to sequence follow-up. No timeline
+      typically means no compelling event, which means deals drift. Identifying a date
+      — and what forces it — is what turns interest into a moving opportunity.
+    good_signals:
+      - "Buyer names a target go-live date or decision date."
+      - "A business event (renewal, launch, fiscal year, audit) creates a forcing function."
+      - "Buyer has already started internal steps (formed an evaluation team, issued an RFP)."
+    missing_signals:
+      - "Buyer says 'sometime this year' or 'no rush' with no event anchoring the timeline."
+      - "Rep accepts vague timing and doesn't probe for the underlying driver."
+    example_questions:
+      - "Is there a date by which you'd want to have a solution in place? What's driving that?"
+      - "What happens if you don't have this solved by your target date?"
+      - "Are there any upcoming events — a product launch, a board review, a contract renewal — that tie to this timeline?"
+      - "Have you already started a formal evaluation, or is this still in the exploratory phase?"
+
+further_reading:
+  - title: "HubSpot — BANT Sales Qualification Explained"
+    url: "https://blog.hubspot.com/sales/bant"
+  - title: "IBM BANT Lead Qualification Overview"
+    url: "https://www.ibm.com/think/topics/bant"

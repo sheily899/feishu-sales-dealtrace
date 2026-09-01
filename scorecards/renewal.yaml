@@ -1,0 +1,182 @@
+# Renewal scorecard — coaching rubric for renewal and expansion conversations.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Command of the Message, MEDDPICC, Next-Steps). Fork it and tune the
+# criteria/weights for your business.
+id: renewal
+name: Renewal / Expansion
+version: "1.0"
+description: >
+  Evaluates how well the rep recapped ROI and value delivered, navigated the
+  renewal process and timing, mitigated churn risk, framed an expansion
+  opportunity, handled commercial terms, confirmed stakeholder coverage, and
+  secured a clear next step toward a signed renewal.
+applies_to: [renewal]
+frameworks: [command-of-the-message, meddpicc, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: value_recap_and_roi
+    name: Value Recap & ROI
+    weight: 2.5
+    intent: >
+      The most powerful renewal argument is the customer's own data; a
+      structured ROI recap makes the investment self-evident before price
+      is ever mentioned.
+    framework_refs: [command-of-the-message.differentiated_value, command-of-the-message.proof_points, meddpicc.metrics]
+    what_great_looks_like:
+      - "Rep opens with a structured recap of outcomes achieved since the last renewal or kickoff."
+      - "Value is quantified in the customer's own metrics (time saved, revenue influenced, errors reduced)."
+      - "Rep connects the outcomes to the goals the customer articulated at the start of the relationship."
+    what_poor_looks_like:
+      - "Rep jumps straight to contract details without reviewing value delivered."
+      - "Value recap is generic and could apply to any customer, not specific to this account."
+      - "Rep relies on the customer to volunteer value evidence rather than bringing it prepared."
+    evidence_cues:
+      - "\"Since we started working together, here's what your team has achieved: [specific metrics].\""
+      - "\"You told us at kickoff that success meant [goal] — here's where you stand against that today.\""
+    coaching_prompts:
+      - "What were the two or three most powerful value points you cited, and did the customer validate them?"
+      - "If the customer pushed back on the value recap, how did you handle it?"
+
+  - id: renewal_timing_and_process
+    name: Renewal Timing & Process
+    weight: 1.5
+    intent: >
+      Starting a renewal conversation too late hands control to the buyer;
+      knowing the internal process and timeline lets the rep stay one step ahead.
+    framework_refs: [meddpicc.decision_process, next-steps.committed_date]
+    what_great_looks_like:
+      - "Rep initiates the renewal conversation well in advance of the contract end date."
+      - "Rep maps the customer's internal approval and procurement process for renewals."
+      - "Rep and customer agree on the timeline to reach a signed renewal by the target date."
+    what_poor_looks_like:
+      - "Renewal conversation starts only 30 days before expiry, limiting options."
+      - "Rep does not know the customer's procurement or legal review timeline."
+      - "Rep assumes the renewal will happen automatically without driving the process."
+    evidence_cues:
+      - "\"Your contract is up in [X months] — I want to make sure we have enough time to do this right. How does the renewal process work on your end?\""
+      - "\"Who internally needs to approve the renewal, and how long does that typically take?\""
+    coaching_prompts:
+      - "When did you start the renewal conversation, and was that early enough?"
+      - "What does the customer's internal renewal approval process look like, and who owns each step?"
+
+  - id: risk_mitigation
+    name: Risk Mitigation
+    weight: 2
+    intent: >
+      Unaddressed risk at renewal is the difference between a flat renewal
+      and a churn; surfacing and resolving concerns before the commercial
+      discussion keeps the relationship on solid ground.
+    framework_refs: [meddpicc.identify_pain, command-of-the-message.before_scenario]
+    what_great_looks_like:
+      - "Rep proactively asks whether there are any concerns or dissatisfaction before presenting renewal terms."
+      - "Any risk identified has a documented resolution plan with an owner and timeline."
+      - "Rep does not surface risk on the renewal call for the first time — it was caught and addressed earlier."
+    what_poor_looks_like:
+      - "Rep presents renewal terms without asking whether the customer is satisfied."
+      - "Significant dissatisfaction surfaces for the first time during the renewal conversation."
+      - "Rep acknowledges risk but has no concrete plan to address it."
+    evidence_cues:
+      - "\"Before we talk about the renewal terms, I want to make sure there's nothing holding you back — is there anything that hasn't met expectations?\""
+      - "\"We addressed [risk] last quarter — how do you feel about where we landed on that?\""
+    coaching_prompts:
+      - "What churn risks existed at this account, and when did you first surface them?"
+      - "Was any dissatisfaction raised on this call that surprised you? What should have surfaced it earlier?"
+
+  - id: expansion_framing
+    name: Expansion Framing
+    weight: 1.5
+    intent: >
+      A renewal is the natural moment to expand; a rep who frames expansion as a
+      logical extension of proven value will land larger contracts than one who
+      waits for the customer to ask.
+    framework_refs: [command-of-the-message.differentiated_value, meddpicc.metrics]
+    what_great_looks_like:
+      - "Rep brings a specific expansion opportunity tied to the customer's stated goals or growth trajectory."
+      - "Expansion is framed around the customer's outcome, not around the rep's quota."
+      - "Rep uses the ROI recap to make the case that more investment would yield proportional additional value."
+    what_poor_looks_like:
+      - "Rep focuses only on renewing the existing contract without exploring expansion."
+      - "Expansion is introduced as a product upsell without linking to customer needs."
+      - "Rep raises expansion too early before establishing the value of the current contract."
+    evidence_cues:
+      - "\"You mentioned that [adjacent team] is running into the same challenge — have you thought about extending this to them?\""
+      - "\"Based on what you've achieved with [scope], here's what we think is possible if we extend to [next step].\""
+    coaching_prompts:
+      - "What expansion opportunity did you bring to this call, and how did you frame it?"
+      - "Did the customer see the expansion as valuable or as a sales push? What made the difference?"
+
+  - id: pricing_and_terms
+    name: Pricing & Terms
+    weight: 1.5
+    intent: >
+      Renewal pricing set without anchoring to value becomes a pure cost
+      conversation; anchoring first and presenting terms second protects margins.
+    framework_refs: [command-of-the-message.differentiated_value, meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Pricing is presented only after the value recap, not as the opening topic."
+      - "Rep is prepared for a discount request and has a clear principle for when and how to concede."
+      - "Rep ties any price increase to incremental value or usage growth."
+    what_poor_looks_like:
+      - "Rep leads with the price before establishing the value delivered."
+      - "Discount is offered proactively before the customer asks."
+      - "Price increase is presented without a rationale tied to value or usage."
+    evidence_cues:
+      - "\"Given the outcomes we've covered, here's how the renewal investment breaks down.\""
+      - "\"If you're looking for more flexibility on terms, here's what I'd need in return.\""
+    coaching_prompts:
+      - "How did you sequence the value conversation relative to the pricing conversation?"
+      - "What was your principle for handling a discount request on this renewal?"
+
+  - id: stakeholder_coverage
+    name: Stakeholder Coverage
+    weight: 1.5
+    intent: >
+      A renewal approved only by the day-to-day champion but not by the economic
+      buyer is at risk if leadership scrutinises the budget.
+    framework_refs: [meddpicc.economic_buyer, meddpicc.champion, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep has confirmed the economic buyer's awareness of and support for the renewal."
+      - "Rep knows whether any new stakeholders have joined the account who need to be briefed."
+      - "Champion is armed with a business case to present to leadership if needed."
+    what_poor_looks_like:
+      - "Rep negotiates only with the operational contact and never engages leadership."
+      - "Economic buyer surfaces as a blocker for the first time during the renewal process."
+      - "Team or leadership changes at the customer account catch the rep by surprise."
+    evidence_cues:
+      - "\"Does [economic buyer / new leader] have visibility into this renewal — is there anything they'd want to see?\""
+      - "\"Has anyone new joined the team who should be involved in this decision?\""
+    coaching_prompts:
+      - "Who is the economic buyer at this account, and when did you last speak to them?"
+      - "If a new executive joined this account tomorrow and questioned the renewal, what would your champion say?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A renewal conversation without a concrete next step toward a signed
+      contract leaves the deal at the mercy of the customer's inertia.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Next step is a specific action that moves toward a signed renewal: contract review, executive call, signature."
+      - "Date and owner are confirmed on the call, not in a follow-up email."
+      - "Rep confirms what each side needs to complete before the next interaction."
+    what_poor_looks_like:
+      - "Call ends with 'we'll have a look and come back to you' and no date set."
+      - "Rep sends the contract and waits passively for a response."
+      - "No milestone between this call and the contract expiry date is defined."
+    evidence_cues:
+      - "\"Let's agree on what needs to happen before [date] so we can get this signed on time.\""
+      - "\"I'll send the renewal agreement today — can you confirm who needs to review it and by when?\""
+    coaching_prompts:
+      - "What is the exact next step coming out of this call, and is it calendared?"
+      - "What is your fallback plan if the customer misses the agreed action date?"

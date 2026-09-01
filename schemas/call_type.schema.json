@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/call_type.schema.json",
+  "title": "CallTypeTaxonomy",
+  "description": "The taxonomy the classifier chooses from. Mirrors how real call-intelligence tools label calls: a small set of mutually-exclusive call types, each tagged pre-sales vs post-sales, each pointing at the scorecard(s) and default outcomes that apply.",
+  "type": "object",
+  "required": ["schema_version", "call_types"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "call_types": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "phase", "definition", "scorecards"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "phase": {
+            "type": "string",
+            "enum": ["pre-sales", "post-sales", "neither"],
+            "description": "pre-sales = winning the deal; post-sales = expanding/retaining; neither = internal/partner/investor/interview."
+          },
+          "definition": {
+            "type": "string",
+            "description": "Crisp definition the classifier uses to decide. Written like a label option's instructions."
+          },
+          "positive_signals": {
+            "type": "array",
+            "description": "Cues that this is the right call type.",
+            "items": { "type": "string" }
+          },
+          "negative_signals": {
+            "type": "array",
+            "description": "Cues that point AWAY from this call type (disambiguation against neighbors).",
+            "items": { "type": "string" }
+          },
+          "often_confused_with": {
+            "type": "array",
+            "description": "Sibling call-type ids that look similar, with how to tell them apart handled in the classifier prompt.",
+            "items": { "type": "string" }
+          },
+          "scorecards": {
+            "type": "array",
+            "description": "Scorecard ids to run when a call is classified as this type.",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "default_outcomes": {
+            "type": "array",
+            "description": "Outcome ids (see config/outcomes.yaml) typically desired for this call type. The outcome step refines these from the actual content.",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

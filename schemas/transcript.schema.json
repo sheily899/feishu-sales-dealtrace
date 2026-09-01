@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/attentiontech/gtm-superintelligence/schemas/transcript.schema.json",
+  "title": "NormalizedTranscript",
+  "description": "Vendor-neutral transcript format. Every adapter (Gong, Fireflies, Otter, Zoom, VTT, SRT, plain text, or any other recorder) — plus the native Attention source — normalizes into this shape. The coaching pipeline only ever reads this format, never a vendor's raw payload.",
+  "type": "object",
+  "required": ["schema_version", "turns"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Schema version of this transcript document."
+    },
+    "call_id": {
+      "type": ["string", "null"],
+      "description": "Stable identifier for the call, if known. Falls back to a content hash."
+    },
+    "title": {
+      "type": ["string", "null"],
+      "description": "Human-readable title, e.g. 'Acme Corp <> Discovery'."
+    },
+    "started_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO-8601 start time of the call, if known."
+    },
+    "duration_seconds": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "source": {
+      "type": "object",
+      "description": "Provenance of the transcript so reports are auditable.",
+      "additionalProperties": true,
+      "properties": {
+        "recorder": {
+          "type": "string",
+          "description": "e.g. 'gong', 'fireflies', 'otter', 'zoom', 'plaintext', 'generic'."
+        },
+        "adapter": { "type": "string", "description": "Which GTM Superintelligence adapter produced this document." },
+        "language": { "type": "string", "description": "BCP-47 language tag, e.g. 'en-US'." }
+      }
+    },
+    "participants": {
+      "type": "array",
+      "description": "Everyone on the call. Roles drive coaching (we only coach the 'rep' side).",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "side"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "side": {
+            "type": "string",
+            "enum": ["rep", "prospect", "customer", "partner", "internal", "unknown"],
+            "description": "'rep' = the seller/CSM being coached. 'prospect'/'customer' = the buyer side. 'partner'/'internal' for partner & internal calls."
+          },
+          "title": { "type": "string", "description": "Job title if known, e.g. 'VP Sales'." },
+          "organization": { "type": "string" },
+          "talk_seconds": { "type": ["number", "null"], "minimum": 0 }
+        }
+      }
+    },
+    "turns": {
+      "type": "array",
+      "description": "Ordered speaker turns. This is the only required content field.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["speaker", "text"],
+        "additionalProperties": false,
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "description": "Participant id or display name. Should resolve to a participant when possible."
+          },
+          "side": {
+            "type": "string",
+            "enum": ["rep", "prospect", "customer", "partner", "internal", "unknown"],
+            "description": "Denormalized side for convenience; resolved from participants when absent."
+          },
+          "text": { "type": "string", "minLength": 1 },
+          "start_seconds": { "type": ["number", "null"], "minimum": 0 },
+          "end_seconds": { "type": ["number", "null"], "minimum": 0 }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Free-form context that improves coaching: CRM stage, deal amount, prior call summaries, etc. Never required.",
+      "additionalProperties": true
+    }
+  }
+}

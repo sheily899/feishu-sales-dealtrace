@@ -1,0 +1,203 @@
+# Sandler Pain Funnel — progressive pain-deepening framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: sandler-pain
+name: Sandler Pain Funnel
+origin: >
+  Developed by David Sandler and the Sandler Training organization. The Pain Funnel
+  is a core component of the Sandler Selling System, first introduced in the 1960s
+  and documented in "You Can't Teach a Kid to Ride a Bike at a Seminar" (1995).
+summary: >
+  A structured sequence of eight question types designed to take a buyer from a
+  vague surface complaint to deeply felt, personally owned, quantified pain.
+  The funnel is read top-to-bottom: each layer asks the buyer to go one level
+  deeper — from general problem to specific example, from example to attempted fix,
+  from failed fix to duration, from duration to financial cost, to personal impact,
+  and finally to whether the buyer has accepted the pain as permanent. Reps who use
+  the full funnel sell to real pain; reps who skip steps sell to symptoms.
+best_for: [discovery, demo]
+
+elements:
+  - id: surface_problem
+    name: Surface Problem
+    question: What problem does the buyer state at the surface level, unprompted?
+    why_it_matters: >
+      The surface problem is the buyer's opening statement — their first, most
+      rehearsed version of the issue. Sandler teaches reps not to react to it,
+      pitch to it, or accept it as the real problem. Instead, the rep acknowledges
+      it and begins to descend the funnel. The surface problem is a door, not a
+      destination.
+    good_signals:
+      - "Rep lets the buyer state the problem fully before asking the first follow-up."
+      - "Rep acknowledges the problem without immediately pitching a solution."
+      - "Surface problem is captured in the buyer's own language for later reference."
+    missing_signals:
+      - "Rep treats the surface problem as the full picture and moves to product."
+      - "Rep interrupts the buyer's opening statement to relate it to a feature."
+    example_questions:
+      - "Tell me more about what's going on — what's the main challenge you're dealing with right now?"
+      - "When you say [surface problem], what does that look like day to day for your team?"
+      - "How long has this been something you've been thinking about?"
+      - "When you decided to take this call today, what made you want to explore this?"
+
+  - id: tell_me_more
+    name: Tell Me More
+    question: Can the buyer expand on the problem without the rep steering the conversation?
+    why_it_matters: >
+      'Tell me more' is a non-directive probe that invites the buyer to elaborate
+      without the rep imposing a frame. Most buyers have never been given real space
+      to explain their problem in full. This step surfaces details the buyer wouldn't
+      have volunteered if asked a direct question, and it builds the trust needed to
+      go deeper.
+    good_signals:
+      - "Rep uses open-ended, non-leading follow-ups to pull more detail."
+      - "Buyer adds new information they hadn't initially mentioned."
+      - "Rep resists the urge to connect the elaboration to their product."
+    missing_signals:
+      - "Rep follows up with a yes/no question that closes down the conversation."
+      - "Rep uses elaboration as an opening to pivot to a pitch."
+    example_questions:
+      - "Can you tell me more about that?"
+      - "Help me understand what you mean when you say [buyer's phrase] — what does that actually look like?"
+      - "What else is going on around that?"
+      - "That's interesting — what happens next after [thing they described]?"
+      - "Is there more to that situation that I should know about?"
+
+  - id: specific_example
+    name: Specific Example
+    question: Can the buyer give a concrete, recent example of when the problem occurred?
+    why_it_matters: >
+      Specific examples convert vague complaints into real events. They give the rep
+      evidence of actual frequency and severity, and they force the buyer to confront
+      the problem as real and recurring rather than hypothetical. A buyer who cannot
+      produce a specific example may not have the problem they think they do.
+    good_signals:
+      - "Buyer names a specific incident, date, or situation where the problem occurred."
+      - "Example reveals the operational and human consequences of the problem."
+      - "Rep uses the example as a reference point throughout the rest of the call."
+    missing_signals:
+      - "Buyer stays vague ('it happens sometimes') without being able to cite a specific case."
+      - "Rep accepts generalities without probing for a concrete instance."
+    example_questions:
+      - "Can you give me a specific example of when this happened recently?"
+      - "Think about the last time this was a real problem — what actually occurred?"
+      - "Walk me through a recent situation where this really cost you."
+      - "What was the most recent time your team felt this acutely — what was going on that day?"
+
+  - id: tried_to_fix
+    name: Tried to Fix
+    question: What has the buyer already attempted to solve the problem, and why didn't it work?
+    why_it_matters: >
+      Prior attempts reveal how seriously the buyer has engaged with the problem and
+      what solutions have already been ruled out. They also prevent the rep from
+      proposing something that was already tried and failed, and they establish that
+      the problem is real enough to have warranted investment. A buyer who has tried
+      nothing may not be in enough pain to buy.
+    good_signals:
+      - "Buyer names specific tools, processes, or initiatives they tried."
+      - "Buyer can explain why each attempt fell short."
+      - "Failed attempts indicate the problem is sticky and not self-solvable."
+    missing_signals:
+      - "Buyer says they haven't tried anything, suggesting the pain may not be acute."
+      - "Rep doesn't ask, and ends up proposing something the buyer already rejected."
+    example_questions:
+      - "Have you tried to fix this before? What did you try?"
+      - "What happened when you [previous attempt they mentioned] — why didn't that stick?"
+      - "Have you looked at other solutions or tools for this? What did you find?"
+      - "Why do you think the previous fix didn't address the root cause?"
+
+  - id: how_long
+    name: How Long
+    question: How long has this problem existed — and what is the cumulative cost of not having fixed it?
+    why_it_matters: >
+      Duration amplifies impact. A problem that has persisted for two years is not
+      just twice as costly as a one-year problem — it signals organizational tolerance
+      for waste and reveals whether the buyer is serious about solving it this time.
+      Duration also helps calculate the cumulative cost of inaction, which is a
+      powerful buying motivator.
+    good_signals:
+      - "Buyer names a specific timeframe — months or years."
+      - "Duration leads naturally to a conversation about cumulative cost."
+      - "Buyer expresses frustration that the problem has persisted this long."
+    missing_signals:
+      - "Buyer is vague about duration and rep doesn't press for a specific answer."
+      - "Rep doesn't connect duration to the accumulating cost of staying stuck."
+    example_questions:
+      - "How long has this been going on for your team?"
+      - "When did you first start noticing this was a real problem?"
+      - "So if this has been happening for [duration], what's the total impact when you add it all up?"
+      - "If it's been [X months], have you found yourself just accepting it as part of the job?"
+
+  - id: quantified_cost
+    name: Quantified Cost
+    question: Can the buyer put a specific dollar, time, or volume figure on what this problem is costing them?
+    why_it_matters: >
+      Quantified cost is the economic foundation of the deal. It creates an ROI
+      conversation, gives the champion a business case, and anchors the buyer's
+      willingness to pay. Sandler pushes reps to help buyers calculate the number
+      rather than leaving it as a feeling. If the buyer says 'it's a lot,' the
+      rep's job is to put a number to 'a lot.'
+    good_signals:
+      - "Buyer states a specific number — dollars lost, hours wasted, deals missed."
+      - "Rep helped the buyer arrive at the number through calculation, not estimation."
+      - "Number is large enough relative to the solution cost to justify the investment."
+    missing_signals:
+      - "Conversation stays in 'it's significant' territory without a specific figure."
+      - "Rep accepts qualitative impact and never pushes for quantification."
+    example_questions:
+      - "If you had to put a number to what this is costing you — just a ballpark — what would it be?"
+      - "Let's think through it: if this happens [frequency] and each time costs [estimate], what does that add up to per year?"
+      - "What's the revenue impact — deals you didn't close, customers you lost, or time you didn't reinvest?"
+      - "If we could quantify the cost of this problem, would that change how urgently you want to solve it?"
+
+  - id: personal_impact
+    name: Personal Impact
+    question: How does this problem affect the buyer personally — their career, stress, reputation, or daily life?
+    why_it_matters: >
+      Sandler's core insight is that people buy emotionally and justify rationally.
+      The personal impact question moves the conversation from business logic to
+      human stakes. A buyer who connects a problem to their career, their stress,
+      or their credibility becomes intrinsically motivated to solve it — not just
+      organizationally compelled.
+    good_signals:
+      - "Buyer shares something candid about the personal cost of the problem."
+      - "Rep acknowledges the personal dimension without exploiting it."
+      - "Personal impact is linked back to the business case later in the conversation."
+    missing_signals:
+      - "Rep keeps the conversation entirely transactional and never asks about personal stakes."
+      - "Buyer appears emotionally engaged but rep doesn't follow the thread."
+    example_questions:
+      - "How does this affect you personally — not just the company, but you?"
+      - "Is this something that keeps you up at night, or have you made peace with it?"
+      - "What does it do to your credibility internally when this problem surfaces in front of leadership?"
+      - "If this were solved, what would change for you personally — not just for the team?"
+      - "Are you the one who gets held accountable when this breaks down?"
+
+  - id: give_up
+    name: Give Up
+    question: Has the buyer given up on solving this problem — and if so, what would it take to change that?
+    why_it_matters: >
+      The final question in the Sandler Pain Funnel reveals whether the buyer has
+      internalized the problem as permanent. A buyer who says 'we've just accepted
+      this is how it is' has a deeply embedded pain that often releases with explosive
+      urgency once they believe a real solution exists. A buyer who hasn't given up
+      is still actively searching. Either state is valuable — the rep adjusts accordingly.
+    good_signals:
+      - "Buyer reveals resignation or frustration that they haven't been able to solve it."
+      - "Rep treats a 'we've given up' response as high-stakes opportunity, not a disqualifier."
+      - "Conversation reveals what would need to be true for the buyer to believe a solution is possible."
+    missing_signals:
+      - "Rep skips this question because the buyer seems engaged and 'obviously wants to fix it'."
+      - "Rep accepts 'we're actively working on it' at face value without probing for urgency."
+    example_questions:
+      - "Have you gotten to the point where you've just accepted this as the way things are?"
+      - "Is this something you've started to think might not be solvable — at least not in the near term?"
+      - "What would need to be true for you to believe there's actually a solution to this?"
+      - "Has your team mentally moved on, or is there still real energy around fixing this?"
+      - "If someone told you today that this problem could be completely solved in 90 days, would you believe them?"
+
+further_reading:
+  - title: "You Can't Teach a Kid to Ride a Bike at a Seminar — David Sandler"
+    url: "https://www.sandler.com/books/you-cant-teach-a-kid-to-ride-a-bike-at-a-seminar/"
+  - title: "Sandler Training — The Sandler Selling System"
+    url: "https://www.sandler.com/sandler-training-methodology/"

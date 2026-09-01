@@ -1,0 +1,179 @@
+# Negotiation scorecard — coaching rubric for pricing and commercial negotiation calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Command of the Message, MEDDPICC, Next-Steps). Fork it and tune the
+# criteria/weights for your business.
+id: negotiation
+name: Negotiation / Pricing
+version: "1.0"
+description: >
+  Evaluates how well the rep reanchored value before discussing price, traded
+  concessions deliberately rather than giving them away, defended discounts
+  based on principles, positioned competitively, navigated procurement, and
+  maintained control of the close path.
+applies_to: [negotiation]
+frameworks: [command-of-the-message, meddpicc, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: value_reanchored_before_price
+    name: Value Reanchored Before Price
+    weight: 2.5
+    intent: >
+      A buyer who is focused on value before price sees the number in context;
+      a buyer who sees the number first negotiates against the number alone.
+    framework_refs: [command-of-the-message.differentiated_value, command-of-the-message.before_scenario, meddpicc.metrics]
+    what_great_looks_like:
+      - "Rep recaps the quantified business impact and agreed priorities before opening the commercial discussion."
+      - "Rep explicitly links the price to the ROI or value estimate the buyer has already accepted."
+      - "Buyer reaffirms the value or outcome before the rep presents numbers."
+    what_poor_looks_like:
+      - "Rep leads with the price or discount without revisiting value."
+      - "Value discussion is skipped because 'we already covered that in discovery.'"
+      - "Rep responds to 'what's the price?' with a number immediately and without context."
+    evidence_cues:
+      - "\"Before we get into the commercial details, I want to revisit what we agreed the value is — [outcome]. That's the lens through which the investment makes sense.\""
+      - "\"Based on [quantified impact], the ROI on this is [X]. The investment to get there is...\""
+    coaching_prompts:
+      - "How did you reestablish the value context before the price came up on this call?"
+      - "Did the buyer acknowledge the value before you shared the number? If not, why not?"
+
+  - id: concessions_traded_not_given
+    name: Concessions Traded, Not Given
+    weight: 2
+    intent: >
+      Giving concessions for free trains the buyer to keep asking; trading them
+      for something of equal or greater value maintains deal economics and respect.
+    framework_refs: [command-of-the-message.proof_points, meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Every concession is paired with a reciprocal ask (faster signature, longer term, expanded scope, reference)."
+      - "Rep pauses before conceding rather than immediately agreeing to reduce price."
+      - "Rep narrows the scope of the concession ('I can do X on the condition that...')."
+    what_poor_looks_like:
+      - "Rep offers discounts or extras without asking for anything in return."
+      - "Buyer asks for a concession and rep immediately says 'let me see what I can do' and returns with a yes."
+      - "Rep apologises when asking for a reciprocal, signalling that the ask is illegitimate."
+    evidence_cues:
+      - "\"I can look at that, but I'd need something in return — if we can agree on [X], I think I can make that work.\""
+      - "\"What are you able to move on your side if we move on ours?\""
+    coaching_prompts:
+      - "Walk me through every concession in this deal. What did you get for each one?"
+      - "When the buyer pushed back on price, what was your first instinct — and did you act on it?"
+
+  - id: discount_discipline
+    name: Discount Discipline
+    weight: 2
+    intent: >
+      Unearned or unexplained discounts signal that the price was never real,
+      eroding trust and setting a precedent for future renewals.
+    framework_refs: [command-of-the-message.differentiated_value, meddpicc.metrics]
+    what_great_looks_like:
+      - "Any discount is tied to a legitimate reason the buyer can explain internally (volume, term length, strategic partnership)."
+      - "Rep does not offer a discount before being asked."
+      - "Rep uses an approval process as a negotiation backstop ('I'd need to get that approved by my manager')."
+    what_poor_looks_like:
+      - "Rep offers a discount proactively to avoid potential friction."
+      - "Discount is offered without a business rationale the buyer can repeat."
+      - "Rep discounts immediately when the buyer says 'that's expensive' without testing whether it is a real objection."
+    evidence_cues:
+      - "\"The rate we discussed is based on [term/volume/reason] — if that changes, the economics change too.\""
+      - "\"I want to help you get this done; let me check internally what flexibility I have — but I'll need [reciprocal] to make the case.\""
+    coaching_prompts:
+      - "Why was the discount justified? Could you explain it to your CFO in one sentence?"
+      - "Did you test whether the price objection was real before conceding? What did you try?"
+
+  - id: competitive_positioning
+    name: Competitive Positioning
+    weight: 1.5
+    intent: >
+      In a negotiation, competitive pressure is often cited to extract discounts;
+      the rep must distinguish genuine competition from a negotiating tactic.
+    framework_refs: [command-of-the-message.differentiated_value, meddpicc.decision_criteria]
+    what_great_looks_like:
+      - "Rep directly asks which alternative is creating the pressure and what specifically the buyer prefers about it."
+      - "Rep reframes competitive claims by returning to the buyer's own stated priorities."
+      - "Rep does not match a competitor price; instead, justifies the price delta through unique value."
+    what_poor_looks_like:
+      - "Rep immediately matches or beats a competitor price without understanding whether the claim is real."
+      - "Rep disparages the competitor rather than defending the product's value."
+      - "Rep concedes on price every time a competitor is mentioned without testing the objection."
+    evidence_cues:
+      - "\"Tell me more about what specifically they offer at that price — I want to make sure we're comparing the right things.\""
+      - "\"Given what you told me matters most — [stated priority] — here's why the difference is worth it.\""
+    coaching_prompts:
+      - "How did you determine whether the competitive pressure was real or a negotiating tactic?"
+      - "What did you say when the buyer mentioned a competitor's lower price?"
+
+  - id: procurement_navigation
+    name: Procurement Navigation
+    weight: 1.5
+    intent: >
+      Procurement's job is to reduce cost; a rep who engages procurement without
+      arming the champion will lose margin without winning goodwill.
+    framework_refs: [meddpicc.economic_buyer, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep identifies when procurement is involved and engages them proactively rather than waiting to be contacted."
+      - "Champion is briefed on the value story and armed to advocate internally during procurement review."
+      - "Rep knows the procurement team's timeline and requirements and factors them into the close plan."
+    what_poor_looks_like:
+      - "Rep is surprised by procurement involvement late in the process."
+      - "Rep negotiates directly with procurement without the champion's support."
+      - "Rep concedes on price to procurement without looping in the champion."
+    evidence_cues:
+      - "\"Will procurement be involved in the contract review? Who is the right person to connect with?\""
+      - "\"Let's make sure [champion] has everything they need to advocate internally when procurement reviews this.\""
+    coaching_prompts:
+      - "When did procurement enter the picture, and were you prepared for it?"
+      - "What did you give your champion to use internally with procurement?"
+
+  - id: maintaining_close_control
+    name: Maintaining Close Control
+    weight: 1.5
+    intent: >
+      In negotiations, the party that controls the process controls the outcome;
+      a rep who lets the buyer set the agenda loses leverage.
+    framework_refs: [next-steps.specific_action, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Rep proposes the next step and timeline rather than waiting for the buyer to dictate them."
+      - "Rep maintains a mutual action plan that both sides have agreed to and reviews it on the call."
+      - "Rep is comfortable with silence after making an ask rather than filling it with concessions."
+    what_poor_looks_like:
+      - "Rep lets the buyer control the pace and sequence of the negotiation entirely."
+      - "Rep fills silence after a price reveal with an unprompted offer to reduce the number."
+      - "Rep agrees to revisit everything 'after the buyer has had a chance to think' with no date set."
+    evidence_cues:
+      - "\"Here's what I'd suggest as a path forward — does that timeline work for you?\""
+      - "Rep goes quiet after presenting the number and waits for the buyer to respond."
+    coaching_prompts:
+      - "Who was driving the pace of this negotiation — you or the buyer? How do you know?"
+      - "Was there a moment where you filled silence with an unnecessary concession? What triggered it?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A negotiation call that ends without a concrete next step leaves the deal
+      in a state where the buyer's inertia — not the rep — drives the outcome.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Next step is a specific milestone toward signature: contract redline, legal call, final approval meeting."
+      - "Date and owner are confirmed on the call, not in a follow-up email."
+      - "Rep summarises what each side needs to do before the next interaction."
+    what_poor_looks_like:
+      - "Call ends with 'let us review internally' and no date on the calendar."
+      - "Rep accepts 'we'll be in touch' without pushing for a specific next action."
+      - "Next step is another pricing discussion rather than a progression toward close."
+    evidence_cues:
+      - "\"So what I'm hearing is that [X] is the last remaining thing — if we can resolve that by [date], are you in a position to sign?\""
+      - "\"Let's book the legal call for [date] so we keep the momentum.\""
+    coaching_prompts:
+      - "What is the exact next step coming out of this call, and is it calendared?"
+      - "How close is this deal to signature — and what specifically needs to happen to get there?"

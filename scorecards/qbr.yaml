@@ -1,0 +1,183 @@
+# QBR scorecard — coaching rubric for Quarterly Business Review calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Command of the Message, Next-Steps). Fork it and tune the criteria/weights
+# for your business.
+id: qbr
+name: Quarterly Business Review (QBR)
+version: "1.0"
+description: >
+  Evaluates how well the rep presented results against agreed goals, aligned the
+  conversation to the customer's strategic direction, engaged senior stakeholders,
+  presented a credible roadmap or vision, established a joint plan for the next
+  period, and surfaced risks and expansion opportunities.
+applies_to: [qbr]
+frameworks: [command-of-the-message, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: results_vs_goals
+    name: Results vs. Goals
+    weight: 2.5
+    intent: >
+      The credibility of every other QBR conversation depends on an honest,
+      data-driven review of what was achieved against what was committed.
+    framework_refs: [command-of-the-message.proof_points, command-of-the-message.differentiated_value]
+    what_great_looks_like:
+      - "Rep presents specific metrics from the period alongside the targets agreed at the previous QBR or kickoff."
+      - "Where goals were missed, rep explains what happened and what has been done to address it."
+      - "Customer's own data and language are used — not vendor-curated statistics."
+    what_poor_looks_like:
+      - "Results are presented without reference to the goals that were set."
+      - "Metrics are cherry-picked to tell a positive story, with underperformance omitted."
+      - "Rep presents output metrics (logins, features used) but not outcome metrics (business impact)."
+    evidence_cues:
+      - "\"At our last QBR we set a goal of [X] — here's where you landed, and here's what drove that.\""
+      - "\"We fell short on [metric] — here's why and what we're doing about it.\""
+    coaching_prompts:
+      - "Did the customer agree with your read of the results, or did they push back? How did you handle that?"
+      - "What was the most uncomfortable data point you had to present, and how did you frame it?"
+
+  - id: strategic_alignment
+    name: Strategic Alignment
+    weight: 2
+    intent: >
+      A QBR that is anchored to the customer's current business priorities
+      earns a strategic partner status; one that is not is perceived as a
+      vendor status report.
+    framework_refs: [command-of-the-message.before_scenario, command-of-the-message.required_capabilities]
+    what_great_looks_like:
+      - "Rep asks about any changes to the customer's business priorities before presenting the review."
+      - "The agenda and recommendations are explicitly tied to the customer's stated strategic goals."
+      - "Rep demonstrates understanding of the customer's market context and competitive position."
+    what_poor_looks_like:
+      - "Rep presents a standard QBR deck without tailoring it to the customer's current situation."
+      - "No questions are asked about the customer's strategic direction; rep assumes it is unchanged."
+      - "QBR feels like a product update call rather than a strategic conversation."
+    evidence_cues:
+      - "\"Before we dig into the numbers, has anything changed strategically for the business that we should factor in?\""
+      - "\"How does this tie to what you're trying to accomplish in the next 12 months?\""
+    coaching_prompts:
+      - "What did you learn about the customer's current strategic priorities that you did not know before this call?"
+      - "How did you adjust the QBR agenda based on their strategy?"
+
+  - id: executive_engagement
+    name: Executive Engagement
+    weight: 2
+    intent: >
+      Executive attendees at a QBR need a different conversation than operational
+      contacts; a rep who pitches features to a C-level audience loses the room.
+    framework_refs: [command-of-the-message.positive_business_outcomes]
+    what_great_looks_like:
+      - "Rep addresses executive attendees directly and uses strategic, outcome-oriented language."
+      - "Rep asks the executive a direct question early in the call to engage them as participants, not observers."
+      - "Rep confirms ahead of the call which executives will attend and prepares content accordingly."
+    what_poor_looks_like:
+      - "Rep speaks to the operational contact and largely ignores senior attendees."
+      - "Executive content is the same feature-level material shown to daily users."
+      - "Executives disengage visibly and rep does not adjust."
+    evidence_cues:
+      - "\"From a strategic perspective, what would make the next quarter a success for you and your team?\""
+      - "\"I want to make sure we're addressing what matters at your level — what are you most focused on?\""
+    coaching_prompts:
+      - "Who were the executive attendees on this QBR, and how did you specifically engage each of them?"
+      - "At what point did the executive go quiet — and what could you have done differently at that moment?"
+
+  - id: roadmap_and_vision
+    name: Roadmap & Vision
+    weight: 1.5
+    intent: >
+      Customers who understand where the product is going invest more deeply
+      in adoption and are harder to churn because switching means giving up a
+      future they have already bought into.
+    framework_refs: [command-of-the-message.positive_business_outcomes]
+    what_great_looks_like:
+      - "Rep shares relevant upcoming capabilities and ties them to the customer's specific priorities."
+      - "Rep asks which items on the roadmap matter most to the customer and why."
+      - "Rep is honest about what is confirmed versus what is directional on the roadmap."
+    what_poor_looks_like:
+      - "No roadmap is presented; the QBR is entirely backward-looking."
+      - "Roadmap is presented as a generic list of features with no relevance scoring for this customer."
+      - "Rep overpromises roadmap items that are not confirmed, creating future risk."
+    evidence_cues:
+      - "\"Looking ahead, here's what's coming that I think is most relevant to [your priority].\""
+      - "\"Which of these upcoming capabilities would be most impactful for your team?\""
+    coaching_prompts:
+      - "Which roadmap items did you highlight, and how did you choose them for this customer?"
+      - "Did the customer express excitement about any roadmap item? How did you capitalise on that?"
+
+  - id: joint_plan_next_period
+    name: Joint Plan for the Next Period
+    weight: 2
+    intent: >
+      A QBR without a forward-looking joint plan produces a good meeting and no
+      change in trajectory; a joint plan creates shared accountability for the
+      next review.
+    framework_refs: [next-steps.specific_action, next-steps.committed_date]
+    what_great_looks_like:
+      - "Rep and customer co-create a plan for the next quarter with goals, milestones, and owners."
+      - "Plan is agreed and documented before the call ends."
+      - "At least one stretch goal is included that the customer finds motivating."
+    what_poor_looks_like:
+      - "QBR ends with a review of the past but no agreed plan for the next period."
+      - "Plan is presented by the rep without genuine input from the customer."
+      - "Goals for the next quarter are the same as the previous quarter with no rationale."
+    evidence_cues:
+      - "\"Let's use the last 15 minutes to agree on what we're going to achieve together over the next quarter.\""
+      - "\"What's the one thing you want to be able to say at the next QBR that you can't say today?\""
+    coaching_prompts:
+      - "What is the joint plan for next quarter, and is it written down and agreed?"
+      - "How did the customer contribute to the plan — or did you write it alone?"
+
+  - id: risk_and_expansion
+    name: Risk & Expansion
+    weight: 1.5
+    intent: >
+      The QBR is the highest-visibility moment to surface risk and expansion —
+      a rep who misses either leaves money on the table or lets churn build
+      unaddressed under a positive surface.
+    framework_refs: [command-of-the-message.before_scenario, command-of-the-message.differentiated_value]
+    what_great_looks_like:
+      - "Rep opens the floor for honest feedback and proactively asks what is not working."
+      - "Any expansion opportunity introduced is tied to the goals and metrics discussed in the review."
+      - "Risk items from the previous period are reviewed and closed out or escalated."
+    what_poor_looks_like:
+      - "No risk discussion occurs; QBR is entirely positive in tone."
+      - "Expansion is introduced as an afterthought at the end of the call without context."
+      - "Rep raises an expansion opportunity the customer sees as premature given unresolved issues."
+    evidence_cues:
+      - "\"What's the one thing we could do better in the next quarter that would make the biggest difference?\""
+      - "\"Based on the results we've seen, there's a natural next step that a few customers like yours have taken — would it be worth exploring?\""
+    coaching_prompts:
+      - "What risk or concern came up in this QBR, and what is your plan to address it?"
+      - "How did you introduce expansion — was it welcomed or was the timing off?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A QBR must produce a concrete next action — not just a good feeling — to
+      justify the time investment and drive the relationship forward.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep closes the QBR by summarising agreed actions with owners and dates."
+      - "The next QBR or strategic review is calendared on the call."
+      - "At least one specific action is agreed that advances the joint plan discussed."
+    what_poor_looks_like:
+      - "QBR ends with 'great meeting' and no written next steps."
+      - "Follow-up email is sent afterward trying to summarise actions that were not agreed live."
+      - "Next QBR is not scheduled; rep waits until the following quarter to initiate."
+    evidence_cues:
+      - "\"Let's capture the actions before we close: [X] on your side by [date], [Y] on ours by [date].\""
+      - "\"Can we book the next QBR now? I'd suggest [timeframe].\""
+    coaching_prompts:
+      - "What specific actions came out of this QBR, and who owns each one?"
+      - "Is the next QBR calendared? If not, when will you schedule it?"

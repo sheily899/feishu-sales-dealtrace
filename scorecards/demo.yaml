@@ -1,0 +1,200 @@
+# Demo scorecard — coaching rubric for solution walkthrough / demo calls.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (Command of the Message, SPICED, Next-Steps). Fork it and tune the
+# criteria/weights for your business.
+id: demo
+name: Demo / Solution Walkthrough
+version: "1.0"
+description: >
+  Evaluates how well the rep ran a discovery-led, interactive demo that tied
+  features to the buyer's stated priorities, differentiated from alternatives,
+  told a compelling story, and secured a concrete next step.
+applies_to: [demo]
+frameworks: [command-of-the-message, spiced, next-steps]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: discovery_led_demo
+    name: Discovery-Led Demo
+    weight: 2
+    intent: >
+      A demo grounded in the buyer's priorities converts far better than a
+      feature tour because it answers the question 'so what?' for each slide.
+    framework_refs: [spiced.pain, spiced.situation, command-of-the-message.before_scenario]
+    what_great_looks_like:
+      - "Rep recaps previously discovered pain points at the start and confirms they are still the right focus."
+      - "Demo is reordered or trimmed based on what the buyer said matters most."
+      - "Rep skips sections that are not relevant to this buyer's situation."
+    what_poor_looks_like:
+      - "Rep runs the same canned demo regardless of what was learned in discovery."
+      - "Demo starts with a company overview or feature list before tying to the buyer's world."
+      - "No reference to prior conversations; the buyer has to re-explain their situation."
+    evidence_cues:
+      - "\"Based on what you told me last time about [pain], I want to focus on...\""
+      - "\"I'm going to skip [section] because I don't think it applies to you — is that OK?\""
+    coaching_prompts:
+      - "How did the demo you ran differ from the default deck, and why?"
+      - "At which point did the buyer confirm you were showing them the right things?"
+
+  - id: features_to_value
+    name: Features to Value Translation
+    weight: 2
+    intent: >
+      Buyers buy outcomes, not features; every capability shown must be
+      connected to a business result the buyer cares about.
+    framework_refs: [spiced.impact, command-of-the-message.differentiated_value]
+    what_great_looks_like:
+      - "For every feature shown, rep explains what it means for the buyer's workflow or metric."
+      - "Rep uses a 'which means that' bridge to connect capability to outcome."
+      - "Impact is quantified where possible ('this typically saves X hours per week')."
+    what_poor_looks_like:
+      - "Rep narrates what a feature does without explaining why it matters."
+      - "Buyer has to ask 'OK, but how does this help us?' — a sign the translation is missing."
+      - "Quantified impact is never offered even when data exists."
+    evidence_cues:
+      - "\"What this means for you is that your team no longer has to...\""
+      - "\"This directly addresses the [priority] you mentioned — here's how.\""
+    coaching_prompts:
+      - "Pick any feature you showed. Can you complete this sentence in under 20 words: 'This means you...'?"
+      - "Where did the buyer disengage during the demo, and what could a value bridge have changed?"
+
+  - id: tie_to_stated_priorities
+    name: Tie to Stated Priorities
+    weight: 1.5
+    intent: >
+      Explicitly linking demo moments to the buyer's own words builds proof
+      of fit and makes the business case easy for the buyer to repeat internally.
+    framework_refs: [spiced.pain, command-of-the-message.required_capabilities]
+    what_great_looks_like:
+      - "Rep references specific things the buyer said in discovery ('you mentioned X — here is how we handle that')."
+      - "Buyer confirms alignment by saying 'yes, that's exactly it' or similar."
+      - "Rep checks at least twice during the demo whether what is shown is hitting the mark."
+    what_poor_looks_like:
+      - "Demo makes no reference to anything the buyer said before the call."
+      - "Rep presents capabilities the buyer never mentioned as priorities."
+      - "No confirmation checks — rep assumes alignment rather than testing it."
+    evidence_cues:
+      - "\"You told me that [specific pain] — let me show you exactly how this solves it.\""
+      - "\"Does this map to the workflow you described?\""
+    coaching_prompts:
+      - "How many times did you hear the buyer say 'yes, that's what I meant'?"
+      - "What would you cut from the demo to make it more relevant to this buyer?"
+
+  - id: interactivity_and_checks
+    name: Interactivity & Comprehension Checks
+    weight: 1
+    intent: >
+      An interactive demo keeps the buyer engaged and surfaces objections early,
+      when they are still easy to address.
+    framework_refs: [next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep pauses every 5-10 minutes and asks the buyer a genuine question."
+      - "Rep invites the buyer to drive the product or explore a specific scenario."
+      - "Objections and questions from the buyer are welcomed and explored, not deflected."
+    what_poor_looks_like:
+      - "Rep presents for 40+ minutes with no pause for buyer input."
+      - "Buyer questions are met with 'great question, I'll get to that later' and never returned to."
+      - "Rep talks over the buyer's early reactions."
+    evidence_cues:
+      - "\"What's your reaction to that so far?\""
+      - "\"Do you want me to click into [area] so you can see how it works for your use case?\""
+    coaching_prompts:
+      - "What questions did you ask the buyer during the demo — and when?"
+      - "Were there moments where the buyer went quiet and you missed a check-in?"
+
+  - id: differentiation
+    name: Differentiation
+    weight: 1.5
+    intent: >
+      Without explicit differentiation, a good demo still leaves the buyer
+      wondering why to choose this solution over alternatives.
+    framework_refs: [command-of-the-message.differentiated_value, command-of-the-message.proof_points]
+    what_great_looks_like:
+      - "Rep proactively highlights one or two areas where the approach is meaningfully different."
+      - "Differentiation is grounded in what the buyer said they care about, not generic claims."
+      - "Rep references proof points (customer outcomes, data) to substantiate the claim."
+    what_poor_looks_like:
+      - "Rep never mentions how the product differs from alternatives the buyer is likely evaluating."
+      - "Differentiation claims are vague ('we're more powerful / easier to use')."
+      - "Rep waits for the buyer to ask about competitors before addressing the topic."
+    evidence_cues:
+      - "\"Where a lot of tools stop at X, we go further by...\""
+      - "\"What makes this different for teams like yours is...\""
+    coaching_prompts:
+      - "Did you address the top alternative the buyer is likely considering? How?"
+      - "What proof point did you use, and how did the buyer react to it?"
+
+  - id: storytelling
+    name: Storytelling & Relatability
+    weight: 1
+    intent: >
+      A customer story or analogous scenario makes abstract capabilities concrete
+      and emotionally resonant, accelerating the buyer's ability to visualise adoption.
+    framework_refs: [command-of-the-message.proof_points, spiced.situation]
+    what_great_looks_like:
+      - "Rep weaves in a brief, relevant customer story at least once ('a team similar to yours...')."
+      - "Story follows a before/after arc tied to the buyer's stated pain."
+      - "Numbers or outcomes in the story are credible and specific."
+    what_poor_looks_like:
+      - "Demo is purely feature-driven with no narrative arc."
+      - "Customer story is vague ('one of our largest clients') with no specifics."
+      - "Story is about a company in a completely different industry from the buyer."
+    evidence_cues:
+      - "\"A [similar role/company] came to us with exactly this problem and...\""
+      - "\"After implementing this, their team went from X to Y within [timeframe].\""
+    coaching_prompts:
+      - "What customer story did you tell, and why did you choose that one for this buyer?"
+      - "How did the buyer respond to the story — did they see themselves in it?"
+
+  - id: handling_feature_questions
+    name: Handling Feature & Gap Questions
+    weight: 1
+    intent: >
+      How a rep handles 'can it do X?' questions mid-demo signals credibility and
+      shapes whether gaps derail the deal or are managed as part of the process.
+    framework_refs: [command-of-the-message.proof_points]
+    what_great_looks_like:
+      - "Rep answers feature questions honestly, distinguishing current capability from roadmap."
+      - "When a gap exists, rep pivots to the workaround or strategic context without dismissing the concern."
+      - "Rep logs the question to follow up and commits to a concrete answer by a date."
+    what_poor_looks_like:
+      - "Rep oversells — implies capabilities the product does not have."
+      - "Rep deflects ('our product team is working on it') without addressing the impact of the gap now."
+      - "Gap questions visibly derail the rep's confidence or flow."
+    evidence_cues:
+      - "\"That's not a native feature today, but here's how teams typically handle it...\""
+      - "\"Let me get you a definitive answer on that by [date] — is that a hard requirement?\""
+    coaching_prompts:
+      - "What feature gaps came up, and how did you handle each one?"
+      - "Did any gap question put the deal at risk? What would you do differently?"
+
+  - id: next_step
+    name: Clear Next Step
+    weight: 1.5
+    intent: >
+      A demo without a calendared next step converts enthusiasm into pipeline
+      stall; securing it live keeps the deal moving.
+    framework_refs: [next-steps.committed_date, next-steps.clear_owner, next-steps.specific_action]
+    what_great_looks_like:
+      - "Rep asks for the next step explicitly before ending the demo."
+      - "Next step is specific: action, owner, and date are confirmed on the call."
+      - "Rep articulates what the next step is designed to accomplish for the buyer."
+    what_poor_looks_like:
+      - "Call ends with 'let me know what you think' and no calendared step."
+      - "Rep sends a follow-up email asking for a next step instead of booking live."
+      - "Next step is vague ('let's regroup soon') with no date or owner."
+    evidence_cues:
+      - "\"What makes sense as a next step from here? I'd suggest...\""
+      - "\"Let's lock in [specific meeting] before we hang up.\""
+    coaching_prompts:
+      - "Was the next step calendared before the call ended? What was agreed?"
+      - "How does the next step you booked advance the deal rather than just continue the conversation?"

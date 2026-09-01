@@ -1,0 +1,142 @@
+# Discovery scorecard — coaching rubric for a first substantive sales conversation.
+# Conforms to schemas/scorecard.schema.json
+#
+# This is a generic, best-practice rubric assembled from public methodologies
+# (SPICED, MEDDPICC). Fork it and tune the criteria/weights for your business.
+id: discovery
+name: Discovery
+version: "1.0"
+description: >
+  Evaluates how well the rep uncovered priorities, quantified impact, mapped the
+  decision, avoided premature pitching, and secured a concrete next step.
+applies_to: [discovery]
+frameworks: [spiced, meddpicc]
+
+scoring:
+  scale_max: 100
+  bands:
+    - { label: great, min: 80, meaning: "Textbook execution; use as a teaching example." }
+    - { label: good, min: 60, meaning: "Solid; minor gaps to tighten." }
+    - { label: developing, min: 40, meaning: "Partially done; clear room to improve." }
+    - { label: poor, min: 0, meaning: "Missing or counterproductive." }
+
+criteria:
+  - id: agenda_and_framing
+    name: Agenda & Framing
+    weight: 1
+    intent: A clear, mutually-agreed agenda sets up an efficient, buyer-centric call.
+    framework_refs: [spiced.situation]
+    what_great_looks_like:
+      - "Rep proposes an agenda and asks the buyer what they want to get out of it."
+      - "Time, goals, and next-step expectation are framed up front."
+    what_poor_looks_like:
+      - "Dives in with no agenda, or the agenda is rep-only with no buyer input."
+    evidence_cues:
+      - "\"Here's what I was hoping to cover — what would make this a good use of your time?\""
+    coaching_prompts:
+      - "How did you confirm the agenda matched what the buyer cared about?"
+
+  - id: current_state
+    name: Current State & Why It Isn't Working
+    weight: 1.5
+    intent: Grounds the conversation in the buyer's real workflow before any pitch.
+    framework_refs: [spiced.situation, spiced.pain]
+    what_great_looks_like:
+      - "Rep maps the current process, stack, and scale in specifics."
+      - "Surfaces exactly where today's approach breaks down."
+    what_poor_looks_like:
+      - "Assumes the current state; generic questions with no follow-up."
+    evidence_cues:
+      - "\"Walk me through how you do this today.\""
+      - "\"Where does that process break down?\""
+    coaching_prompts:
+      - "What did you learn about their current state that you didn't know going in?"
+
+  - id: priority_quantified
+    name: Top Priority Identified & Quantified
+    weight: 2
+    intent: The highest-signal discovery move — a ranked priority with a number on it.
+    framework_refs: [spiced.pain, spiced.impact, meddpicc.metrics]
+    what_great_looks_like:
+      - "The #1 priority is named in the buyer's words."
+      - "Impact is quantified (time, money, or risk) and cost of inaction is explored."
+    what_poor_looks_like:
+      - "Pain stays vague ('it's a headache') with no quantification."
+      - "Rep supplies the pain instead of the buyer confirming it."
+    evidence_cues:
+      - "\"Of everything on your plate, where does this rank?\""
+      - "\"What's that costing you per month?\""
+    coaching_prompts:
+      - "Could you take the impact number from this call to a CFO? If not, what's missing?"
+
+  - id: future_state
+    name: Ideal Future State
+    weight: 1
+    intent: A vivid future state makes the gap (and the value) tangible.
+    framework_refs: [spiced.pain]
+    what_great_looks_like:
+      - "Rep gets the buyer to describe what 'solved' looks like and why it matters."
+    what_poor_looks_like:
+      - "No future state established; jumps from problem to product."
+    evidence_cues:
+      - "\"If this were working perfectly a year from now, what's different?\""
+    coaching_prompts:
+      - "Did the buyer articulate the future state, or did you?"
+
+  - id: decision_process
+    name: Decision Process & Stakeholders
+    weight: 1.5
+    intent: Maps the path to yes and avoids single-threading.
+    framework_refs: [spiced.decision, meddpicc.economic_buyer, meddpicc.decision_process]
+    what_great_looks_like:
+      - "Who decides, who influences, criteria, and steps to a decision are surfaced."
+      - "Rep identifies the economic buyer and a path to multi-thread."
+    what_poor_looks_like:
+      - "Single-threaded; assumes the contact is the decision-maker."
+    evidence_cues:
+      - "\"Who else weighs in, and what will they each care about?\""
+    coaching_prompts:
+      - "Who do you still need to meet to de-risk this deal?"
+
+  - id: timing_urgency
+    name: Compelling Event & Timing
+    weight: 1
+    intent: A forcing function is what keeps a deal from slipping.
+    framework_refs: [spiced.critical_event]
+    what_great_looks_like:
+      - "A dated event or driver creating urgency is surfaced."
+    what_poor_looks_like:
+      - "No timeline; 'sometime' with no forcing function."
+    evidence_cues:
+      - "\"What's driving the timing now versus six months ago?\""
+    coaching_prompts:
+      - "What's the buyer's compelling event — and how confident are you it's real?"
+
+  - id: avoided_premature_pitch
+    name: Avoided Premature Pitching
+    weight: 1
+    intent: Early discovery is for learning; pitching too soon kills signal.
+    framework_refs: [spiced.pain]
+    what_great_looks_like:
+      - "Rep resists pitching until enough pain/impact is established."
+      - "Talk-time skews to the buyer."
+    what_poor_looks_like:
+      - "Rep launches into features before understanding the problem."
+    evidence_cues:
+      - "Long uninterrupted product monologues early in the call."
+    coaching_prompts:
+      - "Where could you have asked one more question before pitching?"
+
+  - id: next_steps
+    name: Clear Next Steps with the Right People
+    weight: 1.5
+    intent: A discovery call with no concrete next step is a missed deal.
+    framework_refs: [meddpicc.decision_process]
+    what_great_looks_like:
+      - "A specific next action with owner and date is agreed, ideally with new stakeholders."
+    what_poor_looks_like:
+      - "Ends with 'I'll send some info' and no calendared step."
+    evidence_cues:
+      - "\"Let's get 30 minutes with your Head of X on the 14th.\""
+    coaching_prompts:
+      - "Is the next step calendared, and does it bring in someone new?"

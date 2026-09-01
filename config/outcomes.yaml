@@ -1,0 +1,158 @@
+# Outcome library — the reusable building blocks of "what should this call achieve?"
+#
+# The pipeline's outcome step does two things:
+#   1. Pulls the default_outcomes for the classified call type (below).
+#   2. Refines them against the ACTUAL content into a concrete, deal-specific
+#      statement (e.g. "secure-next-step" -> "Get a 30-min technical deep-dive
+#      with their Head of Data booked before end of month").
+#
+# Each outcome has an `id`, a generic `statement`, a `phase`, and `success_looks_like`
+# cues the coach uses to judge status (achieved / partial / missed / unknown).
+schema_version: "1.0"
+
+outcomes:
+  # ---- pre-sales: top of funnel
+  - id: earn-permission
+    phase: pre-sales
+    statement: Earn permission to continue the conversation.
+    success_looks_like: ["Prospect agrees to keep talking after the opener."]
+  - id: create-curiosity
+    phase: pre-sales
+    statement: Create enough curiosity that the prospect wants to learn more.
+    success_looks_like: ["Prospect asks a question or leans in to the hook."]
+  - id: book-next-meeting
+    phase: pre-sales
+    statement: Book a specific next meeting with a confirmed day/time.
+    success_looks_like: ["A concrete day/time is verbally agreed by both parties."]
+
+  # ---- pre-sales: discovery
+  - id: quantify-priority
+    phase: pre-sales
+    statement: Identify and quantify the buyer's top priority and the cost of inaction.
+    success_looks_like:
+      - "The #1 priority is named AND given a number (time, money, risk)."
+      - "The consequence of not solving it is articulated."
+  - id: map-decision-process
+    phase: pre-sales
+    statement: Map the decision process, criteria, and the people involved.
+    success_looks_like:
+      - "Who decides, who influences, and the steps to a decision are known."
+      - "A compelling event / timeline is surfaced."
+  - id: secure-next-step
+    phase: pre-sales
+    statement: Secure a concrete, calendared next step with the right people.
+    success_looks_like: ["A specific next action with owner and date is agreed."]
+
+  # ---- pre-sales: demo / validation
+  - id: tie-value-to-priority
+    phase: pre-sales
+    statement: Tie what was shown directly to the buyer's stated priorities.
+    success_looks_like: ["Each shown capability is mapped to a named problem/priority."]
+  - id: advance-to-validation
+    phase: pre-sales
+    statement: Advance the deal toward a hands-on validation or business case.
+    success_looks_like: ["Agreement to a POV/validation or a path to one."]
+  - id: generate-next-step
+    phase: pre-sales
+    statement: Generate a clear next step from the demo.
+    success_looks_like: ["A specific, dated next action is set."]
+  - id: confirm-success-criteria
+    phase: pre-sales
+    statement: Confirm explicit, measurable success/exit criteria for the evaluation.
+    success_looks_like: ["Both sides agree what 'success' means and how it's measured."]
+  - id: secure-stakeholder-buyin
+    phase: pre-sales
+    statement: Secure buy-in from the technical and economic stakeholders.
+    success_looks_like: ["Key stakeholders express support or a path to it."]
+  - id: define-validation-plan
+    phase: pre-sales
+    statement: Define a validation plan with owners, dates, and milestones.
+    success_looks_like: ["A written/verbal test plan with timeline exists."]
+
+  # ---- pre-sales: late stage
+  - id: surface-remaining-risks
+    phase: pre-sales
+    statement: Surface and name the remaining risks to closing.
+    success_looks_like: ["Open risks/blockers are explicitly listed."]
+  - id: confirm-decision-criteria
+    phase: pre-sales
+    statement: Reconfirm the decision criteria and how the solution meets them.
+    success_looks_like: ["Criteria revisited and mapped to evidence."]
+  - id: agree-decision-date
+    phase: pre-sales
+    statement: Agree a specific decision date.
+    success_looks_like: ["A date for the go/no-go decision is set."]
+  - id: defend-value
+    phase: pre-sales
+    statement: Defend value before discussing price.
+    success_looks_like: ["Value/ROI is re-anchored before concessions."]
+  - id: trade-not-give-concessions
+    phase: pre-sales
+    statement: Trade concessions for something, never give them away.
+    success_looks_like: ["Every concession is paired with an ask."]
+  - id: lock-close-plan
+    phase: pre-sales
+    statement: Lock a mutual close plan with dated steps to signature.
+    success_looks_like: ["A step-by-step plan to signature with dates is agreed."]
+  - id: confirm-mutual-plan
+    phase: pre-sales
+    statement: Confirm the mutual action plan and ownership of each step.
+    success_looks_like: ["Each step has an owner and a date."]
+  - id: remove-final-blockers
+    phase: pre-sales
+    statement: Identify and remove the final blockers to signature.
+    success_looks_like: ["Last blockers are named and assigned resolution."]
+  - id: secure-commitment
+    phase: pre-sales
+    statement: Secure an explicit commitment to proceed.
+    success_looks_like: ["A verbal commit / verbal yes is obtained."]
+
+  # ---- post-sales
+  - id: align-success-metrics
+    phase: post-sales
+    statement: Align on the success metrics that define a win for the customer.
+    success_looks_like: ["Measurable success metrics and a baseline are agreed."]
+  - id: set-rollout-plan
+    phase: post-sales
+    statement: Set a rollout plan with milestones, owners, and a path to first value.
+    success_looks_like: ["A dated plan to first value exists."]
+  - id: identify-champions
+    phase: post-sales
+    statement: Identify and equip internal champions.
+    success_looks_like: ["A named champion is engaged and enabled."]
+  - id: confirm-value-realized
+    phase: post-sales
+    statement: Confirm the value the customer has realized so far.
+    success_looks_like: ["Concrete outcomes/metrics achieved are stated."]
+  - id: surface-churn-risk
+    phase: post-sales
+    statement: Surface churn risk early and address it.
+    success_looks_like: ["Risk signals are probed and a mitigation is agreed."]
+  - id: identify-expansion
+    phase: post-sales
+    statement: Identify a credible expansion opportunity.
+    success_looks_like: ["A specific expansion use case / team is identified."]
+  - id: recap-value
+    phase: post-sales
+    statement: Recap delivered value ahead of the commercial conversation.
+    success_looks_like: ["ROI tied to the renewal decision is articulated."]
+  - id: secure-renewal-commitment
+    phase: post-sales
+    statement: Secure commitment (or a clear path) to renew.
+    success_looks_like: ["Renewal intent or the steps/owner/date to get there are set."]
+  - id: expand-footprint
+    phase: post-sales
+    statement: Expand the footprint (seats, teams, use cases).
+    success_looks_like: ["A concrete expansion is agreed or scoped."]
+  - id: demonstrate-roi
+    phase: post-sales
+    statement: Demonstrate ROI against the customer's goals.
+    success_looks_like: ["Results vs. goals are shown with evidence."]
+  - id: align-on-goals
+    phase: post-sales
+    statement: Re-align on the customer's goals for the next period.
+    success_looks_like: ["Next-period goals are agreed."]
+  - id: set-joint-plan
+    phase: post-sales
+    statement: Set a joint plan for the next period.
+    success_looks_like: ["A mutual plan with owners and dates exists."]

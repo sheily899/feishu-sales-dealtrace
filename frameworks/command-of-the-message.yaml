@@ -1,0 +1,152 @@
+# Command of the Message — value-based selling framework.
+# Conforms to schemas/framework.schema.json
+# Neutral paraphrase of a public methodology; see further_reading for the source.
+id: command-of-the-message
+name: Command of the Message
+origin: >
+  Developed by Force Management, a sales training organization founded by John Kaplan
+  and Tim Caito. Part of their broader Revenue Execution Platform, Command of the
+  Message is their value-based selling methodology.
+summary: >
+  A value-based selling framework that trains reps to lead buyer conversations with
+  quantified business outcomes rather than product features. Command of the Message
+  structures the rep's narrative across six elements: the buyer's Before Scenario,
+  Required Capabilities, Metrics of success, Differentiated Value, Proof Points, and
+  Positive Business Outcomes. The methodology's core principle is that reps who
+  command the message — rather than react to it — win more and discount less.
+best_for: [demo, discovery, negotiation, qbr]
+
+elements:
+  - id: before_scenario
+    name: Before Scenario
+    question: What does the buyer's world look like today — what pain, inefficiency, or risk defines their current state?
+    why_it_matters: >
+      The Before Scenario grounds the entire value narrative. Without a shared,
+      vivid picture of what's broken today, the buyer has no emotional reference
+      for why change matters. Reps who skip this sell features into a vacuum.
+      The more specifically you can describe the buyer's pain in their own words,
+      the more credible and resonant everything that follows becomes.
+    good_signals:
+      - "Rep can describe the buyer's current broken state in the buyer's exact language."
+      - "Before Scenario is confirmed by the buyer, not constructed by the rep."
+      - "Scenario captures the operational, financial, and emotional consequences of the status quo."
+    missing_signals:
+      - "Rep jumps to capabilities without establishing what problem they are solving."
+      - "Before Scenario is generic ('you probably have inefficiencies') rather than specific to this account."
+    example_questions:
+      - "Walk me through what that process looks like today — from start to finish, what breaks down?"
+      - "Where does your team spend the most time on things that feel like they shouldn't take that long?"
+      - "What's the downstream effect when [specific process] doesn't work the way it should?"
+      - "If I described your current situation to someone else, what's the one thing I absolutely have to get right?"
+
+  - id: required_capabilities
+    name: Required Capabilities
+    question: What capabilities must any solution have to solve this buyer's specific problem?
+    why_it_matters: >
+      Required Capabilities translate the buyer's pain into solution criteria — the
+      bridge between 'here's what's broken' and 'here's what we need.' Reps who
+      define required capabilities first can map their differentiators directly onto
+      them and expose gaps in competitors' offerings without mentioning competitors.
+    good_signals:
+      - "Capabilities are framed as buyer requirements, not product features."
+      - "Rep has co-created the requirements list with the buyer rather than presenting a feature sheet."
+      - "Each capability maps to a specific element of the Before Scenario."
+    missing_signals:
+      - "Rep leads with features before establishing what the buyer requires."
+      - "Capabilities list looks identical for every prospect regardless of their specific situation."
+    example_questions:
+      - "For a solution to actually fix what you described, what would it have to be able to do?"
+      - "What are the non-negotiable capabilities you'd need to see before recommending anything to your team?"
+      - "Are there things you've seen in other tools that are table stakes for you — things that aren't differentiators, just requirements?"
+      - "If we built the ideal solution for your situation, what are the three things it must do?"
+
+  - id: metrics
+    name: Metrics
+    question: How will the buyer measure success — what numbers prove the solution is working?
+    why_it_matters: >
+      Metrics turn qualitative value claims into ROI. They give the economic buyer
+      a business case, give the champion ammunition for internal selling, and give the
+      rep a defensible price anchor. Deals where metrics are undefined become price
+      negotiations; deals where metrics are strong become value conversations.
+    good_signals:
+      - "Success metrics are specific, measurable, and agreed upon by the buyer."
+      - "Metrics are tied to something the economic buyer tracks and cares about."
+      - "Rep has helped the buyer calculate an expected outcome, not just named a benefit."
+    missing_signals:
+      - "Success is described in terms the rep cannot prove post-implementation."
+      - "Metrics are vague ('better', 'faster', 'more efficient') with no number attached."
+    example_questions:
+      - "How will you know this is working six months after we go live — what number moves?"
+      - "What metric does your leadership team hold you accountable for that this should improve?"
+      - "If we could move [specific KPI] from X to Y, what would that be worth to the business?"
+      - "What would you put in the business case to justify this investment — what's the headline outcome?"
+
+  - id: differentiated_value
+    name: Differentiated Value
+    question: What do we do better than any alternative that uniquely addresses this buyer's specific situation?
+    why_it_matters: >
+      Differentiated value is not a generic list of differentiators — it is the
+      specific intersection of what you do best and what this buyer needs most.
+      Without it, reps compete on price. With it, they compete on fit. The discipline
+      is connecting differentiation to the buyer's stated requirements, not broadcasting
+      it generically.
+    good_signals:
+      - "Rep articulates one or two differentiated strengths tied to the buyer's explicit priorities."
+      - "Differentiation is framed as a capability gap in alternatives, not as an attack on competitors."
+      - "Buyer agrees that the differentiated capability matters for their situation."
+    missing_signals:
+      - "Rep delivers a standard 'why us' pitch that doesn't reference anything the buyer said."
+      - "Differentiation is claimed without proof or buyer acknowledgment."
+    example_questions:
+      - "Based on what you told me matters most — [specific requirement] — here's where we're different. Does that matter for your situation?"
+      - "Have you seen other solutions handle [specific capability] the same way? I want to make sure you're comparing apples to apples."
+      - "What's your current leading concern about the options you're evaluating — is it [area where we're strongest]?"
+      - "If price were equal, what would make one solution more valuable than another for your team?"
+
+  - id: proof_points
+    name: Proof Points
+    question: What evidence — customer stories, data, case studies — validates our claims for this buyer?
+    why_it_matters: >
+      Claims without evidence are marketing. Proof points convert a rep's assertions
+      into credible third-party validation. The most effective proof points are
+      industry-matched, persona-matched, and tied to the specific metric the buyer
+      cares about — not generic 'customer success' stories.
+    good_signals:
+      - "Rep references a specific customer story relevant to the buyer's industry or role."
+      - "Proof point includes a named outcome (metric) that mirrors what the buyer wants."
+      - "Rep offers to connect the buyer with a reference customer upon request."
+    missing_signals:
+      - "Rep says 'our customers love us' without a specific story or number."
+      - "Proof point is from an irrelevant industry or at an incompatible company size."
+    example_questions:
+      - "Would it help to hear how a company in [similar industry / similar size] solved the same problem — and what they measured?"
+      - "We have a customer who was in almost exactly your situation — want me to share what happened after they implemented this?"
+      - "Would a reference call with a peer who's been using this for 18 months be valuable at this stage?"
+      - "I can share a case study on [specific use case] — is that useful, or is there a specific outcome you'd want it to speak to?"
+
+  - id: positive_business_outcomes
+    name: Positive Business Outcomes
+    question: What is the concrete, executive-level business outcome the buyer achieves by solving this problem?
+    why_it_matters: >
+      Positive Business Outcomes are the headline of the value narrative — the
+      summary a CFO or board member would care about. They tie everything together:
+      Before Scenario → Required Capabilities → Metrics → PBO. Reps who articulate
+      PBOs help champions build the internal case without distorting the message.
+    good_signals:
+      - "Rep can state the PBO in one sentence that any executive would understand."
+      - "PBO is anchored to a metric the buyer confirmed matters to their leadership."
+      - "PBO survives a 'so what' test at the C-suite level."
+    missing_signals:
+      - "Rep's value summary is a list of features rather than a business outcome."
+      - "PBO is articulated in technical terms that wouldn't resonate in a board presentation."
+    example_questions:
+      - "If this works as expected, what's the headline you'd report to your CEO or board at the end of the year?"
+      - "When you picture a successful outcome six months from now, what's the one sentence that captures it?"
+      - "How would you summarize the business impact of this initiative to someone who has no context on what we do?"
+      - "What's the outcome that justifies the investment — not the features, but the result?"
+
+further_reading:
+  - title: "Force Management — Command of the Message"
+    url: "https://www.forcemanagement.com/command-of-the-message"
+  - title: "Revenue Execution Platform by Force Management"
+    url: "https://www.forcemanagement.com/blog/what-is-command-of-the-message"
